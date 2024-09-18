@@ -1,8 +1,8 @@
 import React from 'react';
-import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
+import {Ionicons, FontAwesome6} from '@expo/vector-icons';
 
 // Define available icon types
-type IconType = 'ionicon' | 'fontawesome6';
+export type IconType = 'ionicon' | 'fontawesome6';
 
 interface IconProps {
     type: IconType;
@@ -11,15 +11,19 @@ interface IconProps {
     color?: string;
 }
 
-const Icon: React.FC<IconProps> = ({ type, name, size = 24, color = 'black' }) => {
+const DEFAULT_SIZE = 24;
+const DEFAULT_COLOR = 'black';
+
+const Icon = ({type, name, size = DEFAULT_SIZE, color = DEFAULT_COLOR}: IconProps) => {
     switch (type) {
         case 'ionicon':
-            return <Ionicons name={name as keyof typeof Ionicons.glyphMap} size={size} color={color} />;
-       case 'fontawesome6':
-            return <FontAwesome6 name={name as keyof typeof FontAwesome6.glyphMap} size={size} color={color} />;
+            return <Ionicons name={name as keyof typeof Ionicons.glyphMap} size={size} color={color}/>;
+        case 'fontawesome6':
+            return <FontAwesome6 name={name as keyof typeof FontAwesome6.glyphMap} size={size} color={color}/>;
         default:
             return null;
     }
 };
 
-export default Icon;
+export {Icon};
+
