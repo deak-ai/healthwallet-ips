@@ -1,17 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, ScrollView } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
+import { useRoute } from '@react-navigation/native';
 
 export default function ModalScreen() {
+  const route = useRoute();
+  const { fhirData } = route.params as { fhirData: string };
+  const { title } = route.params as { title: string };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Modal</Text>
+      <Text style={styles.title}>{title}</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/modal.tsx" />
-
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <Text>{fhirData}</Text>
+      </ScrollView>
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>
   );
@@ -22,6 +26,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 20,
   },
   title: {
     fontSize: 20,
@@ -31,5 +36,8 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  scrollView: {
+    padding: 20,
   },
 });
