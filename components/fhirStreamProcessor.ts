@@ -2,10 +2,19 @@ export interface StreamProcessor {
     streamData(source: string): Promise<string>;
 }
 
+export async function* streamGenerator(reader: { read: () => Promise<{ value: Uint8Array, done: boolean }> }, decoder: TextDecoder) {
+    while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        yield decoder.decode(value, { stream: true });
+    }
+}
+
 const DIV_ELEMENT = 'div';
 
 export abstract class AbstractStreamProcessor implements StreamProcessor {
     abstract streamData(source: string): Promise<string>;
+
 
     protected createParserState() {
         return {

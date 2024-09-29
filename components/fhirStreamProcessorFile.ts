@@ -1,4 +1,6 @@
-import { AbstractStreamProcessor} from './fhirStreamProcessor';
+import {AbstractStreamProcessor, streamGenerator} from './fhirStreamProcessor';
+import {FileHandle} from "node:fs/promises";
+
 
 export class FileStreamProcessor extends AbstractStreamProcessor {
     async streamData(filePath: string): Promise<string> {
@@ -10,30 +12,24 @@ export class FileStreamProcessor extends AbstractStreamProcessor {
         if (!fileHandle) {
             throw new Error('Unable to open file.');
         }
-
-        const reader = {
-            read: async () => {
-                const { bytesRead, buffer } = await fileHandle.read(Buffer.alloc(1024));
-                return { value: buffer.slice(0, bytesRead), done: bytesRead === 0 };
-            }
-        };
+        const reader = this.createReader(fileHandle);
         const decoder = new TextDecoder();
 
         const state = this.createParserState();
-
-        async function* streamGenerator() {
-            while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-                yield decoder.decode(value, { stream: true });
-            }
-        }
-
-        for await (const chunk of streamGenerator()) {
+        for await (const chunk of streamGenerator(reader, decoder)) {
             this.processChunk(chunk, state);
         }
 
         await fileHandle.close();
         return state.result;
+    }
+
+    private createReader(fileHandle: FileHandle) {
+        return {
+            read: async () => {
+                const {bytesRead, buffer} = await fileHandle.read(Buffer.alloc(1024));
+                return {value: buffer.subarray(0, bytesRead), done: bytesRead === 0};
+            }
+        };
     }
 }

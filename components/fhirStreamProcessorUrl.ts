@@ -1,4 +1,4 @@
-import { AbstractStreamProcessor } from './fhirStreamProcessor';
+import {AbstractStreamProcessor, streamGenerator} from './fhirStreamProcessor';
 
 export class UrlStreamProcessor extends AbstractStreamProcessor {
     async streamData(url: string): Promise<string> {
@@ -15,23 +15,24 @@ export class UrlStreamProcessor extends AbstractStreamProcessor {
             throw new Error('ReadableStream not supported in this environment.');
         }
 
-        const reader: ReadableStreamDefaultReader<Uint8Array> = response.body.getReader();
+        const reader = this.createReader(response.body.getReader());
         const decoder = new TextDecoder();
-
         const state = this.createParserState();
 
-        async function* streamGenerator() {
-            while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-                yield decoder.decode(value, { stream: true });
-            }
-        }
-
-        for await (const chunk of streamGenerator()) {
+        for await (const chunk of streamGenerator(reader, decoder)) {
             this.processChunk(chunk, state);
         }
 
         return state.result;
+    }
+
+    // adapting the ReadableStreamDefaultReader to be compatible with the streamGenerator function
+    private createReader(reader: ReadableStreamDefaultReader<Uint8Array>) {
+        return {
+            read: async () => {
+                const {value, done} = await reader.read();
+                return {value: value || new Uint8Array(), done};
+            }
+        };
     }
 }
