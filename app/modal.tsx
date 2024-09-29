@@ -8,13 +8,14 @@ export default function ModalScreen() {
   const route = useRoute();
   const { fhirData } = route.params as { fhirData: string };
   const { title } = route.params as { title: string };
+  //console.log('FHIR data: ', fhirData.slice(0,10000))
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <Text>{fhirData}</Text>
+        <Text>{fhirData.slice(0, 100000)}</Text>
       </ScrollView>
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, ActivityIndicator, Alert, Pressable, StyleSheet, useColorScheme } from 'react-native';
-import { fetchFhirResource } from '@/components/LoadFhirIps';
+import { fetchFhirResource, fetchAndStream,fetchAndStream2 } from '@/components/LoadFhirIps';
 import * as SecureStore from 'expo-secure-store';
 import { useFocusEffect } from '@react-navigation/native';
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -36,16 +36,22 @@ export default function TabLoadIpsScreen() {
     try {
       setLoading(true); // Start loading
       if (patientId) {
-        const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/_history/1?_format=json`;
-        const data = await fetchFhirResource(url);
-        console.log('FHIR data retrieved');
+        //const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/_history/1?_format=json`;
+        const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/$summary?_format=json`;
+        //const data = await fetchFhirResource(url);
+        const data = await fetchAndStream2(url)
+        console.log('FHIR data retrieved',data.slice(0,1000))
+        const jsonData = JSON.parse(data);
+        const data2 = JSON.stringify(jsonData, null, 2);
+
         //setFhirData(JSON.stringify(data, null, 2));
 
         // Once the data is loaded, programmatically navigate to the modal screen
         router.push({
           pathname: '/modal',
           params: {
-            fhirData: JSON.stringify(data, null, 2), // Pass the FHIR data to the modal
+            //fhirData: JSON.stringify(data, null, 2), // Pass the FHIR data to the modal
+            fhirData: data2,
             title: `Patient ${patientId} Data`
           }
         });
