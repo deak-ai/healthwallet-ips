@@ -65,21 +65,14 @@ export async function fetchAndStream2(url: string): Promise<string> {
     let done = false;
 
     // Stateful variables for incremental parsing
-    let buffer = ''; // Holds partial JSON data
-    let result = ''; // Holds the final JSON without "div" elements
-    let inQuote = false; // Track if we're inside a string
-    let currentKey = ''; // Keep track of the current key being parsed
-    let isInDivKey = false; // Whether we're inside the "div" key-value pair
-    let skipValue = false; // Skip the value of the "div" key
-    let lastNonWhitespaceChar = ''; // Track the last valid character processed
-
-    // Helper function to skip over whitespace
-    function skipWhitespace(buffer: string, index: number): number {
-        while (index < buffer.length && /\s/.test(buffer[index])) {
-            index++;
-        }
-        return index;
-    }
+    const state = {
+        buffer: '', // Holds partial JSON data
+        result: '', // Holds the final JSON without "div" elements
+        inQuote: false, // Track if we're inside a string
+        currentKey: '', // Keep track of the current key being parsed
+        isInDivKey: false, // Whether we're inside the "div" key-value pair
+        skipValue: false, // Skip the value of the "div" key
+    };
 
     // Process the stream in chunks
     while (!done) {
@@ -94,66 +87,63 @@ export async function fetchAndStream2(url: string): Promise<string> {
 
             //console.log(chunk.length)
             // Append the new chunk to the buffer and process it
-            buffer += chunk;
+            state.buffer += chunk;
 
             // Process the buffer character by character
             let i = 0;
-            while (i < buffer.length) {
-                const char = buffer[i];
+            while (i < state.buffer.length) {
+                const char = state.buffer[i];
 
                 // Skip whitespace outside of quotes
-                if (!inQuote && /\s/.test(char)) {
+                if (!state.inQuote && /\s/.test(char)) {
                     i++;
                     continue;
                 }
 
                 // Toggle inQuote state when encountering unescaped quotes
-                if (char === '"' && (i === 0 || buffer[i - 1] !== '\\')) {
-                    inQuote = !inQuote;
-                    if (!inQuote) {
+                if (char === '"' && (i === 0 || state.buffer[i - 1] !== '\\')) {
+                    state.inQuote = !state.inQuote;
+                    if (!state.inQuote) {
                         // We just finished reading a key or value
-                        if (currentKey === 'div' && !isInDivKey) {
-                            isInDivKey = true;
-                            skipValue = true; // We'll skip the next value
-                            currentKey = ''; // Reset the current key
-                        } else if (!skipValue) {
-                            result += `"${currentKey}"`; // Add the key to the result
+                        if (state.currentKey === 'div' && !state.isInDivKey) {
+                            state.isInDivKey = true;
+                            state.skipValue = true; // We'll skip the next value
+                            state.currentKey = ''; // Reset the current key
+                        } else if (!state.skipValue) {
+                            state.result += `"${state.currentKey}"`; // Add the key to the result
                         }
-                        currentKey = ''; // Reset after processing key
+                        state.currentKey = ''; // Reset after processing key
                     }
-                } else if (inQuote) {
+                } else if (state.inQuote) {
                     // Accumulate the current key if we're inside quotes
-                    currentKey += char;
-                } else if (char === ':' && isInDivKey) {
+                    state.currentKey += char;
+                } else if (char === ':' && state.isInDivKey) {
                     // If we encounter the colon after the "div" key, start skipping the value
-                    skipValue = true;
-                } else if (!inQuote && char === '}' && isInDivKey) {
+                    state.skipValue = true;
+                } else if (!state.inQuote && char === '}' && state.isInDivKey) {
                     // End of the "div" value; stop skipping
-                    isInDivKey = false;
-                    skipValue = false;
+                    state.isInDivKey = false;
+                    state.skipValue = false;
 
                     // If "div" was the last key-value pair, remove the trailing comma
-                    result = result.trimEnd();
-                    if (result.endsWith(',')) {
-                        result = result.slice(0, -1); // Remove trailing comma
+                    state.result = state.result.trimEnd();
+                    if (state.result.endsWith(',')) {
+                        state.result = state.result.slice(0, -1); // Remove trailing comma
                     }
 
-                    result += char; // Add the closing brace for the parent object
-                } else if (!inQuote && !skipValue) {
+                    state.result += char; // Add the closing brace for the parent object
+                } else if (!state.inQuote && !state.skipValue) {
                     // Append non-skipped characters to the result
-                    result += char;
-
-                    // Track the last non-whitespace character for handling trailing commas
-                    lastNonWhitespaceChar = char;
+                    state.result += char;
                 }
 
                 i++;
             }
 
             // Clear the processed part of the buffer
-            buffer = buffer.slice(i);
+            state.buffer = state.buffer.slice(i);
         }
     }
 
-    return result;
+    return state.result;
 }
