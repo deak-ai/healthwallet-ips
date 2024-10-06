@@ -42,9 +42,10 @@ test('FhirFileStreamProcessor.streamData should succeed parsing valid FHIR IPS f
 
     const [result, memoryConsumption] = await measureMemoryConsumption(() => sectionProcessor.streamData(ipsFile));
 
-    const resultString = result.toString();
+    const resultString = JSON.stringify(result.sections);
     console.log(resultString);
     expect(resultString.startsWith('[{"code')).toBeTruthy();
+    expect(result.resources.length).toBeGreaterThan(546);
 
     // expect memory consumed to be less than the ips file size
     //const fileSize = (await fs.stat(ipsFile)).size;
@@ -62,9 +63,10 @@ test('FhirUrlStreamProcessor.streamData should succeed parsing from valid FHIR I
 
     const [result, memoryConsumption] = await measureMemoryConsumption(() => sectionProcessor.streamData(ipsUrl));
 
-    const resultString = result.toString();
+    const resultString = JSON.stringify(result.sections);
     console.log(resultString);
     expect(resultString.startsWith('[{"title')).toBeTruthy();
+    expect(result.resources.length).toBeGreaterThan(190);
 
     console.log(`Memory consumption: ${memoryConsumption} bytes`);
 

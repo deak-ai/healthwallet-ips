@@ -38,10 +38,9 @@ export default function TabLoadIpsScreen() {
       if (patientId) {
         //const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/_history/1?_format=json`;
         const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/$summary?_format=json`;
-        const data = await new FhirUrlStreamProcessor().streamData(url);
-        console.log('FHIR data retrieved',data.slice(0,1000))
-        const jsonData = JSON.parse(data);
-        const data2 = JSON.stringify(jsonData, null, 2);
+        const ipsData = await new FhirUrlStreamProcessor().streamData(url);
+        console.log('FHIR data retrieved ', ipsData.sections.length, ipsData.resources.length)
+        const sectionsString = JSON.stringify(ipsData.sections, null, 2);
 
         //setFhirData(JSON.stringify(data, null, 2));
 
@@ -50,7 +49,7 @@ export default function TabLoadIpsScreen() {
           pathname: '/modal',
           params: {
             //fhirData: JSON.stringify(data, null, 2), // Pass the FHIR data to the modal
-            fhirData: data2,
+            fhirData: sectionsString,
             title: `Patient ${patientId} Data`
           }
         });

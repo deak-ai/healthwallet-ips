@@ -1,7 +1,7 @@
 import { JSONParser } from '@streamparser/json';
 
 export interface StreamProcessor {
-    streamData(source: string): Promise<string>;
+    streamData(source: string): Promise<IpsData>;
 }
 
 export interface IpsData {
@@ -13,7 +13,7 @@ export interface IpsData {
 export abstract class AbstractStreamProcessor implements StreamProcessor {
     abstract getReader(source: string): Promise<AsyncIterableIterator<string>>;
 
-    async streamData(source: string): Promise<string> {
+    async streamData(source: string): Promise<IpsData> {
         return new Promise(async (resolve, reject) => {
             try {
                 const reader = await this.getReader(source);
@@ -43,7 +43,7 @@ export abstract class AbstractStreamProcessor implements StreamProcessor {
                     }
                 }
 
-                resolve(JSON.stringify(ipsData.sections));
+                resolve(ipsData);
             } catch (error) {
                 reject(error);
             }
