@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, ActivityIndicator, Alert, Pressable, StyleSheet, useColorScheme } from 'react-native';
-import { UrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
+import { FhirUrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
 import * as SecureStore from 'expo-secure-store';
 import { useFocusEffect } from '@react-navigation/native';
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -38,7 +38,7 @@ export default function TabLoadIpsScreen() {
       if (patientId) {
         //const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/_history/1?_format=json`;
         const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/$summary?_format=json`;
-        const data = await new UrlStreamProcessor().streamData(url)
+        const data = await new FhirUrlStreamProcessor().streamData(url);
         console.log('FHIR data retrieved',data.slice(0,1000))
         const jsonData = JSON.parse(data);
         const data2 = JSON.stringify(jsonData, null, 2);

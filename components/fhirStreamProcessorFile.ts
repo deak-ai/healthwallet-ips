@@ -1,35 +1,39 @@
-import {AbstractStreamProcessor, streamGenerator} from './fhirStreamProcessor';
-import {FileHandle} from "node:fs/promises";
+import { StreamProcessor } from "./fhirStreamProcessor";
+import { parser } from "stream-json";
+import { chain } from "stream-chain";
+import { pick } from "stream-json/filters/Pick";
+import { Writable } from "stream";
+import * as fs from 'fs';
+import {streamArray} from "stream-json/streamers/StreamArray";
 
+// Note this only works inside Node for testing
 
-export class FileStreamProcessor extends AbstractStreamProcessor {
-    async streamData(filePath: string): Promise<string> {
-        console.log('Streaming data from file: ', filePath);
+export class FhirFileStreamProcessor implements StreamProcessor {
+    async streamData(source: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const sections: any[] = [];
 
-        const fs = require('fs').promises;
-        const fileHandle = await fs.open(filePath, 'r');
+            const pipeline = chain([
+                fs.createReadStream(source),
+                parser(),
+                pick({ filter: 'entry' }), // Pick the 'entry' array from the top-level Bundle
+                streamArray(), // Stream each entry in the array
+                new Writable({
+                    objectMode: true,
+                    write({ value }, _, callback) {
+                        const resource = value.resource;
+                        // Check if the resource is a Composition and contains a section array
+                        if (resource && resource.resourceType === "Composition" && Array.isArray(resource.section)) {
+                            sections.push(...resource.section);
+                        }
+                        callback();
+                    }
+                })
+            ]);
 
-        if (!fileHandle) {
-            throw new Error('Unable to open file.');
-        }
-        const reader = this.createReader(fileHandle);
-        const decoder = new TextDecoder();
-
-        const state = this.createParserState();
-        for await (const chunk of streamGenerator(reader, decoder)) {
-            this.processChunk(chunk, state);
-        }
-
-        await fileHandle.close();
-        return state.result;
+            pipeline.on('end', () => resolve(JSON.stringify(sections)));
+            pipeline.on('error', reject);
+        });
     }
 
-    private createReader(fileHandle: FileHandle) {
-        return {
-            read: async () => {
-                const {bytesRead, buffer} = await fileHandle.read(Buffer.alloc(1024));
-                return {value: buffer.subarray(0, bytesRead), done: bytesRead === 0};
-            }
-        };
-    }
 }

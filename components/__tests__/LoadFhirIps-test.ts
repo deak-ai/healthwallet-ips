@@ -1,10 +1,13 @@
-import { FileStreamProcessor } from '../fhirStreamProcessorFile';
+import {FhirFileStreamProcessor} from '../fhirStreamProcessorFile';
+import {FhirUrlStreamProcessor} from '../fhirStreamProcessorUrl';
+
+
 import { promises as fs } from 'fs';
 import path from 'path';
 
 // Define the unit test
-test('readAndStream should throw an error when the file does not exist', async () => {
-    const fileProcessor = new FileStreamProcessor()
+test('FhirFileStreamProcessor.streamData should throw an error when the file does not exist', async () => {
+    const fileProcessor = new FhirFileStreamProcessor()
     const nonExistentFilePath = path.join(__dirname, 'nonExistentFile.txt');
     console.log(__dirname)
     await expect(fileProcessor.streamData(nonExistentFilePath)).rejects.toThrow(
@@ -31,21 +34,39 @@ async function measureMemoryConsumption<T>(func: () => Promise<T>): Promise<[T, 
 }
 
 
-test('readAndStream should succeed parsing valid file', async () => {
+
+test('FhirFileStreamProcessor.streamData should succeed parsing valid FHIR IPS file', async () => {
     // Create a large text file for testing
     const ipsFile = path.join(__dirname+"/../../resources", '801941-ips.json');
 
-    const fileProcessor = new FileStreamProcessor()
+    const sectionProcessor = new FhirFileStreamProcessor()
 
-    const [result, memoryConsumption] = await measureMemoryConsumption(() => fileProcessor.streamData(ipsFile));
+    const [result, memoryConsumption] = await measureMemoryConsumption(() => sectionProcessor.streamData(ipsFile));
 
-    // expect the result to start with {"entry"
-    expect(result.toString().startsWith('{"entry"')).toBeTruthy();
+    const resultString = result.toString();
+    console.log(resultString);
+    expect(resultString.startsWith('[{"code"')).toBeTruthy();
 
     // expect memory consumed to be less than the ips file size
-    const fileSize = (await fs.stat(ipsFile)).size;
+    //const fileSize = (await fs.stat(ipsFile)).size;
     //expect(memoryConsumption).toBeLessThan(fileSize);
 
     console.log(`Memory consumption: ${memoryConsumption} bytes`);
 
 });
+
+test('FhirUrlStreamProcessor.streamData should succeed parsing from valid FHIR IPS url', async () => {
+    const sectionProcessor = new FhirUrlStreamProcessor()
+
+    const result = await sectionProcessor.streamData(
+        'https://fhir.healthwallet.li/fhir/Patient/803565/$summary?_format=json')
+
+    const resultString = result.toString();
+    console.log(resultString);
+    expect(resultString.startsWith('[[{"title"')).toBeTruthy();
+
+
+},20000)
+
+
+

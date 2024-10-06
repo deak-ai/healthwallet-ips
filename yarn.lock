@@ -2711,6 +2711,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@stardazed/streams-text-encoding@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@stardazed/streams-text-encoding@npm:1.0.2"
+  checksum: 10c0/21c4c7a219fa67ed48e9820070fb63e7a6b26edc8c03dad948e17c41975523e077d5dcf7872fc226ada11c3d3d3179634f606308ae7245dae9cf6321b7d06e1d
+  languageName: node
+  linkType: hard
+
+"@streamparser/json@npm:^0.0.21":
+  version: 0.0.21
+  resolution: "@streamparser/json@npm:0.0.21"
+  checksum: 10c0/1dc27367e97f8e165f1268c29c4c463d5b644d8776bc5dcc07820dcdf62bae14c5eb3128c34d142b4e92a064a2c3563a127ec0dd3129c6425d06411838bb476a
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -2876,6 +2890,25 @@ __metadata:
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
   checksum: 10c0/1f4658385ae936330581bcb8aa3a066df03867d90281cdf89cc356d404bd6579be0f11902304e1f775d92df22c6dd761d4451c804b0a4fba973e06211e9bd77c
+  languageName: node
+  linkType: hard
+
+"@types/stream-chain@npm:*":
+  version: 2.1.0
+  resolution: "@types/stream-chain@npm:2.1.0"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/b9acf2740068c20defed8a0066040375d7b75ce3f51100b61b888c9425818d92ef794110468350f51109d9c1aa890a645953abe8fcb25a57ee4e86a19559bda4
+  languageName: node
+  linkType: hard
+
+"@types/stream-json@npm:^1":
+  version: 1.7.7
+  resolution: "@types/stream-json@npm:1.7.7"
+  dependencies:
+    "@types/node": "npm:*"
+    "@types/stream-chain": "npm:*"
+  checksum: 10c0/7ac6f31e63a028f14e23acf225d1b2e1ba48c680dd926af2d6b0166fa68446ebe00b6e682866975b723852453a020b2ad70dfdb1a71575b23e6a58e721256dfb
   languageName: node
   linkType: hard
 
@@ -3521,7 +3554,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"big-integer@npm:1.6.x":
+"big-integer@npm:1.6.x, big-integer@npm:^1.6.51":
   version: 1.6.52
   resolution: "big-integer@npm:1.6.52"
   checksum: 10c0/9604224b4c2ab3c43c075d92da15863077a9f59e5d4205f4e7e76acd0cd47e8d469ec5e5dba8d9b32aa233951893b29329ca56ac80c20ce094b4a647a66abae0
@@ -5354,6 +5387,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"flatbuffers@npm:2.0.6":
+  version: 2.0.6
+  resolution: "flatbuffers@npm:2.0.6"
+  checksum: 10c0/ae4f1fd957d997d37e109179d69368636c228adbc1f0d68c508fd0fe75e7c9c6843c4eb4f72b9a94b5677d23f3b936d8319986a3b420d7e84f88c583402079b0
+  languageName: node
+  linkType: hard
+
 "flow-enums-runtime@npm:^0.0.6":
   version: 0.0.6
   resolution: "flow-enums-runtime@npm:0.0.6"
@@ -5797,8 +5837,11 @@ __metadata:
     "@babel/core": "npm:^7.20.0"
     "@expo/vector-icons": "npm:^14.0.2"
     "@react-navigation/native": "npm:^6.0.2"
+    "@stardazed/streams-text-encoding": "npm:^1.0.2"
+    "@streamparser/json": "npm:^0.0.21"
     "@types/jest": "npm:^29.5.13"
     "@types/react": "npm:~18.2.45"
+    "@types/stream-json": "npm:^1"
     base-64: "npm:^1.0.0"
     expo: "npm:~51.0.34"
     expo-font: "npm:~12.0.9"
@@ -5814,6 +5857,7 @@ __metadata:
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
     react-native: "npm:0.74.5"
+    react-native-fast-encoder: "npm:^0.1.12"
     react-native-fetch-api: "npm:^3.0.0"
     react-native-get-random-values: "npm:^1.11.0"
     react-native-polyfill-globals: "npm:^3.1.0"
@@ -5822,6 +5866,7 @@ __metadata:
     react-native-screens: "npm:3.31.1"
     react-native-url-polyfill: "npm:^2.0.0"
     react-test-renderer: "npm:18.2.0"
+    stream-json: "npm:^1.8.0"
     text-encoding: "npm:^0.7.0"
     typescript: "npm:~5.3.3"
     web-streams-polyfill: "npm:^3.2.1"
@@ -9064,6 +9109,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-fast-encoder@npm:^0.1.12":
+  version: 0.1.12
+  resolution: "react-native-fast-encoder@npm:0.1.12"
+  dependencies:
+    big-integer: "npm:^1.6.51"
+    flatbuffers: "npm:2.0.6"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/ed44dee748f23c68690ec70b9f8840dab8171d79656c6b006e5e4b6c2b9e45d027e63c4ce9a7b0509cbddf77872151cadc8e4c3c110d50dbaa02ac53d81a4c5c
+  languageName: node
+  linkType: hard
+
 "react-native-fetch-api@npm:^3.0.0":
   version: 3.0.0
   resolution: "react-native-fetch-api@npm:3.0.0"
@@ -10133,6 +10191,22 @@ __metadata:
   version: 2.2.0
   resolution: "stream-buffers@npm:2.2.0"
   checksum: 10c0/14a351f0a066eaa08c8c64a74f4aedd87dd7a8e59d4be224703da33dca3eb370828ee6c0ae3fff59a9c743e8098728fc95c5f052ae7741672a31e6b1430ba50a
+  languageName: node
+  linkType: hard
+
+"stream-chain@npm:^2.2.5":
+  version: 2.2.5
+  resolution: "stream-chain@npm:2.2.5"
+  checksum: 10c0/c512f50190d7c92d688fa64e7af540c51b661f9c2b775fc72bca38ea9bca515c64c22c2197b1be463741daacbaaa2dde8a8ea24ebda46f08391224f15249121a
+  languageName: node
+  linkType: hard
+
+"stream-json@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "stream-json@npm:1.8.0"
+  dependencies:
+    stream-chain: "npm:^2.2.5"
+  checksum: 10c0/5e6de600a7d86f54f9ced608131f1f840082fa7aa443df9fe72bd255b6b1c098d2c6c756b4b9acd64e50e2b9f52d9a432714bce43e96e9850b819ee9ff6331a1
   languageName: node
   linkType: hard
 

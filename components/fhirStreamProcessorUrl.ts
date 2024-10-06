@@ -1,38 +1,59 @@
-import {AbstractStreamProcessor, streamGenerator} from './fhirStreamProcessor';
+import { StreamProcessor } from './fhirStreamProcessor';
+import { JSONParser } from '@streamparser/json';
 
-export class UrlStreamProcessor extends AbstractStreamProcessor {
+export class FhirUrlStreamProcessor implements StreamProcessor {
     async streamData(url: string): Promise<string> {
-        console.log('Streaming data from: ', url);
+        return new Promise(async (resolve, reject) => {
+            const sections: any[] = [];
 
-        const response = await fetch(url, {
-            // @ts-ignore
-            reactNative: {
-                textStreaming: true,
-            },
-        });
+            try {
+                // Fetch the response from the URL using streaming
+                const response = await fetch(url, {
+                    // @ts-ignore for textStreaming in React Native
+                    reactNative: {
+                        textStreaming: true,
+                    },
+                });
 
-        if (!response.body) {
-            throw new Error('ReadableStream not supported in this environment.');
-        }
+                if (!response.body) {
+                    reject(new Error('No response body found'));
+                    return;
+                }
 
-        const reader = this.createReader(response.body.getReader());
-        const decoder = new TextDecoder();
-        const state = this.createParserState();
+                const reader = response.body.getReader();
+                const textDecoder = new TextDecoder(); // To decode chunks into strings
+                let done = false;
 
-        for await (const chunk of streamGenerator(reader, decoder)) {
-            this.processChunk(chunk, state);
-        }
+                // Create JSON parser
+                const jsonParser = new JSONParser();
 
-        return state.result;
-    }
+                jsonParser.onValue = (parsedElementInfo) => {
+                    if (parsedElementInfo.key === 'section') {
+                        sections.push(parsedElementInfo.value);
+                    }
+                };
 
-    // adapting the ReadableStreamDefaultReader to be compatible with the streamGenerator function
-    private createReader(reader: ReadableStreamDefaultReader<Uint8Array>) {
-        return {
-            read: async () => {
-                const {value, done} = await reader.read();
-                return {value: value || new Uint8Array(), done};
+
+                jsonParser.onError = reject;
+
+                // Read and process chunks manually
+                while (!done) {
+                    const { value, done: readerDone } = await reader.read();
+                    done = readerDone;
+
+                    if (value) {
+                        const chunk = textDecoder.decode(value, { stream: true });
+                        jsonParser.write(chunk);
+                    }
+                }
+
+                resolve(JSON.stringify(sections));
+
+            } catch (error) {
+                reject(error);
             }
-        };
+        });
     }
 }
+
+
