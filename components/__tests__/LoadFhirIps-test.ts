@@ -45,7 +45,7 @@ test('FhirFileStreamProcessor.streamData should succeed parsing valid FHIR IPS f
 
     const resultString = result.toString();
     console.log(resultString);
-    expect(resultString.startsWith('[{"code"')).toBeTruthy();
+    expect(resultString.startsWith('[[{"code"')).toBeTruthy();
 
     // expect memory consumed to be less than the ips file size
     //const fileSize = (await fs.stat(ipsFile)).size;
@@ -63,7 +63,7 @@ test('FhirUrlStreamProcessor.streamData should succeed parsing from valid FHIR I
 
     const resultString = result.toString();
     console.log(resultString);
-    expect(resultString.startsWith('[{"title"')).toBeTruthy();
+    expect(resultString.startsWith('[[{"title"')).toBeTruthy();
 
 
 },20000)
