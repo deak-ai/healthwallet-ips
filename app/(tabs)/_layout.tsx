@@ -57,7 +57,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="ips"
                 options={{
-                    title: 'IPS',
+                    title: 'International',
                     tabBarIcon: ({color}) => <TabBarIcon name="medkit" color={color}/>,
                 }}
             />

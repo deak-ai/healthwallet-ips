@@ -12,6 +12,7 @@ export type Tile = {
     label: string;
     icon: string;
     type: IconType;
+    code: string;
 };
 
 export function IpsSectionTile(props: { onPress: () => void; tile: Tile }) {

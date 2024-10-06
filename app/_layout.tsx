@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import { IpsDataProvider } from '@/components/IpsDataContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,15 +50,17 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal"
-                      options={{
-                        presentation: 'modal',
-                        headerShown: false,
-                      }} />
-      </Stack>
-    </ThemeProvider>
+      <IpsDataProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal"
+                          options={{
+                            presentation: 'modal',
+                            headerShown: false,
+                          }} />
+          </Stack>
+        </ThemeProvider>
+      </IpsDataProvider>
   );
 }
