@@ -63,7 +63,7 @@ test('FhirUrlStreamProcessor.streamData should succeed parsing from valid FHIR I
 
     const resultString = result.toString();
     console.log(resultString);
-    expect(resultString.startsWith('[[{"title"')).toBeTruthy();
+    expect(resultString.startsWith('[{"title"')).toBeTruthy();
 
 
 },20000)
