@@ -34,9 +34,8 @@ async function measureMemoryConsumption<T>(func: () => Promise<T>): Promise<[T, 
 }
 
 
-
 test('FhirFileStreamProcessor.streamData should succeed parsing valid FHIR IPS file', async () => {
-    // Create a large text file for testing
+    // use a local ips file
     const ipsFile = path.join(__dirname+"/../../resources", '801941-ips.json');
 
     const sectionProcessor = new FhirFileStreamProcessor()
@@ -45,7 +44,7 @@ test('FhirFileStreamProcessor.streamData should succeed parsing valid FHIR IPS f
 
     const resultString = result.toString();
     console.log(resultString);
-    expect(resultString.startsWith('[[{"code"')).toBeTruthy();
+    expect(resultString.startsWith('[{"code')).toBeTruthy();
 
     // expect memory consumed to be less than the ips file size
     //const fileSize = (await fs.stat(ipsFile)).size;
@@ -56,14 +55,18 @@ test('FhirFileStreamProcessor.streamData should succeed parsing valid FHIR IPS f
 });
 
 test('FhirUrlStreamProcessor.streamData should succeed parsing from valid FHIR IPS url', async () => {
+
+    const ipsUrl = 'https://fhir.healthwallet.li/fhir/Patient/803565/$summary?_format=json'
+
     const sectionProcessor = new FhirUrlStreamProcessor()
 
-    const result = await sectionProcessor.streamData(
-        'https://fhir.healthwallet.li/fhir/Patient/803565/$summary?_format=json')
+    const [result, memoryConsumption] = await measureMemoryConsumption(() => sectionProcessor.streamData(ipsUrl));
 
     const resultString = result.toString();
     console.log(resultString);
-    expect(resultString.startsWith('[[{"title"')).toBeTruthy();
+    expect(resultString.startsWith('[{"title')).toBeTruthy();
+
+    console.log(`Memory consumption: ${memoryConsumption} bytes`);
 
 
 },20000)

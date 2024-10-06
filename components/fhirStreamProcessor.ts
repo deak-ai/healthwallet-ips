@@ -1,8 +1,14 @@
+import { JSONParser } from '@streamparser/json';
+
 export interface StreamProcessor {
     streamData(source: string): Promise<string>;
 }
 
-import { JSONParser } from '@streamparser/json';
+export interface IpsData {
+    sections: any[];
+    resources: any[];
+}
+
 
 export abstract class AbstractStreamProcessor implements StreamProcessor {
     abstract getReader(source: string): Promise<AsyncIterableIterator<string>>;
@@ -12,13 +18,19 @@ export abstract class AbstractStreamProcessor implements StreamProcessor {
             try {
                 const reader = await this.getReader(source);
                 const jsonParser = new JSONParser();
-                const sections: any[] = [];
+                let ipsData: IpsData = { sections: [], resources: [] };
 
                 jsonParser.onValue = (parsedElementInfo) => {
-                    if (parsedElementInfo.key === 'section') {
-                        sections.push(parsedElementInfo.value);
+                    if (parsedElementInfo.key === 'resource' && typeof parsedElementInfo.value === 'object' && parsedElementInfo.value !== null) {
+                        const resource = parsedElementInfo.value as { resourceType?: string; section?: any[] };
+                        if (resource.resourceType === 'Composition' && Array.isArray(resource.section)) {
+                            ipsData.sections = resource.section;
+                        } else {
+                            // need to add the parent as it as the fullUrl next to the resource
+                            ipsData.resources.push(parsedElementInfo.parent);
+                        }
                     }
-                };
+                }
 
                 jsonParser.onError = reject;
 
@@ -31,7 +43,7 @@ export abstract class AbstractStreamProcessor implements StreamProcessor {
                     }
                 }
 
-                resolve(JSON.stringify(sections));
+                resolve(JSON.stringify(ipsData.sections));
             } catch (error) {
                 reject(error);
             }
