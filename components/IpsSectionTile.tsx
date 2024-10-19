@@ -5,6 +5,7 @@ import { StyleSheet, Pressable } from 'react-native';
 import { Text, useThemeColor } from '@/components/Themed';
 import { IconType, Icon } from '@/components/MultiSourceIcon';
 import Colors from '@/constants/Colors';
+import {IpsSectionCode, IpsSectionCodeKey} from "@/components/fhirIpsModels";
 
 // Define a type for the tiles array
 export type Tile = {
@@ -12,8 +13,19 @@ export type Tile = {
     label: string;
     icon: string;
     type: IconType;
-    code: string;
+    code: typeof IpsSectionCode[IpsSectionCodeKey]["code"];
 };
+
+export const IPS_TILES: readonly Tile[] = [
+    { id: 1, label: IpsSectionCode.Allergies.label, icon: 'allergies', type: 'fontawesome5', code: IpsSectionCode.Allergies.code },
+    { id: 2, label: IpsSectionCode.Medications.label, icon: 'pills', type: 'fontawesome6', code: IpsSectionCode.Medications.code },
+    { id: 3, label: IpsSectionCode.Problems.label, icon: 'report-problem', type: 'materialicons', code: IpsSectionCode.Problems.code },
+    { id: 4, label: IpsSectionCode.Procedures.label, icon: 'bandage-outline', type: 'ionicon', code: IpsSectionCode.Procedures.code },
+    { id: 5, label: IpsSectionCode.Immunizations.label, icon: 'shield-checkmark-outline', type: 'ionicon', code: IpsSectionCode.Immunizations.code },
+    { id: 6, label: IpsSectionCode.Results.label, icon: 'list-outline', type: 'ionicon', code: IpsSectionCode.Results.code },
+    { id: 7, label: IpsSectionCode.Devices.label, icon: 'devices-other', type: 'materialicons', code: IpsSectionCode.Devices.code },
+] as const;
+
 
 export function IpsSectionTile(props: { onPress: () => void; tile: Tile }) {
     const backgroundColor = useThemeColor({ light: Colors.light.background, dark: Colors.dark.background }, 'background');

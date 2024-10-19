@@ -1,6 +1,8 @@
 import {FhirFileStreamProcessor} from '../fhirStreamProcessorFile';
 import {FhirUrlStreamProcessor} from '../fhirStreamProcessorUrl';
 
+import fhirpath from 'fhirpath';
+
 
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -57,7 +59,9 @@ test('FhirFileStreamProcessor.streamData should succeed parsing valid FHIR IPS f
 
 test('FhirUrlStreamProcessor.streamData should succeed parsing from valid FHIR IPS url', async () => {
 
-    const ipsUrl = 'https://fhir.healthwallet.li/fhir/Patient/803565/$summary?_format=json'
+    //const ipsUrl = 'https://fhir.healthwallet.li/fhir/Patient/803565/$summary?_format=json'
+
+    const ipsUrl = 'http://localhost:8800/fhir-examples/ips-fhir/803565-ips.json'
 
     const sectionProcessor = new FhirUrlStreamProcessor()
 
@@ -65,8 +69,23 @@ test('FhirUrlStreamProcessor.streamData should succeed parsing from valid FHIR I
 
     const resultString = JSON.stringify(result.sections);
     console.log(resultString);
-    expect(resultString.startsWith('[{"title')).toBeTruthy();
+    expect(resultString.startsWith('[{"code')).toBeTruthy();
     expect(result.resources.length).toBeGreaterThan(190);
+
+    let titles = findKeysAtAnyDepth(result.sections, "title" );
+
+    console.log(titles )
+
+   let given = fhirpath.evaluate(result.resources[0].resource,
+       "Patient.name.where(use='official').given.first()")
+
+    console.log(given)
+
+    let title = fhirpath.evaluate(result.sectionResource,
+        "Composition.section.where(code.coding.code = '48765-2').title")
+
+    console.log(title)
+
 
     console.log(`Memory consumption: ${memoryConsumption} bytes`);
 
@@ -74,4 +93,33 @@ test('FhirUrlStreamProcessor.streamData should succeed parsing from valid FHIR I
 },20000)
 
 
+function findKeysAtAnyDepth(obj: any, targetKey: string): any[] {
+    const results: any[] = [];
+
+    // Helper function to recursively search
+    function recursiveSearch(currentObj: any) {
+        if (typeof currentObj !== 'object' || currentObj === null) {
+            return;
+        }
+
+        // Loop through all the keys in the current object
+        for (const key in currentObj) {
+            if (currentObj.hasOwnProperty(key)) {
+                if (key === targetKey) {
+                    results.push(currentObj[key]);
+                }
+
+                // If the value is an object or an array, continue searching inside
+                if (typeof currentObj[key] === 'object') {
+                    recursiveSearch(currentObj[key]);
+                }
+            }
+        }
+    }
+
+    // Start the recursive search
+    recursiveSearch(obj);
+
+    return results;
+}
 

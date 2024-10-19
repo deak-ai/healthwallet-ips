@@ -1,8 +1,14 @@
 import { StyleSheet, ScrollView } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import { IpsSectionTile, Tile } from '@/components/IpsSectionTile';
+import {IPS_TILES, IpsSectionTile, Tile} from '@/components/IpsSectionTile';
 import { useIpsData } from '@/components/IpsDataContext';
 import { useRouter } from 'expo-router';
+import fhirpath from "fhirpath";
+import { getProcessor }
+  from '@/components/ipsResourceProcessor';
+
+import yaml from 'js-yaml';
+import {FhirResourceWrapper, IpsSectionCode} from "@/components/fhirIpsModels";
 
 /*
 These are all the relevant IPS sections with corresponding loinc codes :
@@ -35,35 +41,24 @@ Patient Story: 81338-6
 export default function TabIpsScreen() {
   const { ipsData } = useIpsData();
   const router = useRouter();
-  const tiles: Tile[] = [
-    { id: 1, label: 'Allergies', icon: 'allergies', type: 'fontawesome5', code: '48765-2'},
-    { id: 2, label: 'Medications', icon: 'pills', type: 'fontawesome6', code: '10160-0'},
-    { id: 3, label: 'Problems', icon: 'report-problem', type: 'materialicons', code: '11450-4'},
-
-    { id: 4, label: 'Procedures', icon: 'bandage-outline', type: 'ionicon', code: '47519-4'},
-    { id: 5, label: 'Immunizations', icon: 'shield-checkmark-outline', type: 'ionicon', code: '11369-6'},
-    { id: 6, label: 'Results', icon: 'list-outline', type: 'ionicon', code: '30954-2'},
-    { id: 7, label: 'Devices', icon: 'devices-other', type: 'materialicons', code: '46264-8'},
-  ];
-
 
   // Extract codes from ipsData.sections
-  const sectionCodes = ipsData?.sections.map(section => section.code.coding[0].code) || [];
+  const sectionCodes = ipsData?.sections.map((section: any) => section.code.coding[0].code) || [];
 
   // Filter tiles based on section codes
-  const filteredTiles = tiles.filter(tile => sectionCodes.includes(tile.code));
+  const filteredTiles = IPS_TILES.filter(tile => sectionCodes.includes(tile.code));
+
+  const patientName = fhirpath.evaluate(ipsData?.resources[0].resource,
+      "Patient.name.where(use='official').given.first()")
 
   const handleTilePress = (tile: Tile) => {
-    const sectionData = ipsData?.sections.find(section => section.code.coding[0].code === tile.code);
-    if (sectionData) {
       router.push({
         pathname: '/modal',
         params: {
-          fhirData: JSON.stringify(sectionData, null, 2),
-          title: tile.label
+          fhirData: yaml.dump(getProcessor(tile.code).process(ipsData)),
+          title: patientName + " " + tile.label
         }
       });
-    }
   };
 
   return (

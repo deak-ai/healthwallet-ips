@@ -4,9 +4,11 @@ import { FhirUrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
 import * as SecureStore from 'expo-secure-store';
 import { useFocusEffect } from '@react-navigation/native';
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Colors from "@/constants/Colors";
 import { useRouter } from 'expo-router';
 import { useIpsData } from '@/components/IpsDataContext';
+import { IconType, Icon } from '@/components/MultiSourceIcon';
 
 export default function TabLoadIpsScreen() {
   const [loading, setLoading] = useState(false);
@@ -36,6 +38,7 @@ export default function TabLoadIpsScreen() {
     try {
       setLoading(true);
       if (patientId) {
+        //const url = `http://localhost:8800/fhir-examples/ips-fhir/${patientId}-ips.json`;
         const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/$summary?_format=json`;
         const ipsData = await new FhirUrlStreamProcessor().streamData(url);
         console.log('FHIR data retrieved ', ipsData.sections.length, ipsData.resources.length);
@@ -59,6 +62,11 @@ export default function TabLoadIpsScreen() {
     }
   };
 
+  const issueFhirVC = async () => {
+    // Implement the upload functionality here
+    Alert.alert('Upload', 'Upload functionality not implemented yet.');
+  };
+
   const colorScheme = useColorScheme();
 
   return (
@@ -77,6 +85,17 @@ export default function TabLoadIpsScreen() {
           )}
         </Pressable>
       )}
+      <Pressable onPress={issueFhirVC}>
+        {({ pressed }) => (
+          <FontAwesome6
+            name="file-export"
+            size={100}
+            color={Colors[colorScheme ?? 'light'].text}
+            style={{ marginTop: 20, opacity: pressed ? 0.5 : 1 }}
+          />
+
+        )}
+      </Pressable>
     </View>
   );
 }
