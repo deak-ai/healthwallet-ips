@@ -9,6 +9,7 @@ import Colors from "@/constants/Colors";
 import { useRouter } from 'expo-router';
 import { useIpsData } from '@/components/IpsDataContext';
 import { IconType, Icon } from '@/components/MultiSourceIcon';
+import yaml from "js-yaml";
 
 export default function TabLoadIpsScreen() {
   const [loading, setLoading] = useState(false);
@@ -38,8 +39,8 @@ export default function TabLoadIpsScreen() {
     try {
       setLoading(true);
       if (patientId) {
-        //const url = `http://localhost:8800/fhir-examples/ips-fhir/${patientId}-ips.json`;
-        const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/$summary?_format=json`;
+        const url = `http://localhost:8800/fhir-examples/ips-fhir/${patientId}-ips.json`;
+        //const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/$summary?_format=json`;
         const ipsData = await new FhirUrlStreamProcessor().streamData(url);
         console.log('FHIR data retrieved ', ipsData.sections.length, ipsData.resources.length);
         setIpsData(ipsData); // Set the data in context
@@ -47,7 +48,7 @@ export default function TabLoadIpsScreen() {
         router.push({
           pathname: '/modal',
           params: {
-            fhirData: JSON.stringify(ipsData.sections, null, 2),
+            fhirData: yaml.dump(ipsData.resources[0]), // Use the first resource for demo purposes
             title: `Patient ${patientId} Data`
           }
         });

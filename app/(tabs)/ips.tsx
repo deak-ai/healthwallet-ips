@@ -52,6 +52,19 @@ export default function TabIpsScreen() {
       "Patient.name.where(use='official').given.first()")
 
   const handleTilePress = (tile: Tile) => {
+    if (ipsData) {
+      let names = getProcessor(tile.code).process(ipsData).map(
+          fr => fr.name as string)
+      router.push({
+        pathname: '/section',
+        params: {
+          code: tile.code,
+          title: patientName + " " + tile.label
+        }
+      });
+    }
+    /*
+        if (ipsData) {
       router.push({
         pathname: '/modal',
         params: {
@@ -59,6 +72,8 @@ export default function TabIpsScreen() {
           title: patientName + " " + tile.label
         }
       });
+    }
+     */
   };
 
   return (

@@ -59,6 +59,11 @@ function RootLayoutNav() {
                             presentation: 'modal',
                             headerShown: false,
                           }} />
+            <Stack.Screen name="section"
+                          options={{
+                            presentation: 'modal',
+                            headerShown: false,
+                          }} />
           </Stack>
         </ThemeProvider>
       </IpsDataProvider>

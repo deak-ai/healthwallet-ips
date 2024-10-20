@@ -17,6 +17,8 @@ export interface FhirResource {
 }
 
 export interface FlattenedResource {
+    uri: string;
+    name: string;
     [key: string]: string | number | boolean | null; // Key-value pairs for easy table rendering
 }
 

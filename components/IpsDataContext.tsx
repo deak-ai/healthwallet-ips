@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import {IpsData} from "@/components/fhirStreamProcessor";
+import {IpsData} from "@/components/fhirIpsModels";
 
 interface IpsDataContextType {
     ipsData: IpsData | null;
