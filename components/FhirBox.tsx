@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Pressable, Text } from 'react-native';
+import { StyleSheet, Pressable, Text, View } from 'react-native';
 import { useThemeColor } from '@/components/Themed';
 import Colors from "@/constants/Colors";
 
@@ -15,7 +15,9 @@ const FhirBox: React.FC<FhirBoxProps> = ({ name, onPress }) => {
 
     return (
         <Pressable onPress={onPress} style={({ pressed }) => [styles.container, { backgroundColor, borderColor }, pressed && styles.pressed]}>
-            <Text style={[styles.text, { color: textColor }]}>{name}</Text>
+            <View style={styles.textContainer}>
+                <Text style={[styles.text, { color: textColor }]}>{name}</Text>
+            </View>
         </Pressable>
     );
 };
@@ -26,11 +28,16 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 10,
         marginVertical: 5,
-        alignItems: 'center',
-        justifyContent: 'center',
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+    },
+    textContainer: {
+        flex: 1,
+        alignItems: 'flex-start',
     },
     text: {
-        fontSize: 16,
+        fontSize: 16
     },
     pressed: {
         opacity: 0.7,
