@@ -2,6 +2,13 @@
   "expo": {
     "name": "healthwallet-ips",
     "slug": "healthwallet-ips",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "dependencies": [
+      "react-native-webview"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -13,13 +20,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ctodeakai.healthwalletips"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ctodeakai.healthwalletips"
     },
     "web": {
       "bundler": "metro",

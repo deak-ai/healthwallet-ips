@@ -73,8 +73,10 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
     width: '100%',
+    alignItems: 'stretch',
   },
   flatList: {
     padding: 20,
+    width: '100%',
   },
 });
