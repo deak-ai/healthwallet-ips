@@ -4,16 +4,19 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "runandroid": "expo run:android",
+    "runios": "expo run:ios"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@procivis/react-native-one-core": "^1.26730.0",
     "@react-navigation/native": "^6.0.2",
     "@stardazed/streams-text-encoding": "^1.0.2",
     "@streamparser/json": "^0.0.21",

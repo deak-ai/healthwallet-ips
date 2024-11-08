@@ -2,6 +2,13 @@
   "expo": {
     "name": "healthwallet-ips",
     "slug": "healthwallet-ips",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "dependencies": [
+      "react-native-one-core"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -13,7 +20,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.cto-deak-ai.healthwallet-ips"
     },
     "android": {
       "adaptiveIcon": {

@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { IpsDataProvider } from '@/components/IpsDataContext';
+import { OneProvider } from '@/components/OneContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -48,24 +49,17 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-
   return (
+    <OneProvider>
       <IpsDataProvider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal"
-                          options={{
-                            presentation: 'modal',
-                            headerShown: false,
-                          }} />
-            <Stack.Screen name="section"
-                          options={{
-                            presentation: 'modal',
-                            headerShown: false,
-                          }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
+            <Stack.Screen name="section" options={{ presentation: 'modal', headerShown: false }} />
           </Stack>
         </ThemeProvider>
       </IpsDataProvider>
+    </OneProvider>
   );
 }

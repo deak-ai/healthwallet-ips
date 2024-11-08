@@ -2040,6 +2040,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@procivis/react-native-one-core@npm:^1.26730.0":
+  version: 1.26730.0
+  resolution: "@procivis/react-native-one-core@npm:1.26730.0"
+  peerDependencies:
+    react-native: "*"
+  checksum: 10c0/77ecb34b6999475416cc923930d03ad32333d83df08095037b8124f195dc16cf68e1a85384a9a3ab0f016e48f96edd2b3455a4a795a58caf5d2b3bfa523f00ed
+  languageName: node
+  linkType: hard
+
 "@radix-ui/react-compose-refs@npm:1.0.0":
   version: 1.0.0
   resolution: "@radix-ui/react-compose-refs@npm:1.0.0"
@@ -5923,6 +5932,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.20.0"
     "@expo/vector-icons": "npm:^14.0.2"
+    "@procivis/react-native-one-core": "npm:^1.26730.0"
     "@react-navigation/native": "npm:^6.0.2"
     "@stardazed/streams-text-encoding": "npm:^1.0.2"
     "@streamparser/json": "npm:^0.0.21"

@@ -62,6 +62,13 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
+                name="wallet"
+                options={{
+                    title: 'Wallet',
+                    tabBarIcon: ({color}) => <TabBarIcon name="shopping-bag" color={color}/>,
+                }}
+            />
+            <Tabs.Screen
                 name="settings"
                 options={{
                     title: 'Settings',
