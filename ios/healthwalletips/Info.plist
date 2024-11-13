@@ -81,5 +81,7 @@
     <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>NSCameraUsageDescription</key>
+    <string>This app requires camera access to enable video functionality within the WebView.</string>
   </dict>
 </plist>
