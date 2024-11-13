@@ -12,6 +12,14 @@ export default function WalletScreen() {
             <WebView 
                 source={{ uri: WALLET_URL }}
                 style={styles.webview}
+                mediaPlaybackRequiresUserAction={false}
+                allowsInlineMediaPlayback={true}   // Allows inline video on iOS
+                javaScriptEnabled={true}
+                originWhitelist={['*']}
+                allowFileAccess
+                allowsProtectedMedia={true}        // Required for media access
+                domStorageEnabled={true}
+
             />
         </View>
     );

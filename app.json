@@ -21,7 +21,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ctodeakai.healthwalletips"
+      "bundleIdentifier": "com.ctodeakai.healthwalletips",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app requires camera access to enable video functionality within the WebView."
+      }
     },
     "android": {
       "adaptiveIcon": {
