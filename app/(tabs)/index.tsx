@@ -40,7 +40,7 @@ export default function TabLoadIpsScreen() {
       setLoading(true);
       if (patientId) {
         //const url = `http://localhost:8800/fhir-examples/ips-fhir/${patientId}-ips.json`;
-        const url = `http://172.20.10.3:8800/fhir-examples/ips-fhir/${patientId}-ips.json`;
+        const url = `https://fhir-static.healthwallet.li/fhir-examples/ips-fhir/${patientId}-ips.json`;
         //const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/$summary?_format=json`;
         const ipsData = await new FhirUrlStreamProcessor().streamData(url);
         console.log('FHIR data retrieved ', ipsData.sections.length, ipsData.resources.length);

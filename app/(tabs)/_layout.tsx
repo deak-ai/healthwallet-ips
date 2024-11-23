@@ -48,6 +48,13 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
+                name="agent"
+                options={{
+                    title: 'Agent',
+                    tabBarIcon: ({color}) => <TabBarIcon name="music" color={color}/>,
+                }}
+            />
+            <Tabs.Screen
                 name="settings"
                 options={{
                     title: 'Settings',
