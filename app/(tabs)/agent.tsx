@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { View } from '@/components/Themed';
@@ -6,6 +6,8 @@ import { useIpsData } from '@/components/IpsDataContext';
 import { filterResourceWrappers, getFlattenedIpsSections } from '@/components/ipsResourceProcessor';
 import { IpsSectionCode } from '@/components/fhirIpsModels';
 import fhirpath from "fhirpath";
+import { useNavigation, useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 
 const AGENT_URL = 'https://agent.healthwallet.li';
 
@@ -15,22 +17,47 @@ let FIRST_MESSAGE = `Hello!`;
 
 export default function AgentScreen() {
     const webViewRef = useRef<WebView>(null);
-
     const { ipsData } = useIpsData();
+    const [shouldLoad, setShouldLoad] = useState(true);
 
-    if (ipsData) {
-        const ipsRequiredData = getFlattenedIpsSections(ipsData, [
-            IpsSectionCode.Allergies,
-            IpsSectionCode.Medications,
-            IpsSectionCode.Problems
-        ]);
-        SYSTEM_PROMPT = JSON.stringify(ipsRequiredData);
+    // Handle focus/blur of the screen
+    useFocusEffect(
+        React.useCallback(() => {
+            setShouldLoad(true);
+            
+            return () => {
+                setShouldLoad(false);
+                // Reset the prompts to initial state
+                SYSTEM_PROMPT = 'NO HEALTH DATA FOUND';
+                FIRST_MESSAGE = 'Hello!';
+            };
+        }, [])
+    );
 
-        const patientName = fhirpath.evaluate(ipsData?.resources[0].resource,
-            "Patient.name.where(use='official').given.first()")
+    useEffect(() => {
+        if (!shouldLoad) return;
 
-        FIRST_MESSAGE = `Hello ${patientName}`
-    }
+        let isSubscribed = true;
+
+        // Initialize state
+        if (isSubscribed && ipsData) {
+            const ipsRequiredData = getFlattenedIpsSections(ipsData, [
+                IpsSectionCode.Allergies,
+                IpsSectionCode.Medications,
+                IpsSectionCode.Problems
+            ]);
+            SYSTEM_PROMPT = JSON.stringify(ipsRequiredData);
+
+            const patientName = fhirpath.evaluate(ipsData?.resources[0].resource,
+                "Patient.name.where(use='official').given.first()")
+
+            FIRST_MESSAGE = `Hello ${patientName}`;
+        }
+
+        return () => {
+            isSubscribed = false;
+        };
+    }, [ipsData, shouldLoad]);
 
     // Function to inject the prompt
     const injectPrompt = () => {
@@ -68,34 +95,33 @@ export default function AgentScreen() {
 
     return (
         <View style={styles.container}>
-            <WebView
-                ref={webViewRef}
-                source={{ uri: AGENT_URL }}
-                style={styles.webview}
-                mediaPlaybackRequiresUserAction={false}
-                allowsInlineMediaPlayback={true}
-                javaScriptEnabled={true}
-                originWhitelist={['*']}
-                allowFileAccess
-                allowsProtectedMedia={true}
-                domStorageEnabled={true}
-                mediaCapturePermissionGrantType="grant"
-                allowsAirPlayForMediaPlayback={true}
-                onLoadEnd={onLoadEnd}
-                onMessage={onMessage}
-                onLoadStart={() => console.log('WebView load started')}
-                onError={(syntheticEvent) => {
-                    const { nativeEvent } = syntheticEvent;
-                    console.warn('WebView error: ', nativeEvent);
-                }}
-                onHttpError={(syntheticEvent) => {
-                    const { nativeEvent } = syntheticEvent;
-                    console.warn(
-                        `WebView received error status code: ${nativeEvent.statusCode}`,
-                        nativeEvent.description
-                    );
-                }}
-            />
+            {shouldLoad ? (
+                <WebView
+                    ref={webViewRef}
+                    source={{ uri: AGENT_URL }}
+                    style={styles.webview}
+                    mediaPlaybackRequiresUserAction={false}
+                    allowsInlineMediaPlayback={true}
+                    javaScriptEnabled={true}
+                    originWhitelist={['*']}
+                    allowFileAccess
+                    allowsProtectedMedia={true}
+                    domStorageEnabled={true}
+                    mediaCapturePermissionGrantType="grant"
+                    allowsAirPlayForMediaPlayback={true}
+                    onLoadEnd={onLoadEnd}
+                    onMessage={onMessage}
+                    onLoadStart={() => console.log('WebView load started')}
+                    onError={(syntheticEvent) => {
+                        const { nativeEvent } = syntheticEvent;
+                        console.warn('WebView error: ', nativeEvent);
+                    }}
+                    onHttpError={(syntheticEvent) => {
+                        const { nativeEvent } = syntheticEvent;
+                        console.warn('WebView HTTP error: ', nativeEvent);
+                    }}
+                />
+            ) : null}
         </View>
     );
 }
