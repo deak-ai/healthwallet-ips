@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview';
 import { View } from '@/components/Themed';
 
 // You can make this URL configurable through your settings or environment variables
-const WALLET_URL = 'https://web2dev.healthwallet.li';
+const WALLET_URL = 'https://webdev.healthwallet.li';
 
 export default function WalletScreen() {
     return (
