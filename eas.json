@@ -12,6 +12,12 @@
       "developmentClient": true,
       "distribution": "internal"
     },
+    "ios-simulator": {
+      "extends": "development",
+      "ios": {
+        "simulator": true
+      }
+    },
     "preview": {
       "extends": "base",
       "distribution": "internal"
