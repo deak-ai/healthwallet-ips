@@ -7,24 +7,12 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "env": {
-        "YARN_ENABLE_IMMUTABLE_INSTALLS": "false"
-      },
-      "command": "sudo corepack enable"
     },
     "preview": {
       "distribution": "internal",
-      "env": {
-        "YARN_ENABLE_IMMUTABLE_INSTALLS": "false"
-      },
-      "command": "sudo corepack enable"
     },
     "production": {
       "autoIncrement": true,
-      "env": {
-        "YARN_ENABLE_IMMUTABLE_INSTALLS": "false"
-      },
-      "command": "sudo corepack enable"
     }
   },
   "submit": {

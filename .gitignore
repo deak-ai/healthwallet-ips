@@ -44,3 +44,5 @@ expo-env.d.ts
 # @end expo-cli.idea/
 /components/__tests__/__snapshots__/
 .yarn/
+.yarnrc.yml
+
