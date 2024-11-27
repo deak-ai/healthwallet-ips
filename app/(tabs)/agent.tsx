@@ -9,7 +9,7 @@ import fhirpath from "fhirpath";
 import { useNavigation, useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 
-const AGENT_URL = 'https://agent2.healthwallet.li';
+const AGENT_URL = 'https://agent1.healthwallet.li';
 
 // This is the custom prompt that will be injected
 let SYSTEM_PROMPT = `NO HEALTH DATA FOUND`;
