@@ -3,10 +3,10 @@
     "version": ">= 13.4.2",
     "appVersionSource": "remote"
   },
-  "base": {
-     "yarn": "4.2.2"
-  },
   "build": {
+    "base": {
+      "yarn": "4.2.2"
+    },
     "development": {
       "extends": "base",
       "developmentClient": true,
