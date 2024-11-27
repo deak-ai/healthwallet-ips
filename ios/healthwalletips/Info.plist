@@ -28,7 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>myapp</string>
-          <string>com.ctodeakai.healthwalletips</string>
+          <string>ch.healthwallet.ips</string>
         </array>
       </dict>
       <dict>

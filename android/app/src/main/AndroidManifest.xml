@@ -27,7 +27,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
-        <data android:scheme="com.ctodeakai.healthwalletips"/>
+        <data android:scheme="ch.healthwallet.ips"/>
         <data android:scheme="exp+healthwallet-ips"/>
       </intent-filter>
     </activity>

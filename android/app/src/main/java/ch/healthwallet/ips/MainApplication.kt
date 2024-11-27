@@ -1,4 +1,4 @@
-package com.ctodeakai.healthwalletips
+package ch.healthwallet.ips
 
 import android.app.Application
 import android.content.res.Configuration

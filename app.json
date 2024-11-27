@@ -18,7 +18,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ctodeakai.healthwalletips",
+      "bundleIdentifier": "ch.healthwallet.ips",
       "infoPlist": {
         "NSCameraUsageDescription": "This app requires camera access to enable video functionality within the WebView.",
         "NSMicrophoneUsageDescription": "This app requires microphone access to enable audio functionality within the WebView.",
@@ -30,7 +30,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ctodeakai.healthwalletips",
+      "package": "ch.healthwallet.ips",
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO",
