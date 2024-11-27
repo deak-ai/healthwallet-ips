@@ -10,7 +10,7 @@
     "test": "jest --watchAll",
     "runandroid": "expo run:android",
     "runios": "expo run:ios",
-    "eas-build-pre-install": "corepack enable && yarn set version 4"
+    "eas-build-pre-install": "sudo corepack enable && yarn set version 4"
   },
   "jest": {
     "preset": "jest-expo"
