@@ -29,21 +29,10 @@ const getAppName = () => {
   return 'HealthWallet IPS';
 };
 
-const getSlug = () => {
-  if (IS_DEV) {
-    return 'healthwallet-ips-dev';
-  }
-
-  if (IS_PREVIEW) {
-    return 'healthwallet-ips-preview';
-  }
-
-  return 'healthwallet-ips';
-};
 
 const config: ExpoConfig = {
   "name": getAppName(),
-  "slug": getSlug(),
+  "slug": "healthwallet-ips",
   "platforms": [
     "ios",
     "android"
