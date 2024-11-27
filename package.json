@@ -9,8 +9,7 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "runandroid": "expo run:android",
-    "runios": "expo run:ios",
-    "eas-build-pre-install": "sudo corepack enable && yarn set version 4"
+    "runios": "expo run:ios"
   },
   "jest": {
     "preset": "jest-expo"
