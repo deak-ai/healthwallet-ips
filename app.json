@@ -44,6 +44,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "1dcd6b1c-e929-456d-8ff0-5666c29af928"
+      }
+    },
+    "owner": "deak-ai"
   }
 }
