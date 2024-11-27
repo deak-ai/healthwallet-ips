@@ -55,6 +55,8 @@
     <string>Allow $(PRODUCT_NAME) to access your Face ID biometric data.</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>This app requires microphone access to enable audio functionality within the WebView.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app requires photo library access to save and share images.</string>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>

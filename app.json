@@ -20,7 +20,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.ctodeakai.healthwalletips",
       "infoPlist": {
-        "NSCameraUsageDescription": "This app requires camera access to enable video functionality within the WebView."
+        "NSCameraUsageDescription": "This app requires camera access to enable video functionality within the WebView.",
+        "NSMicrophoneUsageDescription": "This app requires microphone access to enable audio functionality within the WebView.",
+        "NSPhotoLibraryUsageDescription": "This app requires photo library access to save and share images."
       }
     },
     "android": {
@@ -28,7 +30,13 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ctodeakai.healthwalletips"
+      "package": "com.ctodeakai.healthwalletips",
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "bundler": "metro",
