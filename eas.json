@@ -5,7 +5,7 @@
   },
   "build": {
     "base": {
-      "yarn": "4.2.2"
+      "yarn": "1.22.22"
     },
     "development": {
       "extends": "base",
