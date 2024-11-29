@@ -65,6 +65,7 @@ const config: ExpoConfig = {
     "permissions": [
       "CAMERA",
       "RECORD_AUDIO",
+      "MODIFY_AUDIO_SETTINGS",
       "READ_EXTERNAL_STORAGE",
       "WRITE_EXTERNAL_STORAGE"
     ]

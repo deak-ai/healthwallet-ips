@@ -3,10 +3,9 @@ import { StyleSheet } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { View } from '@/components/Themed';
 import { useIpsData } from '@/components/IpsDataContext';
-import { filterResourceWrappers, getFlattenedIpsSections } from '@/components/ipsResourceProcessor';
+import { getFlattenedIpsSections } from '@/components/ipsResourceProcessor';
 import { IpsSectionCode } from '@/components/fhirIpsModels';
 import fhirpath from "fhirpath";
-import { useNavigation, useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 
 const AGENT_URL = 'https://agent1.healthwallet.li';
@@ -77,6 +76,16 @@ export default function AgentScreen() {
                 window.ReactNativeWebView.postMessage('LOG: ' + args.join(' '));
             };
 
+            console.error = function() {
+                const args = Array.from(arguments).map(arg => {
+                    if (typeof arg === 'object') {
+                        return JSON.stringify(arg, null, 2);
+                    }
+                    return String(arg);
+                });
+                window.ReactNativeWebView.postMessage('ERROR: ' + args.join(' '));
+            };
+
             window.healthAgentData = ${JSON.stringify(healthAgentData)};
             true;
         `;
@@ -100,17 +109,20 @@ export default function AgentScreen() {
                     ref={webViewRef}
                     source={{ uri: AGENT_URL }}
                     style={styles.webview}
+                    onLoadEnd={onLoadEnd}
+                    onMessage={onMessage}
+                    // Common settings for both platforms
                     mediaPlaybackRequiresUserAction={false}
                     allowsInlineMediaPlayback={true}
                     javaScriptEnabled={true}
-                    originWhitelist={['*']}
-                    allowFileAccess
-                    allowsProtectedMedia={true}
                     domStorageEnabled={true}
                     mediaCapturePermissionGrantType="grant"
+                    allowFileAccess={true}
+                    
+                    // iOS specific settings
                     allowsAirPlayForMediaPlayback={true}
-                    onLoadEnd={onLoadEnd}
-                    onMessage={onMessage}
+                    allowsProtectedMedia={true}
+                    
                     onLoadStart={() => console.log('WebView load started')}
                     onError={(syntheticEvent) => {
                         const { nativeEvent } = syntheticEvent;
