@@ -47,30 +47,9 @@ const HealthAgent: React.FC = () => {
       try {
         // Check if we're in a WebView
         if (window.ReactNativeWebView) {
-          console.log('Running in WebView, assuming permissions are already granted');
-          // Send message to native app to check permission
-          // window.ReactNativeWebView.postMessage(JSON.stringify({
-          //   type: 'CHECK_MICROPHONE_PERMISSION'
-          // }));
-
-          // // Listen for response
-          // const handleMessage = (event: MessageEvent) => {
-          //   try {
-          //     const data = JSON.parse(event.data);
-          //     if (data.type === 'MICROPHONE_PERMISSION_STATUS') {
-          //       console.log('Received permission status from native:', data.granted);
-          //       setHasPermission(data.granted);
-          //     }
-          //   } catch (e) {
-          //     console.error('Error parsing message:', e);
-          //   }
-          // };
-
-          // window.addEventListener('message', handleMessage);
-
+          console.log('Running in WebView, setting permissions to false');
           setHasPermission(false);
 
-          //return () => window.removeEventListener('message', handleMessage);
         } else {
           console.log('Running in browser, checking permissions directly');
           // Browser flow - use existing permission check
@@ -104,8 +83,8 @@ const HealthAgent: React.FC = () => {
         try {
           // Check if running on Android by checking user agent
           const isAndroid = /android/i.test(navigator.userAgent);
-          console.log('Running on Android:', isAndroid);
-
+          // if running on android, log running on android, otherwise running on ios
+          console.log(`Running on ${isAndroid ? 'Android' : 'iOS'}`);
           // Ensure mediaDevices is available
           if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             throw new Error('MediaDevices API not available');
@@ -113,12 +92,13 @@ const HealthAgent: React.FC = () => {
 
           // Platform-specific constraints
           const constraints = {
-            audio: isAndroid ? true : {
-              // Full constraints for iOS and other platforms
+            audio: {
               echoCancellation: true,
               noiseSuppression: true,
-              autoGainControl: true
-            }
+              autoGainControl: true,
+              volume: 1.0,
+              sampleRate: 44100,
+              channelCount: 1            }
           };
 
           console.log('Requesting media with constraints:', constraints);
