@@ -22,7 +22,6 @@ export function filterResourceWrappers(ipsData: IpsData, sectionCode: string): F
         ipsData.resources.filter(wrapper => wrapper.fullUrl === entry.reference));
 }
 
-
 export class AllergyIntoleranceSectionProcessor implements IpsSectionProcessor {
     process(ipsData: IpsData): FlattenedResource[] {
         return filterResourceWrappers(ipsData, IpsSectionCode.Allergies.code)
@@ -34,7 +33,6 @@ export class AllergyIntoleranceSectionProcessor implements IpsSectionProcessor {
         const resource = wrapper.resource; // The actual resource is nested within the wrapper
         const flattenedResource: FlattenedResource = {
             uri: wrapper.fullUrl,
-            type: resource.type || null,
             name: resource.code?.coding?.[0]?.display || resource.code?.text || null,
             code: resource.code?.coding?.[0]?.code || null,
             codeSystem: resource.code?.coding?.[0]?.system || null,
@@ -201,3 +199,13 @@ export function getProcessor(ipsSectionCode: string): IpsSectionProcessor {
     }
 }
 
+export function getFlattenedIpsSections(ipsData: IpsData, sectionCodes: IpsSectionCodeType[]): { [key: string]: FlattenedResource[] } {
+    const result: { [key: string]: FlattenedResource[] } = {};
+    
+    sectionCodes.forEach(sectionCode => {
+        const processor = getProcessor(sectionCode.code);
+        result[sectionCode.label] = processor.process(ipsData);
+    });
+    
+    return result;
+}

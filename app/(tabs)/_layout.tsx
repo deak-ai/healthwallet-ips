@@ -26,27 +26,6 @@ export default function TabLayout() {
                 // to prevent a hydration error in React Navigation v6.
                 headerShown: useClientOnlyValue(false, true),
             }}>
-{/*            <Tabs.Screen
-                name="index"
-                options={{
-                    title: 'Home',
-                    tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-                    headerRight: () => (
-                        <Link href="/modal" asChild>
-                            <Pressable>
-                                {({ pressed }) => (
-                                    <FontAwesome
-                                        name="info-circle"
-                                        size={25}
-                                        color={Colors[colorScheme ?? 'light'].text}
-                                        style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                                    />
-                                )}
-                            </Pressable>
-                        </Link>
-                    ),
-                }}
-            />*/}
             <Tabs.Screen
                 name="index"
                 options={{
@@ -62,12 +41,27 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
+                name="wallet"
+                options={{
+                    title: 'Wallet',
+                    tabBarIcon: ({color}) => <TabBarIcon name="shopping-bag" color={color}/>,
+                }}
+            />
+            <Tabs.Screen
+                name="agent"
+                options={{
+                    title: 'Agent',
+                    tabBarIcon: ({color}) => <TabBarIcon name="music" color={color}/>,
+                }}
+            />
+            <Tabs.Screen
                 name="settings"
                 options={{
                     title: 'Settings',
                     tabBarIcon: ({color}) => <TabBarIcon name="gear" color={color}/>,
                 }}
             />
+
         </Tabs>
     );
 }
