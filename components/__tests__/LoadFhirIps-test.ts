@@ -61,7 +61,44 @@ test('FhirUrlStreamProcessor.streamData should succeed parsing from valid FHIR I
 
     //const ipsUrl = 'https://fhir.healthwallet.li/fhir/Patient/803565/$summary?_format=json'
 
-    const ipsUrl = 'http://localhost:8800/fhir-examples/ips-fhir/803565-ips.json'
+    //const ipsUrl = 'http://localhost:8800/fhir-examples/ips-fhir/803565-ips.json'
+
+    const ipsUrl = 'http://fhir-static.healthwallet.li/fhir-examples/ips-fhir/803565-ips.json'
+
+    const sectionProcessor = new FhirUrlStreamProcessor()
+
+    const [result, memoryConsumption] = await measureMemoryConsumption(() => sectionProcessor.streamData(ipsUrl));
+
+    const resultString = JSON.stringify(result.sections);
+    console.log(resultString);
+    expect(resultString.startsWith('[{"code')).toBeTruthy();
+    expect(result.resources.length).toBeGreaterThan(190);
+
+    let titles = findKeysAtAnyDepth(result.sections, "title" );
+
+    console.log(titles )
+
+   let given = fhirpath.evaluate(result.resources[0].resource,
+       "Patient.name.where(use='official').given.first()")
+
+    console.log(given)
+
+    let title = fhirpath.evaluate(result.sectionResource,
+        "Composition.section.where(code.coding.code = '48765-2').title")
+
+    console.log(title)
+
+
+    console.log(`Memory consumption: ${memoryConsumption} bytes`);
+
+
+},20000)
+
+
+
+test('FhirPath expresssion should yield match', async () => {
+
+    const ipsUrl = 'http://fhir-static.healthwallet.li/fhir-examples/ips-fhir/801941-ips.json'
 
     const sectionProcessor = new FhirUrlStreamProcessor()
 
