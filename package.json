@@ -7,6 +7,7 @@
     "dev-tunnel": "APP_VARIANT=development expo start --tunnel",
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "prebuild": "expo prebuild",
     "web": "expo start --web",
     "test": "jest --watchAll"
   },

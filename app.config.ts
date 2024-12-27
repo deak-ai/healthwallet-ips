@@ -1,6 +1,6 @@
-
 import 'ts-node/register'; // Add this to import TypeScript files
 import { ExpoConfig } from 'expo/config';
+import withCustomXcodeSettings from './plugins/withCustomXcodeSettings';
 
 const IS_DEV = process.env.APP_VARIANT === 'development';
 const IS_PREVIEW = process.env.APP_VARIANT === 'preview';
@@ -93,6 +93,4 @@ const config: ExpoConfig = {
   "owner": "deak-ai"
 };
 
-export default config;
-
-
+export default withCustomXcodeSettings(config);
