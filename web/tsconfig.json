@@ -5,6 +5,7 @@
     "jsxImportSource": "react",
     "verbatimModuleSyntax": true,
     "moduleResolution": "node",
+    "module": "ESNext",
     "strict": true,
     "paths": {
       "@/*": ["./src/*"]
