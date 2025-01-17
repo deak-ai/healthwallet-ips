@@ -1,14 +1,21 @@
-import { StyleSheet, ScrollView } from 'react-native';
-import { Text, View } from '@/components/Themed';
-import {IPS_TILES, IpsSectionTile, Tile} from '@/components/IpsSectionTile';
-import { useIpsData } from '@/components/IpsDataContext';
-import { useRouter } from 'expo-router';
+import {
+  StyleSheet,
+  ScrollView,
+  ImageBackground,
+  SafeAreaView,
+} from "react-native";
+import { Text, View } from "@/components/Themed";
+import { IPS_TILES, IpsSectionTile, Tile } from "@/components/IpsSectionTile";
+import { useIpsData } from "@/components/IpsDataContext";
+import { useRouter } from "expo-router";
 import fhirpath from "fhirpath";
-import { getProcessor }
-  from '@/components/ipsResourceProcessor';
+import { getProcessor } from "@/components/ipsResourceProcessor";
 
-import yaml from 'js-yaml';
-import {FhirResourceWrapper, IpsSectionCode} from "@/components/fhirIpsModels";
+import yaml from "js-yaml";
+import {
+  FhirResourceWrapper,
+  IpsSectionCode,
+} from "@/components/fhirIpsModels";
 
 /*
 These are all the relevant IPS sections with corresponding loinc codes :
@@ -43,24 +50,30 @@ export default function TabIpsScreen() {
   const router = useRouter();
 
   // Extract codes from ipsData.sections
-  const sectionCodes = ipsData?.sections.map((section: any) => section.code.coding[0].code) || [];
+  const sectionCodes =
+    ipsData?.sections.map((section: any) => section.code.coding[0].code) || [];
 
   // Filter tiles based on section codes
-  const filteredTiles = IPS_TILES.filter(tile => sectionCodes.includes(tile.code));
+  const filteredTiles = IPS_TILES.filter((tile) =>
+    sectionCodes.includes(tile.code)
+  );
 
-  const patientName = fhirpath.evaluate(ipsData?.resources[0].resource,
-      "Patient.name.where(use='official').given.first()")
+  const patientName = fhirpath.evaluate(
+    ipsData?.resources[0].resource,
+    "Patient.name.where(use='official').given.first()"
+  );
 
   const handleTilePress = (tile: Tile) => {
     if (ipsData) {
-      let names = getProcessor(tile.code).process(ipsData).map(
-          fr => fr.name as string)
+      let names = getProcessor(tile.code)
+        .process(ipsData)
+        .map((fr) => fr.name as string);
       router.push({
-        pathname: '/section',
+        pathname: "/section",
         params: {
           code: tile.code,
-          title: patientName + " " + tile.label
-        }
+          title: patientName + " " + tile.label,
+        },
       });
     }
     /*
@@ -77,32 +90,53 @@ export default function TabIpsScreen() {
   };
 
   return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Patient Summary</Text>
-        <ScrollView contentContainerStyle={styles.tilesContainer}>
-          {filteredTiles.map(tile => (
-              <IpsSectionTile key={tile.id} tile={tile} onPress={() => handleTilePress(tile)} />
-          ))}
-        </ScrollView>
-      </View>
+    <SafeAreaView style={styles.mainContainer}>
+      <ImageBackground
+        source={require("../assets/images/bg.png")}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
+        <View style={styles.container}>
+          <Text style={styles.title}>Patient Summary</Text>
+          <ScrollView contentContainerStyle={styles.tilesContainer}>
+            {filteredTiles.map((tile) => (
+              <IpsSectionTile
+                key={tile.id}
+                tile={tile}
+                onPress={() => handleTilePress(tile)}
+              />
+            ))}
+          </ScrollView>
+        </View>
+      </ImageBackground>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 20,
+    margin: 4,  backgroundColor: 'transparent'
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   tilesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",flexGrow: 1,
+    backgroundColor: 'transparent',
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover"
   },
 });
