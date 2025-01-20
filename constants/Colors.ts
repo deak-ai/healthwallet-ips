@@ -4,7 +4,7 @@ const tintColorLight = '#248479';
 const tintColorDark = '#fff';
 
 const lightColors = {
-  text: '#000',  // Black text in light mode
+  text: "#154E47",  // Black text in light mode
   background: '#fff',  // White background in light mode
   tint: tintColorLight,
   tabIconDefault: '#ccc',
@@ -12,7 +12,9 @@ const lightColors = {
   border: '#ccc',  // Light border
   icon: '#248479',  // green icon in light mode
   placeholder: '#888',  // Light input placeholder,
-  selected:"#2484792B",
+  selected: "#2484792B",
+  tabBarBackground: "#fff", cardBackground: "#B7E0E1"
+
 };
 
 const darkColors = {
@@ -22,9 +24,11 @@ const darkColors = {
   tabIconDefault: '#ccc',
   tabIconSelected: tintColorDark,
   border: '#fff',  // White border
-  icon: '#fff',  // White icon in dark mode
+  icon: "#248479",  // White icon in dark mode
   placeholder: '#aaa',  // Dark input placeholder,
-  selected:"#2484792B"
+  selected: "#2484792B",
+  tabBarBackground: "#154E47",
+  cardBackground: "#2475655E"
 };
 
 export default {

@@ -27,7 +27,8 @@ export default function TabLayout() {
                 headerPressColor:Colors[colorScheme ?? 'light'].tint,
                 tabBarActiveBackgroundColor:Colors[colorScheme ?? 'light'].selected,
                 tabBarInactiveTintColor:Colors[colorScheme ?? 'light'].tint,
-                tabBarIconStyle:{color:Colors[colorScheme ?? 'light'].tint}
+                tabBarIconStyle:{color:Colors[colorScheme ?? 'light'].tint},
+                tabBarInactiveBackgroundColor:Colors[colorScheme ?? 'light'].tabBarBackground
             }}>
             <Tabs.Screen
                 name="index"

@@ -70,7 +70,7 @@ export const IPS_TILES: readonly Tile[] = [
 
 export function IpsSectionTile(props: { onPress: () => void; tile: Tile }) {
   const backgroundColor = useThemeColor(
-    { light: Colors.light.background, dark: Colors.dark.background },
+    { light: Colors.light.cardBackground, dark: Colors.dark.cardBackground },
     "background"
   );
   const borderColor = useThemeColor(
@@ -81,9 +81,13 @@ export function IpsSectionTile(props: { onPress: () => void; tile: Tile }) {
     { light: Colors.light.icon, dark: Colors.dark.icon },
     "icon"
   );
+  const textColor = useThemeColor(
+    { light: Colors.light.icon, dark: Colors.dark.icon },
+    "icon"
+  );
   return (
     <TouchableOpacity
-      style={[cardStyles.card]}
+      style={[{backgroundColor},cardStyles.card]}
       activeOpacity={0.8}
       onPress={props.onPress}
     >
@@ -93,7 +97,7 @@ export function IpsSectionTile(props: { onPress: () => void; tile: Tile }) {
         size={38}
         color={iconColor}
       />
-      <Text style={cardStyles.title}>{props.tile.label}</Text>
+      <Text style={[{color:textColor},cardStyles.title]}>{props.tile.label}</Text>
     </TouchableOpacity>
   );
 }
@@ -108,7 +112,7 @@ const cardStyles = StyleSheet.create({
   },
   card: {
     borderRadius: 20,
-    backgroundColor: "#B7E0E1",
+   // backgroundColor: "#B7E0E1",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
@@ -123,7 +127,7 @@ const cardStyles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    color: "#00796B",
+   // color: "#00796B",
     fontWeight: "bold",
     marginTop: 5,
   },

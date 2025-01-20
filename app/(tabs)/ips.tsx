@@ -92,7 +92,7 @@ export default function TabIpsScreen() {
   return (
     <SafeAreaView style={styles.mainContainer}>
       <ImageBackground
-        source={require("../assets/images/bg.png")}
+        source={require("../../assets/images/bg.png")}
         style={styles.backgroundImage}
         resizeMode="cover"
       >
