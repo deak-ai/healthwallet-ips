@@ -3,6 +3,7 @@ import {
   ScrollView,
   ImageBackground,
   SafeAreaView,
+  useColorScheme,
 } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { IPS_TILES, IpsSectionTile, Tile } from "@/components/IpsSectionTile";
@@ -16,6 +17,7 @@ import {
   FhirResourceWrapper,
   IpsSectionCode,
 } from "@/components/fhirIpsModels";
+import { getReduceMotionFromConfig } from "react-native-reanimated/lib/typescript/reanimated2/animation/util";
 
 /*
 These are all the relevant IPS sections with corresponding loinc codes :
@@ -48,6 +50,7 @@ Patient Story: 81338-6
 export default function TabIpsScreen() {
   const { ipsData } = useIpsData();
   const router = useRouter();
+  const theme = useColorScheme() ?? "light";
 
   // Extract codes from ipsData.sections
   const sectionCodes =
@@ -89,26 +92,36 @@ export default function TabIpsScreen() {
      */
   };
 
+  const ipsMainContent = () => {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Patient Summary</Text>
+        <ScrollView contentContainerStyle={styles.tilesContainer}>
+          {filteredTiles.map((tile) => (
+            <IpsSectionTile
+              key={tile.id}
+              tile={tile}
+              onPress={() => handleTilePress(tile)}
+            />
+          ))}
+        </ScrollView>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <ImageBackground
-        source={require("../../assets/images/bg.png")}
-        style={styles.backgroundImage}
-        resizeMode="cover"
-      >
-        <View style={styles.container}>
-          <Text style={styles.title}>Patient Summary</Text>
-          <ScrollView contentContainerStyle={styles.tilesContainer}>
-            {filteredTiles.map((tile) => (
-              <IpsSectionTile
-                key={tile.id}
-                tile={tile}
-                onPress={() => handleTilePress(tile)}
-              />
-            ))}
-          </ScrollView>
-        </View>
-      </ImageBackground>
+      {theme === "dark" ? (
+        ipsMainContent()
+      ) : (
+        <ImageBackground
+          source={require("../../assets/images/bg.png")}
+          style={styles.backgroundImage}
+          resizeMode="cover"
+        >
+          {ipsMainContent()}
+        </ImageBackground>
+      )}
     </SafeAreaView>
   );
 }
@@ -122,7 +135,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
-    margin: 4,  backgroundColor: 'transparent'
+    margin: 4,
+    backgroundColor: "transparent",
   },
   title: {
     fontSize: 24,
@@ -132,11 +146,13 @@ const styles = StyleSheet.create({
   tilesContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",flexGrow: 1,
-    backgroundColor: 'transparent',
+    justifyContent: "space-between",
+    flexGrow: 1,
+    backgroundColor: "transparent",
+    padding: 8,
   },
   backgroundImage: {
     flex: 1,
-    resizeMode: "cover"
+    resizeMode: "cover",
   },
 });

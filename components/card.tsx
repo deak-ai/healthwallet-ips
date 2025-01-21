@@ -1,46 +1,49 @@
 import React from "react";
 import { View, Text, StyleSheet, ImageBackground } from "react-native";
 import { Icon } from "@/components/MultiSourceIcon";
+import Colors from "@/constants/Colors";
+import { useThemeColor } from "./Themed";
 
 const SectionCard = (resource: any) => {
   const { name, criticality, clinicalStatus, status, category, type } =
     resource.resource;
 
-  return (
-    <View style={styles.card}>
+    const backgroundColor = useThemeColor({ light: Colors.light.cardBackground, dark: Colors.dark.cardBackground }, 'background');
+    const labelColor = useThemeColor({ light: Colors.light.label, dark: Colors.dark.label }, 'text');
+
+    return (
+    <View style={[styles.card,{backgroundColor}]}>
       <View style={styles.rowContainer}>
         <View style={styles.iconContainer}>
-          {/* <Icon name="allergies" size={24} color="#fff" type="fontawesome5" /> */}
           <ImageBackground
             source={require("../assets/images/iconBackground.png")}
             style={styles.iconContainer}
-            // imageStyle={styles.imageStyle}
           >
             <Icon name="allergies" size={24} color="#fff" type="fontawesome5" />
           </ImageBackground>
         </View>
         <View style={styles.titleAndDetails}>
-          <Text style={styles.title}>{name}</Text>
+          <Text style={[styles.title,{color:labelColor}]}>{name}</Text>
 
           <View style={styles.detailsContainer}>
             <View style={styles.detailColumn}>
               <View style={styles.detailRow}>
-                <Text style={styles.label}>Type:</Text>
-                <Text style={styles.value}>{type || "-"}</Text>
+                <Text style={[styles.label,{color:labelColor}]}>Type:</Text>
+                <Text style={[styles.value,{color:labelColor}]}>{type || "-"}</Text>
               </View>
               <View style={styles.detailRow}>
-                <Text style={styles.label}>Category:</Text>
-                <Text style={styles.value}>{category || "-"}</Text>
+                <Text style={[styles.label,{color:labelColor}]}>Category:</Text>
+                <Text style={[styles.value,{color:labelColor}]}>{category || "-"}</Text>
               </View>
             </View>
             <View style={styles.detailColumn}>
               <View style={styles.detailRow}>
-                <Text style={styles.label}>Criticality:</Text>
-                <Text style={styles.value}>{criticality || "-"}</Text>
+                <Text style={[styles.label,{color:labelColor}]}>Criticality:</Text>
+                <Text style={[styles.value,{color:labelColor}]}>{criticality || "-"}</Text>
               </View>
               <View style={styles.detailRow}>
-                <Text style={styles.label}>Clinical Status:</Text>
-                <Text style={styles.value}>{clinicalStatus || "-"}</Text>
+                <Text style={[styles.label,{color:labelColor}]}>Clinical Status:</Text>
+                <Text style={[styles.value,{color:labelColor}]}>{clinicalStatus || "-"}</Text>
               </View>
             </View>
           </View>
@@ -105,7 +108,6 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#555",
   },
   value: {
     fontSize: 14,
