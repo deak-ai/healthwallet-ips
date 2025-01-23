@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { IpsDataProvider } from '@/components/IpsDataContext';
+import CustomToast from '@/components/customToast';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -69,6 +70,7 @@ function RootLayoutNav() {
                             headerShown: false,
                           }} />
           </Stack>
+          <CustomToast />
         </ThemeProvider>
       </IpsDataProvider>
   );

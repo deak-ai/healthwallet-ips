@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Tabs } from "expo-router";
+import { Tabs, useFocusEffect } from "expo-router";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
+import * as SecureStore from "expo-secure-store";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -16,6 +17,33 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const [patientId, setPatientId] = useState<string | null>(null);
+
+  // Function to detect when a tab is pressed
+  const handleTabPress = async (e: any) => {
+    await SecureStore.setItemAsync("showInfo", !patientId ? "true" : "false");
+
+    if (!patientId) {
+      e.preventDefault();
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadPatientId = async () => {
+        try {
+          const savedPatientId = await SecureStore.getItemAsync("patientId");
+          console.log("savedPatientId", savedPatientId);
+          setPatientId(savedPatientId);
+        } catch (error) {
+          console.error("Error loading patient ID:", error);
+        }
+      };
+      (async () => {
+        await loadPatientId();
+      })();
+    }, [])
+  );
 
   return (
     <Tabs
@@ -32,7 +60,7 @@ export default function TabLayout() {
           Colors[colorScheme ?? "light"].tabBarBackground,
       }}
     >
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="index"
         options={{
           title: "Home",
@@ -40,12 +68,15 @@ export default function TabLayout() {
             <TabBarIcon name="ambulance" color={color} />
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="ips"
         options={{
           title: "International",
           tabBarIcon: ({ color }) => <TabBarIcon name="medkit" color={color} />,
+        }}
+        listeners={{
+          tabPress: (e) => handleTabPress(e),
         }}
       />
       <Tabs.Screen
@@ -56,6 +87,9 @@ export default function TabLayout() {
             <TabBarIcon name="shopping-bag" color={color} />
           ),
         }}
+        listeners={{
+          tabPress: (e) => handleTabPress(e),
+        }}
       />
       <Tabs.Screen
         name="agent"
@@ -63,12 +97,18 @@ export default function TabLayout() {
           title: "Agent",
           tabBarIcon: ({ color }) => <TabBarIcon name="music" color={color} />,
         }}
+        listeners={{
+          tabPress: (e) => handleTabPress(e),
+        }}
       />
       <Tabs.Screen
-        name="settings"
+        name="index"
         options={{
           title: "Settings",
           tabBarIcon: ({ color }) => <TabBarIcon name="gear" color={color} />,
+        }}
+        listeners={{
+          tabPress: (e) => handleTabPress(e),
         }}
       />
     </Tabs>
