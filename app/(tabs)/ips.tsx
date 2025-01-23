@@ -12,13 +12,6 @@ import { useRouter } from "expo-router";
 import fhirpath from "fhirpath";
 import { getProcessor } from "@/components/ipsResourceProcessor";
 
-import yaml from "js-yaml";
-import {
-  FhirResourceWrapper,
-  IpsSectionCode,
-} from "@/components/fhirIpsModels";
-import { getReduceMotionFromConfig } from "react-native-reanimated/lib/typescript/reanimated2/animation/util";
-
 /*
 These are all the relevant IPS sections with corresponding loinc codes :
 

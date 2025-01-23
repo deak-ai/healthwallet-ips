@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Tabs, useFocusEffect } from "expo-router";
+import { Tabs, useNavigation } from "expo-router";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import * as SecureStore from "expo-secure-store";
+import { useClickedTab } from "@/components/clickedTabContext";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -17,33 +18,24 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const [patientId, setPatientId] = useState<string | null>(null);
+  const navigation = useNavigation(); // Access navigation object
 
-  // Function to detect when a tab is pressed
-  const handleTabPress = async (e: any) => {
-    await SecureStore.setItemAsync("showInfo", !patientId ? "true" : "false");
+  const { clickedTab, setClickedTab } = useClickedTab();
 
-    if (!patientId) {
-      e.preventDefault();
+  const handleTabPress = async (e: any, routeName: string) => {
+    // Call e.preventDefault() immediately to block navigation
+    e.preventDefault();
+
+    try {
+      setClickedTab(!clickedTab);
+      const patientId = await SecureStore.getItemAsync("patientId");
+      if (patientId) {
+        navigation.navigate(routeName as never);
+      }
+    } catch (error) {
+      console.error("Error fetching patientId:", error);
     }
   };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      const loadPatientId = async () => {
-        try {
-          const savedPatientId = await SecureStore.getItemAsync("patientId");
-          console.log("savedPatientId", savedPatientId);
-          setPatientId(savedPatientId);
-        } catch (error) {
-          console.error("Error loading patient ID:", error);
-        }
-      };
-      (async () => {
-        await loadPatientId();
-      })();
-    }, [])
-  );
 
   return (
     <Tabs
@@ -76,7 +68,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="medkit" color={color} />,
         }}
         listeners={{
-          tabPress: (e) => handleTabPress(e),
+          tabPress: (e) => handleTabPress(e, "ips"),
         }}
       />
       <Tabs.Screen
@@ -88,7 +80,7 @@ export default function TabLayout() {
           ),
         }}
         listeners={{
-          tabPress: (e) => handleTabPress(e),
+          tabPress: (e) => handleTabPress(e, "wallet"),
         }}
       />
       <Tabs.Screen
@@ -98,7 +90,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="music" color={color} />,
         }}
         listeners={{
-          tabPress: (e) => handleTabPress(e),
+          tabPress: (e) => handleTabPress(e, "agent"),
         }}
       />
       <Tabs.Screen
@@ -108,7 +100,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="gear" color={color} />,
         }}
         listeners={{
-          tabPress: (e) => handleTabPress(e),
+          tabPress: (e) => handleTabPress(e, "index"),
         }}
       />
     </Tabs>

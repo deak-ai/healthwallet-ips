@@ -16,6 +16,7 @@ import { FhirUrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
 import yaml from "js-yaml";
 import CustomLoader from "@/components/loader";
 import Toast from "react-native-toast-message";
+import { useClickedTab } from "@/components/clickedTabContext";
 
 export default function TabSettingsScreen() {
   const [patientId, setPatientId] = useState<string | null>(null);
@@ -24,28 +25,15 @@ export default function TabSettingsScreen() {
   const refRBSheet = useRef<any>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { clickedTab } = useClickedTab();
+
   const { setIpsData } = useIpsData();
 
-  // Load the patient ID from SecureStore when the component mounts
   useEffect(() => {
-    const loadPatientId = async () => {
-      try {
-        const savedPatientId = await SecureStore.getItemAsync("patientId");
-        const showInfo = await SecureStore.getItemAsync("showInfo");
-        setPatientId(savedPatientId);
-        setInputValue(savedPatientId || "");
-      } catch (error) {
-        console.error("Error loading patient ID:", error);
-      }
-    };
-    loadPatientId();
-  }, []);
-
-  useEffect(() => {
-    if (patientId === null) {
+    if (!patientId) {
       refRBSheet?.current.open();
     }
-  }, [patientId, inputValue]);
+  }, [clickedTab,patientId]);
 
   useFocusEffect(
     React.useCallback(() => {
