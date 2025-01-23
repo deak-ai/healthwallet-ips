@@ -8,32 +8,44 @@ import {
   View,
   Text,
   useColorScheme,
+  TouchableOpacity,
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import { useIpsData } from "@/components/IpsDataContext";
 import { getProcessor } from "@/components/ipsResourceProcessor";
 import SectionCard from "@/components/card";
 import { useThemeColor } from "@/components/Themed";
 import Colors from "@/constants/Colors";
+import { Icon } from "@/components/MultiSourceIcon";
 
 export default function SectionScreen() {
   const route = useRoute();
+  const navigation = useNavigation();
   const { title } = route.params as { title: string };
   const { code } = route.params as { code: string };
   const { ipsData } = useIpsData();
+  const theme = useColorScheme() ?? "light";
 
   const resources = ipsData ? getProcessor(code).process(ipsData) : [];
   const titleColor = useThemeColor(
     { light: Colors.light.text, dark: Colors.dark.text },
     "text"
   );
-  const theme = useColorScheme() ?? "light";
 
   const sectionMainContent = () => {
     return (
       <View style={styles.container}>
-        <Text style={[styles.title, { color: titleColor }]}>{title}</Text>
-        <View style={styles.separator} />
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Icon
+              type="ionicon"
+              name="chevron-back-circle-outline"
+              size={32}
+              color={theme === "dark" ? "#fff" : "#000"}
+            />
+          </TouchableOpacity>
+          <Text style={[styles.title, { color: titleColor }]}>{title}</Text>
+        </View>
         <ScrollView contentContainerStyle={styles.scrollViewContainer}>
           <View style={styles.sectionContainer}>
             {resources.map((item, index) => (
@@ -45,6 +57,7 @@ export default function SectionScreen() {
       </View>
     );
   };
+
   return (
     <View style={styles.root}>
       {theme === "dark" ? (
@@ -61,6 +74,7 @@ export default function SectionScreen() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -71,23 +85,27 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 10,
     backgroundColor: "transparent",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    backgroundColor: "transparent",
+  },
+  backButton: {
+    marginRight: 16,
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    marginTop: 15,
-    textAlign: "center",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+    flex: 1,
   },
   scrollViewContainer: {
     flexGrow: 1,
     backgroundColor: "transparent",
+    paddingTop: 20,
   },
   sectionContainer: {
     flexDirection: "row",

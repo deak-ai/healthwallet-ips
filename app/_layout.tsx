@@ -77,7 +77,6 @@ function RootLayoutNav() {
             <Stack.Screen
               name="section"
               options={{
-                presentation: "modal",
                 headerShown: false,
               }}
             />
