@@ -47,15 +47,15 @@ export default function TabIpsScreen() {
 
   // Extract codes from ipsData.sections
   const sectionCodes =
-    ipsData?.sections.map((section: any) => section.code.coding[0].code) || [];
+    ipsData?.sections?.map((section: any) => section.code.coding[0].code) || [];
 
   // Filter tiles based on section codes
   const filteredTiles = IPS_TILES.filter((tile) =>
-    sectionCodes.includes(tile.code)
+    sectionCodes?.includes(tile.code)
   );
 
   const patientName = fhirpath.evaluate(
-    ipsData?.resources[0].resource,
+    ipsData?.resources[0]?.resource,
     "Patient.name.where(use='official').given.first()"
   );
 

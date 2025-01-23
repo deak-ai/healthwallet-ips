@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     borderWidth: 1,
-    borderColor: "#38A8A8",
+    borderColor: "#2563EA",
   },
   rowContainer: {
     flexDirection: "row",
@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 50,
     height: 50,
-    backgroundColor: "#154E47",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -115,7 +114,7 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     alignSelf: "flex-end",
-    backgroundColor: "#82C4BC",
+    backgroundColor: "#2D77FEC7",
     paddingHorizontal: 5,
     paddingVertical: 1,
     borderRadius: 12,

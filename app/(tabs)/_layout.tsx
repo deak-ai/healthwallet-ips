@@ -7,6 +7,7 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import * as SecureStore from "expo-secure-store";
 import { useClickedTab } from "@/components/clickedTabContext";
+import { useIpsData } from "@/components/IpsDataContext";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -21,6 +22,7 @@ export default function TabLayout() {
   const navigation = useNavigation(); // Access navigation object
 
   const { clickedTab, setClickedTab } = useClickedTab();
+  const { ipsData } = useIpsData();
 
   const handleTabPress = async (e: any, routeName: string) => {
     // Call e.preventDefault() immediately to block navigation
@@ -29,7 +31,7 @@ export default function TabLayout() {
     try {
       setClickedTab(!clickedTab);
       const patientId = await SecureStore.getItemAsync("patientId");
-      if (patientId) {
+      if (patientId &&ipsData) {
         navigation.navigate(routeName as never);
       }
     } catch (error) {

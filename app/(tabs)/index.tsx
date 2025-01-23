@@ -27,13 +27,27 @@ export default function TabSettingsScreen() {
   const router = useRouter();
   const { clickedTab } = useClickedTab();
 
-  const { setIpsData } = useIpsData();
+  const { setIpsData, ipsData } = useIpsData();
+  // Load the patient ID from SecureStore when the component mounts
+  useEffect(() => {
+    const loadPatientId = async () => {
+      try {
+        const savedPatientId = await SecureStore.getItemAsync("patientId");
+
+        setPatientId(savedPatientId);
+        setInputValue(savedPatientId || "");
+      } catch (error) {
+        console.error("Error loading patient ID:", error);
+      }
+    };
+    loadPatientId();
+  }, []);
 
   useEffect(() => {
-    if (!patientId) {
+    if (!patientId || !ipsData) {
       refRBSheet?.current.open();
     }
-  }, [clickedTab,patientId]);
+  }, [clickedTab, ipsData, patientId]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -55,6 +69,7 @@ export default function TabSettingsScreen() {
     try {
       await SecureStore.setItemAsync("patientId", inputValue);
       setPatientId(inputValue);
+
       Toast.show({
         type: "success",
         text1: "Success",
@@ -90,7 +105,7 @@ export default function TabSettingsScreen() {
         router.push({
           pathname: "/modal",
           params: {
-            fhirData: yaml.dump(ipsData.resources[0]), // Use the first resource for demo purposes
+            fhirData: yaml.dump(ipsData?.resources?.[0]), // Use the first resource for demo purposes
             title: `Patient ${patientId} Data`,
           },
         });
@@ -141,7 +156,7 @@ export default function TabSettingsScreen() {
               type={"ionicon"}
               name={"information-circle"}
               size={38}
-              color="#154E47"
+              color="#3A90F3"
             />
             <Text style={styles.infoTitle}> ID Required</Text>
           </View>
@@ -161,7 +176,7 @@ export default function TabSettingsScreen() {
         <TextInput
           style={[
             styles.input,
-            { backgroundColor: theme == "light" ? "" : "#154E474D" },
+            { backgroundColor: theme == "light" ? "" : "#0573F026" },
             { borderColor: theme === "light" ? "" : "#FFFFFF" },
           ]}
           placeholder="Enter Patient ID"
@@ -185,7 +200,7 @@ export default function TabSettingsScreen() {
               type={"fontawesome6"}
               name={"download"}
               size={24}
-              color="#154E47"
+              color="#2563EA"
             />
             <Text style={styles.downloadTitle}> Download</Text>
           </TouchableOpacity>
@@ -195,7 +210,7 @@ export default function TabSettingsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <View style={styles.mainContainer}>
       {theme === "dark" ? (
         settingsMainContent()
       ) : (
@@ -207,7 +222,7 @@ export default function TabSettingsScreen() {
           {settingsMainContent()}
         </ImageBackground>
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -270,7 +285,7 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 18,
     marginLeft: 10,
-    color: "#83B0AB",
+    color: "#3A90F3",
   },
   closeButton: {
     padding: 10,
@@ -283,7 +298,7 @@ const styles = StyleSheet.create({
   },
   infoDescription: { fontWeight: 700 },
   downloadTitle: {
-    color: "#154E47",
+    color: "#2563EA",
     alignItems: "center",
     justifyContent: "center",
     fontWeight: 700,
@@ -296,7 +311,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   button: {
-    backgroundColor: "#B7E0E1",
+    backgroundColor: "#CEE5FF",
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,

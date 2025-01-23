@@ -10,7 +10,7 @@ const CustomToast = () => {
     success: (props) => (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: "#154E47", backgroundColor: "#B7E0E1" }}
+        style={{ borderLeftColor: "#2563EA", backgroundColor: "#CEE5FF" }}
         text1Style={{
           fontSize: 15,
           fontWeight: "bold",

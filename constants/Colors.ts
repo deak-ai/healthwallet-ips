@@ -1,6 +1,6 @@
 // constants/Colors.ts
 
-const tintColorLight = "#248479";
+const tintColorLight = "#2563EA";
 const tintColorDark = "#fff";
 
 const lightColors = {
@@ -10,13 +10,13 @@ const lightColors = {
   tabIconDefault: "#ccc",
   tabIconSelected: tintColorLight,
   border: "#ccc", // Light border
-  icon: "#248479", // green icon in light mode
+  icon: "#2563EA", // green icon in light mode
   placeholder: "#888", // Light input placeholder,
-  selected: "#2484792B",
+  selected: "#2563EA2B",
   tabBarBackground: "#fff",
   cardBackground: "#fff",
   label: "#000",
-  tileBackground: "#B7E0E1",
+  tileBackground: "#CEE5FF",
 };
 
 const darkColors = {
@@ -26,13 +26,13 @@ const darkColors = {
   tabIconDefault: "#ccc",
   tabIconSelected: tintColorDark,
   border: "#fff", // White border
-  icon: "#248479", // White icon in dark mode
+  icon: "#2563EA", // White icon in dark mode
   placeholder: "#aaa", // Dark input placeholder,
-  selected: "#2484792B",
-  tabBarBackground: "#154E47",
-  cardBackground: "#2475655E",
+  selected: "#FFFFFF2B",
+  tabBarBackground: "#2563EA",
+  cardBackground: "#2563EA26",
   label: "#fff",
-  tileBackground: "#2475655E",
+  tileBackground: "#2563EA26",
 };
 
 export default {
