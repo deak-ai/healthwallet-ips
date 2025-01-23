@@ -14,12 +14,12 @@ const CustomToast = () => {
         text1Style={{
           fontSize: 15,
           fontWeight: "bold",
-          color: "#154E47",
+          color: "#2563EA",
         }}
         text2Style={{
           fontSize: 13,
           fontWeight: "bold",
-          color: "#154E47",
+          color: "#2563EA",
         }}
       />
     ),

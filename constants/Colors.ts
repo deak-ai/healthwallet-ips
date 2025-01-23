@@ -28,7 +28,7 @@ const darkColors = {
   border: "#fff", // White border
   icon: "#2563EA", // White icon in dark mode
   placeholder: "#aaa", // Dark input placeholder,
-  selected: "#FFFFFF2B",
+  selected: "#0573F02B",
   tabBarBackground: "#2563EA",
   cardBackground: "#2563EA26",
   label: "#fff",

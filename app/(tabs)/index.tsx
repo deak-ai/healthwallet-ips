@@ -9,7 +9,6 @@ import { Text, View, TextInput } from "@/components/Themed";
 import * as SecureStore from "expo-secure-store";
 import RBSheet from "react-native-raw-bottom-sheet";
 import { Icon } from "@/components/MultiSourceIcon";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useIpsData } from "@/components/IpsDataContext";
 import { FhirUrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
@@ -69,6 +68,9 @@ export default function TabSettingsScreen() {
     try {
       await SecureStore.setItemAsync("patientId", inputValue);
       setPatientId(inputValue);
+
+      //reset the ipsData when patientId is changed
+     setIpsData(null)
 
       Toast.show({
         type: "success",
