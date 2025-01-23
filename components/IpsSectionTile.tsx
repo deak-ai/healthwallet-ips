@@ -71,14 +71,14 @@ export const IPS_TILES: readonly Tile[] = [
 export function IpsSectionTile(props: { onPress: () => void; tile: Tile }) {
   const backgroundColor = useThemeColor(
     { light: Colors.light.tileBackground, dark: Colors.dark.tileBackground },
-    "background"
+    "tileBackground"
   );
   const iconColor = useThemeColor(
     { light: Colors.light.icon, dark: Colors.dark.icon },
     "icon"
   );
   const textColor = useThemeColor(
-    { light: Colors.light.icon, dark: Colors.dark.icon },
+    { light: Colors.light.text, dark: Colors.dark.text },
     "text"
   );
 
