@@ -103,14 +103,20 @@ export default function TabSettingsScreen() {
           ipsData.resources.length
         );
         setIpsData(ipsData); // Set the data in context
-
-        router.push({
-          pathname: "/modal",
-          params: {
-            fhirData: yaml.dump(ipsData?.resources?.[0]), // Use the first resource for demo purposes
-            title: `Patient ${patientId} Data`,
-          },
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Patient data loaded successfully",
+          position: "bottom",
         });
+
+        // router.push({
+        //   pathname: "/modal",
+        //   params: {
+        //     fhirData: yaml.dump(ipsData?.resources?.[0]), // Use the first resource for demo purposes
+        //     title: `Patient ${patientId} Data`,
+        //   },
+        // });
       } else {
         Toast.show({
           type: "error",
@@ -238,16 +244,6 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     gap: 18,
   },
-
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
   label: {
     fontSize: 24,
     fontWeight: "700",
@@ -289,15 +285,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: "#3A90F3",
   },
-  closeButton: {
-    padding: 10,
-    backgroundColor: "#ff3b3b",
-    borderRadius: 8,
-  },
-  closeButtonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
   infoDescription: { fontWeight: 700 },
   downloadTitle: {
     color: "#2563EA",
@@ -325,11 +312,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     paddingHorizontal: 10,
-  },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgb(138, 34, 34)",
   },
 });
