@@ -1,0 +1,1000 @@
+{
+  "openapi" : "3.1.0",
+  "info" : {
+    "title" : "walt.id issuer",
+    "description" : "Interact with the walt.id issuer. Version is reported to be [latest] and this service instance was started 2024-11-24T18:36:02Z.<br/>Questions about anything here? Visit <a href='https://github.com/walt-id/#join-the-community'>support</a>.<br/>",
+    "contact" : {
+      "name" : "walt.id",
+      "url" : "https://walt.id",
+      "email" : "office@walt.id"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "https://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "[latest]"
+  },
+  "externalDocs" : {
+    "description" : "docs.walt.id",
+    "url" : "https://docs.walt.id"
+  },
+  "servers" : [ {
+    "url" : "/",
+    "description" : "Development Server"
+  } ],
+  "tags" : [ ],
+  "paths" : {
+    "/features/registered" : {
+      "get" : {
+        "tags" : [ "Feature management" ],
+        "summary" : "List registered features",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "headers" : { },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "title" : "Map<String,String>",
+                  "type" : "object",
+                  "additionalProperties" : {
+                    "title" : "String",
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/features/state" : {
+      "get" : {
+        "tags" : [ "Feature management" ],
+        "summary" : "Show state of features",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "headers" : { },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/id.walt.commons.web.modules.FeatureFlagInformationModule.FeatureFlagInformations"
+                }
+              }
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/livez" : {
+      "get" : {
+        "tags" : [ ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/" : {
+      "get" : {
+        "tags" : [ ],
+        "summary" : "Redirect to swagger interface for API documentation",
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/.well-known/openid-configuration" : {
+      "get" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/.well-known/openid-credential-issuer" : {
+      "get" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/.well-known/oauth-authorization-server" : {
+      "get" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/.well-known/jwt-vc-issuer" : {
+      "get" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/.well-known/vct/{type}" : {
+      "get" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/par" : {
+      "post" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/jwks" : {
+      "get" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/authorize" : {
+      "get" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/direct_post" : {
+      "post" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/token" : {
+      "post" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/credential" : {
+      "post" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/credential_deferred" : {
+      "post" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/batch_credential" : {
+      "post" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/external_login/{internalAuthReq}" : {
+      "get" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/callback" : {
+      "get" : {
+        "tags" : [ "oidc" ],
+        "parameters" : [ ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/onboard/issuer" : {
+      "post" : {
+        "tags" : [ "Issuer onboarding" ],
+        "summary" : "Onboards a new issuer.",
+        "description" : "Creates an issuer keypair and an associated DID based on the provided configuration.",
+        "parameters" : [ ],
+        "requestBody" : {
+          "description" : "Issuer onboarding request (key & DID) config.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/id.walt.issuer.issuance.OnboardingRequest"
+              },
+              "examples" : {
+                "did:jwk + JWK key (Ed25519)" : {
+                  "value" : "{\"key\":{\"backend\":\"jwk\",\"keyType\":\"Ed25519\"},\"did\":{\"method\":\"jwk\"}}"
+                },
+                "did:jwk + JWK key (secp256r1)" : {
+                  "value" : "{\"key\":{\"backend\":\"jwk\",\"keyType\":\"secp256r1\"},\"did\":{\"method\":\"jwk\"}}"
+                },
+                "did:jwk + JWK key (secp256k1)" : {
+                  "value" : "{\"key\":{\"backend\":\"jwk\",\"keyType\":\"secp256k1\"},\"did\":{\"method\":\"jwk\"}}"
+                },
+                "did:jwk + JWK key (RSA)" : {
+                  "value" : "{\"key\":{\"backend\":\"jwk\",\"keyType\":\"RSA\"},\"did\":{\"method\":\"jwk\"}}"
+                },
+                "did:web + JWK key (Secp256k1)" : {
+                  "value" : "{\"key\":{\"backend\":\"jwk\",\"keyType\":\"secp256k1\"},\"did\":{\"method\":\"web\",\"config\":{\"domain\":\"example.com\",\"path\":\"optional-user-id-1234\"}}}"
+                },
+                "did:key + TSE key (Hashicorp Vault Transit Engine - Ed25519) + AppRole (Auth)" : {
+                  "value" : "{\"key\":{\"backend\":\"tse\",\"keyType\":\"Ed25519\",\"config\":{\"server\":\"http://127.0.0.1:8200/v1/transit\",\"auth\":{\"roleId\":\"9ec67fde-412a-d000-66fd-ba433560f092\",\"secretId\":\"65015f17-1f22-39f8-9c70-85af514e98f1\"}}},\"did\":{\"method\":\"key\"}}"
+                },
+                "did:key + TSE key (Hashicorp Vault Transit Engine - Ed25519) + UserPass (Auth)" : {
+                  "value" : "{\"key\":{\"backend\":\"tse\",\"keyType\":\"Ed25519\",\"config\":{\"server\":\"http://127.0.0.1:8200/v1/transit\",\"auth\":{\"userpassPath\":\"userpass\",\"username\":\"myuser\",\"password\":\"mypassword\"}}},\"did\":{\"method\":\"key\"}}"
+                },
+                "did:key + TSE key (Hashicorp Vault Transit Engine - Ed25519) + AccessKey (Auth)" : {
+                  "value" : "{\"key\":{\"backend\":\"tse\",\"keyType\":\"Ed25519\",\"config\":{\"server\":\"http://127.0.0.1:8200/v1/transit\",\"auth\":{\"accessKey\":\"dev-only-token\"}}},\"did\":{\"method\":\"key\"}}"
+                },
+                "did:jwk + OCI key (Oracle Cloud Infrastructure - Secp256r1)" : {
+                  "value" : "{\"key\":{\"backend\":\"oci\",\"keyType\":\"secp256r1\",\"config\":{\"vaultId\":\"ocid1.vault.oc1.eu-frankfurt-1.enta2fneaadmk\",\"compartmentId\":\"ocid1.tenancy.oc1..aaaaaaaaiijfupfvsqwqwgupzdy5yclfzcccmie4ktp2wlgslftv5j7xpk6q\"}},\"did\":{\"method\":\"jwk\"}}"
+                },
+                "did:jwk + OCI REST API key  (Oracle Cloud Infrastructure - Secp256r1)" : {
+                  "value" : "{\"key\":{\"backend\":\"oci-rest-api\",\"keyType\":\"secp256r1\",\"config\":{\"tenancyOcid\":\"ocid1.tenancy.oc1..aaaaaaaaiijfupfvsqwqwgupzdy5yclfzcccmie4ktp2wlgslftv5j7xpk6q\",\"compartmentOcid\":\"ocid1.tenancy.oc1..aaaaaaaaiijfupfvsqwqwgupzdy5yclfzcccmie4ktp2wlgslftv5j7xpk6q\",\"userOcid\":\"ocid1.user.oc1..aaaaaaaaxjkkfjqxdqk7ldfjrxjmacmbi7sci73rbfiwpioehikavpbtqx5q\",\"fingerprint\":\"bb:d4:4b:0c:c8:3a:49:15:7f:87:55:d5:2b:7e:dd:bc\",\"managementEndpoint\":\"entaftlvaaemy-management.kms.eu-frankfurt-1.oraclecloud.com\",\"cryptoEndpoint\":\"entaftlvaaemy-crypto.kms.eu-frankfurt-1.oraclecloud.com\",\"signingKeyPem\":\"-----BEGIN PRIVATE KEY-----\\n\\n-----END PRIVATE KEY-----\\n\"}},\"did\":{\"method\":\"jwk\"}}"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Issuer onboarding response",
+            "headers" : { },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/id.walt.issuer.issuance.IssuerOnboardingResponse"
+                },
+                "examples" : {
+                  "Local JWK key (Secp256r1) + did:jwk" : {
+                    "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"EC\",\"d\":\"sMjI1SVu4vKHLr3JwgUMu10Ihn5OL0sCaqjfZP8xpUU\",\"crv\":\"P-256\",\"kid\":\"Si07jIXqLsMKHy0vgyvPbcIvIPxdqL7Qs6STqrx1UC8\",\"x\":\"q-LZDK-TZQSUczy_1K6TBFeVn60rMv4KjYvTePy2TGs\",\"y\":\"qTbiSREfWRZtAKZsW-k-0BHIIYpAN0fhnjaqeMIU5OY\"}},\"issuerDid\":\"did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2Iiwia2lkIjoiU2kwN2pJWHFMc01LSHkwdmd5dlBiY0l2SVB4ZHFMN1FzNlNUcXJ4MVVDOCIsIngiOiJxLUxaREstVFpRU1VjenlfMUs2VEJGZVZuNjByTXY0S2pZdlRlUHkyVEdzIiwieSI6InFUYmlTUkVmV1JadEFLWnNXLWstMEJISUlZcEFOMGZobmphcWVNSVU1T1kifQ\"}"
+                  },
+                  "Local JWK key (Secp256r1) + did:web" : {
+                    "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"EC\",\"d\":\"sMjI1SVu4vKHLr3JwgUMu10Ihn5OL0sCaqjfZP8xpUU\",\"crv\":\"secp256k1\",\"kid\":\"Si07jIXqLsMKHy0vgyvPbcIvIPxdqL7Qs6STqrx1UC8\",\"x\":\"q-LZDK-TZQSUczy_1K6TBFeVn60rMv4KjYvTePy2TGs\",\"y\":\"qTbiSREfWRZtAKZsW-k-0BHIIYpAN0fhnjaqeMIU5OY\"}},\"issuerDid\":\"did:web:example.com:optional-user-id-1234\"}"
+                  },
+                  "Remote TSE Ed25519 key + did:key" : {
+                    "value" : "{\"issuerKey\":{\"type\":\"tse\",\"server\":\"http://127.0.0.1:8200/v1/transit\",\"accessKey\":\"dev-only-token\",\"id\":\"k208278175\",\"_publicKey\":[-88,-85,-16,118,-63,124,73,86,16,70,-76,-92,3,60,98,-111,89,19,83,80,-10,94,-26,-116,69,26,-33,-50,49,-55,-117,22],\"_keyType\":\"Ed25519\"},\"issuerDid\":\"did:key:z6MkqogbukAXnhvY9dAtXw7ABpe9meJJRCYHwyrNA2q74o17\"}"
+                  },
+                  "Remote OCI Secp256r1 key + did:jwk" : {
+                    "value" : "{\"issuerKey\":{\"type\":\"oci\",\"config\":{\"vaultId\":\"ocid1.vault.oc1.eu-frankfurt-1.enta2fneaadmk\",\"compartmentId\":\"ocid1.tenancy.oc1..aaaaaaaaiijfupfvsqwqwgupzdy5yclfzcccmie4ktp2wlgslftv5j7xpk6q\"},\"id\":\"ocid1.key.oc1.eu-frankfurt-1.enta2fneaadmk.abtheljrlj5snthwkx7ycdmknuftght527dkyjsoz72dcogklixrsdyolo5a\",\"_publicKey\":\"{\\\"kty\\\":\\\"EC\\\",\\\"crv\\\":\\\"P-256\\\",\\\"x\\\":\\\"tT1DAZdtp7vUPphTxoilmr6dfZPKcPfwL8G_Ri3K0_E\\\",\\\"y\\\":\\\"JabPubkHQPK0G7O8eL3bKg75hX4Wkojb_AOepX8xdAs\\\"}\",\"_keyType\":\"secp256r1\"},\"issuerDid\":\"did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6InRUMURBWmR0cDd2VVBwaFR4b2lsbXI2ZGZaUEtjUGZ3TDhHX1JpM0swX0UiLCJ5IjoiSmFiUHVia0hRUEswRzdPOGVMM2JLZzc1aFg0V2tvamJfQU9lcFg4eGRBcyJ9\"}"
+                  },
+                  "Remote OCI REST API Secp256r1 key + did:jwk" : {
+                    "value" : "{\"issuerKey\":{\"type\":\"oci\",\"config\":{\"tenancyOcid\":\"ocid1.tenancy.oc1..aaaaaaaaiijfupfvsqwqwgupzdy5yclfzcccmie4ktp2wlgslftv5j7xpk6q\",\"compartmentOcid\":\"ocid1.tenancy.oc1..aaaaaaaaiijfupfvsqwqwgupzdy5yclfzcccmie4ktp2wlgslftv5j7xpk6q\",\"userOcid\":\"ocid1.user.oc1..aaaaaaaaxjkkfjqxdqk7ldfjrxjmacmbi7sci73rbfiwpioehikavpbtqx5q\",\"fingerprint\":\"bb:d4:4b:0c:c8:3a:49:15:7f:87:55:d5:2b:7e:dd:bc\",\"managementEndpoint\":\"entaftlvaaemy-management.kms.eu-frankfurt-1.oraclecloud.com\",\"cryptoEndpoint\":\"entaftlvaaemy-crypto.kms.eu-frankfurt-1.oraclecloud.com\",\"signingKeyPem\":\"-----BEGIN PRIVATE KEY-----\\n\\n-----END PRIVATE KEY-----\\n\"},\"id\":\"ocid1.key.oc1.eu-frankfurt-1.enta2fneaadmk.abtheljrlj5snthwkx7ycdmknuftght527dkyjsoz72dcogklixrsdyolo5a\",\"_publicKey\":\"{\\\"kty\\\":\\\"EC\\\",\\\"crv\\\":\\\"P-256\\\",\\\"x\\\":\\\"tT1DAZdtp7vUPphTxoilmr6dfZPKcPfwL8G_Ri3K0_E\\\",\\\"y\\\":\\\"JabPubkHQPK0G7O8eL3bKg75hX4Wkojb_AOepX8xdAs\\\"}\",\"_keyType\":\"secp256r1\"},\"issuerDid\":\"did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6InRUMURBWmR0cDd2VVBwaFR4b2lsbXI2ZGZaUEtjUGZ3TDhHX1JpM0swX0UiLCJ5IjoiSmFiUHVia0hRUEswRzdPOGVMM2JLZzc1aFg0V2tvamJfQU9lcFg4eGRBcyJ9\"}"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "headers" : { }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/raw/jwt/sign" : {
+      "post" : {
+        "tags" : [ "Credential Issuance" ],
+        "summary" : "Signs credential without using an credential exchange mechanism.",
+        "description" : "This endpoint issues (signs) an Verifiable Credential, but does not utilize an credential exchange mechanism flow like OIDC or DIDComm to adapt and send the signed credential to an user. This means, that the caller will have to utilize such an credential exchange mechanism themselves.",
+        "parameters" : [ ],
+        "requestBody" : {
+          "description" : "Pass the unsigned credential that you intend to sign as the body of the request.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "title" : "JsonObject",
+                "type" : "object",
+                "additionalProperties" : {
+                  "title" : "*",
+                  "type" : "object"
+                }
+              },
+              "examples" : {
+                "UniversityDegreeCredential example" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"OKP\",\"d\":\"mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI\",\"crv\":\"Ed25519\",\"kid\":\"Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8\",\"x\":\"T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM\"}},\"issuerDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\",\"subjectDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\",\"https://www.w3.org/2018/credentials/examples/v1\"],\"id\":\"http://example.gov/credentials/3732\",\"type\":[\"VerifiableCredential\",\"UniversityDegreeCredential\"],\"issuer\":{\"id\":\"did:web:vc.transmute.world\"},\"issuanceDate\":\"2020-03-10T04:24:12.164Z\",\"credentialSubject\":{\"id\":\"did:example:ebfeb1f712ebc6f1c276e12ec21\",\"degree\":{\"type\":\"BachelorDegree\",\"name\":\"Bachelor of Science and Arts\"}}}}"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Signed Credential (with the *proof* attribute added)",
+            "headers" : { },
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "title" : "String",
+                  "type" : "string"
+                },
+                "examples" : {
+                  "Signed UniversityDegreeCredential example" : {
+                    "value" : "eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDprZXk6ejZNa2pvUmhxMWpTTkpkTGlydVNYckZGeGFncXJ6dFphWEhxSEdVVEtKYmNOeXdwIn0.eyJpc3MiOiJkaWQ6a2V5Ono2TWtqb1JocTFqU05KZExpcnVTWHJGRnhhZ3FyenRaYVhIcUhHVVRLSmJjTnl3cCIsInN1YiI6ImRpZDprZXk6ejZNa2pvUmhxMWpTTkpkTGlydVNYckZGeGFncXJ6dFphWEhxSEdVVEtKYmNOeXdwIiwidmMiOnsiQGNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiLCJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy9leGFtcGxlcy92MSJdLCJpZCI6Imh0dHA6Ly9leGFtcGxlLmdvdi9jcmVkZW50aWFscy8zNzMyIiwidHlwZSI6WyJWZXJpZmlhYmxlQ3JlZGVudGlhbCIsIlVuaXZlcnNpdHlEZWdyZWVDcmVkZW50aWFsIl0sImlzc3VlciI6eyJpZCI6ImRpZDp3ZWI6dmMudHJhbnNtdXRlLndvcmxkIn0sImlzc3VhbmNlRGF0ZSI6IjIwMjAtMDMtMTBUMDQ6MjQ6MTIuMTY0WiIsImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImlkIjoiZGlkOmV4YW1wbGU6ZWJmZWIxZjcxMmViYzZmMWMyNzZlMTJlYzIxIiwiZGVncmVlIjp7InR5cGUiOiJCYWNoZWxvckRlZ3JlZSIsIm5hbWUiOiJCYWNoZWxvciBvZiBTY2llbmNlIGFuZCBBcnRzIn19fX0.lEprwxQtj4a7k64OxjJV4dGNkuf3Fjks48fU0keJshm-dKtzmHktC3H3rh6iOZTi78p4m5Uu5Y9QmsJJOd8jCg"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "The request could not be understood or was missing required parameters.",
+            "headers" : { },
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "title" : "String",
+                  "type" : "string"
+                },
+                "examples" : {
+                  "Missing issuerKey in the request body" : {
+                    "value" : "Missing issuerKey in the request body."
+                  },
+                  "Invalid issuerKey format." : {
+                    "value" : "Invalid issuerKey format."
+                  },
+                  "Missing subjectDid in the request body." : {
+                    "value" : "Missing subjectDid in the request body."
+                  },
+                  "Missing credentialData in the request body." : {
+                    "value" : "Missing credentialData in the request body."
+                  },
+                  "Invalid credentialData format." : {
+                    "value" : "Invalid credentialData format."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/openid4vc/jwt/issue" : {
+      "post" : {
+        "tags" : [ "Credential Issuance" ],
+        "summary" : "Signs credential with JWT and starts an OIDC credential exchange flow.",
+        "description" : "This endpoint issues a W3C Verifiable Credential, and returns an issuance URL ",
+        "parameters" : [ {
+          "name" : "statusCallbackUri",
+          "in" : "header",
+          "description" : "Callback to push state changes of the issuance process to",
+          "required" : false,
+          "deprecated" : false,
+          "explode" : false,
+          "schema" : {
+            "title" : "String",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Pass the unsigned credential that you intend to issue as the body of the request.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/id.walt.issuer.issuance.IssuanceRequest"
+              },
+              "examples" : {
+                "OpenBadgeCredential example" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"OKP\",\"d\":\"mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI\",\"crv\":\"Ed25519\",\"kid\":\"Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8\",\"x\":\"T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM\"}},\"credentialConfigurationId\":\"OpenBadgeCredential_jwt_vc_json\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\",\"https://purl.imsglobal.org/spec/ob/v3p0/context.json\"],\"id\":\"urn:uuid:THIS WILL BE REPLACED WITH DYNAMIC DATA FUNCTION (see below)\",\"type\":[\"VerifiableCredential\",\"OpenBadgeCredential\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"issuer\":{\"type\":[\"Profile\"],\"name\":\"Jobs for the Future (JFF)\",\"url\":\"https://www.jff.org/\",\"image\":\"https://w3c-ccg.github.io/vc-ed/plugfest-1-2022/images/JFF_LogoLockup.png\"},\"credentialSubject\":{\"type\":[\"AchievementSubject\"],\"achievement\":{\"id\":\"urn:uuid:ac254bd5-8fad-4bb1-9d29-efd938536926\",\"type\":[\"Achievement\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"description\":\"This wallet supports the use of W3C Verifiable Credentials and has demonstrated interoperability during the presentation request workflow during JFF x VC-EDU PlugFest 3.\",\"criteria\":{\"type\":\"Criteria\",\"narrative\":\"Wallet solutions providers earned this badge by demonstrating interoperability during the presentation request workflow. This includes successfully receiving a presentation request, allowing the holder to select at least two types of verifiable credentials to create a verifiable presentation, returning the presentation to the requestor, and passing verification of the presentation and the included credentials.\"},\"image\":{\"id\":\"https://w3c-ccg.github.io/vc-ed/plugfest-3-2023/images/JFF-VC-EDU-PLUGFEST3-badge-image.png\",\"type\":\"Image\"}}}},\"mapping\":{\"id\":\"<uuid>\",\"issuer\":{\"id\":\"<issuerDid>\"},\"credentialSubject\":{\"id\":\"<subjectDid>\"},\"issuanceDate\":\"<timestamp>\",\"expirationDate\":\"<timestamp-in:365d>\"},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"issuerDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\"}"
+                },
+                "UniversityDegreeCredential example" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"OKP\",\"d\":\"mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI\",\"crv\":\"Ed25519\",\"kid\":\"Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8\",\"x\":\"T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM\"}},\"credentialConfigurationId\":\"UniversityDegree_jwt_vc_json\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\",\"https://www.w3.org/2018/credentials/examples/v1\"],\"id\":\"http://example.gov/credentials/3732\",\"type\":[\"VerifiableCredential\",\"UniversityDegreeCredential\"],\"issuer\":{\"id\":\"did:web:vc.transmute.world\"},\"issuanceDate\":\"2020-03-10T04:24:12.164Z\",\"credentialSubject\":{\"id\":\"did:example:ebfeb1f712ebc6f1c276e12ec21\",\"degree\":{\"type\":\"BachelorDegree\",\"name\":\"Bachelor of Science and Arts\"}}},\"mapping\":{\"id\":\"<uuid>\",\"issuer\":{\"id\":\"<issuerDid>\"},\"credentialSubject\":{\"id\":\"<subjectDid>\"},\"issuanceDate\":\"<timestamp>\",\"expirationDate\":\"<timestamp-in:365d>\"},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"issuerDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\"}"
+                },
+                "OpenBadgeCredential example with Authorization Code Flow and Id Token" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"OKP\",\"d\":\"mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI\",\"crv\":\"Ed25519\",\"kid\":\"Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8\",\"x\":\"T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM\"}},\"credentialConfigurationId\":\"OpenBadgeCredential_jwt_vc_json\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\",\"https://purl.imsglobal.org/spec/ob/v3p0/context.json\"],\"id\":\"urn:uuid:THIS WILL BE REPLACED WITH DYNAMIC DATA FUNCTION (see below)\",\"type\":[\"VerifiableCredential\",\"OpenBadgeCredential\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"issuer\":{\"type\":[\"Profile\"],\"name\":\"Jobs for the Future (JFF)\",\"url\":\"https://www.jff.org/\",\"image\":\"https://w3c-ccg.github.io/vc-ed/plugfest-1-2022/images/JFF_LogoLockup.png\"},\"credentialSubject\":{\"type\":[\"AchievementSubject\"],\"achievement\":{\"id\":\"urn:uuid:ac254bd5-8fad-4bb1-9d29-efd938536926\",\"type\":[\"Achievement\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"description\":\"This wallet supports the use of W3C Verifiable Credentials and has demonstrated interoperability during the presentation request workflow during JFF x VC-EDU PlugFest 3.\",\"criteria\":{\"type\":\"Criteria\",\"narrative\":\"Wallet solutions providers earned this badge by demonstrating interoperability during the presentation request workflow. This includes successfully receiving a presentation request, allowing the holder to select at least two types of verifiable credentials to create a verifiable presentation, returning the presentation to the requestor, and passing verification of the presentation and the included credentials.\"},\"image\":{\"id\":\"https://w3c-ccg.github.io/vc-ed/plugfest-3-2023/images/JFF-VC-EDU-PLUGFEST3-badge-image.png\",\"type\":\"Image\"}}}},\"mapping\":{\"id\":\"<uuid>\",\"issuer\":{\"id\":\"<issuerDid>\"},\"credentialSubject\":{\"id\":\"<subjectDid>\"},\"issuanceDate\":\"<timestamp>\",\"expirationDate\":\"<timestamp-in:365d>\"},\"authenticationMethod\":\"ID_TOKEN\",\"issuerDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\"}"
+                },
+                "OpenBadgeCredential example with Authorization Code Flow and Vp Token" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"OKP\",\"d\":\"mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI\",\"crv\":\"Ed25519\",\"kid\":\"Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8\",\"x\":\"T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM\"}},\"credentialConfigurationId\":\"OpenBadgeCredential_jwt_vc_json\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\",\"https://purl.imsglobal.org/spec/ob/v3p0/context.json\"],\"id\":\"urn:uuid:THIS WILL BE REPLACED WITH DYNAMIC DATA FUNCTION (see below)\",\"type\":[\"VerifiableCredential\",\"OpenBadgeCredential\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"issuer\":{\"type\":[\"Profile\"],\"name\":\"Jobs for the Future (JFF)\",\"url\":\"https://www.jff.org/\",\"image\":\"https://w3c-ccg.github.io/vc-ed/plugfest-1-2022/images/JFF_LogoLockup.png\"},\"credentialSubject\":{\"type\":[\"AchievementSubject\"],\"achievement\":{\"id\":\"urn:uuid:ac254bd5-8fad-4bb1-9d29-efd938536926\",\"type\":[\"Achievement\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"description\":\"This wallet supports the use of W3C Verifiable Credentials and has demonstrated interoperability during the presentation request workflow during JFF x VC-EDU PlugFest 3.\",\"criteria\":{\"type\":\"Criteria\",\"narrative\":\"Wallet solutions providers earned this badge by demonstrating interoperability during the presentation request workflow. This includes successfully receiving a presentation request, allowing the holder to select at least two types of verifiable credentials to create a verifiable presentation, returning the presentation to the requestor, and passing verification of the presentation and the included credentials.\"},\"image\":{\"id\":\"https://w3c-ccg.github.io/vc-ed/plugfest-3-2023/images/JFF-VC-EDU-PLUGFEST3-badge-image.png\",\"type\":\"Image\"}}}},\"mapping\":{\"id\":\"<uuid>\",\"issuer\":{\"id\":\"<issuerDid>\"},\"credentialSubject\":{\"id\":\"<subjectDid>\"},\"issuanceDate\":\"<timestamp>\",\"expirationDate\":\"<timestamp-in:365d>\"},\"authenticationMethod\":\"VP_TOKEN\",\"vpRequestValue\":\"NaturalPersonVerifiableID\",\"vpProfile\":\"EBSIV3\",\"issuerDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\"}"
+                },
+                "OpenBadgeCredential example with Authorization Code Flow and Username/Password Token" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"OKP\",\"d\":\"mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI\",\"crv\":\"Ed25519\",\"kid\":\"Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8\",\"x\":\"T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM\"}},\"credentialConfigurationId\":\"OpenBadgeCredential_jwt_vc_json\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\",\"https://purl.imsglobal.org/spec/ob/v3p0/context.json\"],\"id\":\"urn:uuid:THIS WILL BE REPLACED WITH DYNAMIC DATA FUNCTION (see below)\",\"type\":[\"VerifiableCredential\",\"OpenBadgeCredential\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"issuer\":{\"type\":[\"Profile\"],\"name\":\"Jobs for the Future (JFF)\",\"url\":\"https://www.jff.org/\",\"image\":\"https://w3c-ccg.github.io/vc-ed/plugfest-1-2022/images/JFF_LogoLockup.png\"},\"credentialSubject\":{\"type\":[\"AchievementSubject\"],\"achievement\":{\"id\":\"urn:uuid:ac254bd5-8fad-4bb1-9d29-efd938536926\",\"type\":[\"Achievement\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"description\":\"This wallet supports the use of W3C Verifiable Credentials and has demonstrated interoperability during the presentation request workflow during JFF x VC-EDU PlugFest 3.\",\"criteria\":{\"type\":\"Criteria\",\"narrative\":\"Wallet solutions providers earned this badge by demonstrating interoperability during the presentation request workflow. This includes successfully receiving a presentation request, allowing the holder to select at least two types of verifiable credentials to create a verifiable presentation, returning the presentation to the requestor, and passing verification of the presentation and the included credentials.\"},\"image\":{\"id\":\"https://w3c-ccg.github.io/vc-ed/plugfest-3-2023/images/JFF-VC-EDU-PLUGFEST3-badge-image.png\",\"type\":\"Image\"}}}},\"mapping\":{\"id\":\"<uuid>\",\"issuer\":{\"id\":\"<issuerDid>\"},\"credentialSubject\":{\"id\":\"<subjectDid>\"},\"issuanceDate\":\"<timestamp>\",\"expirationDate\":\"<timestamp-in:365d>\"},\"authenticationMethod\":\"PWD\",\"issuerDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\"}"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Credential signed (with the *proof* attribute added)",
+            "headers" : { },
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "title" : "String",
+                  "type" : "string"
+                },
+                "examples" : {
+                  "Issuance URL" : {
+                    "value" : "openid-credential-offer://localhost/?credential_offer=%7B%22credential_issuer%22%3A%22http%3A%2F%2Flocalhost%3A8000%22%2C%22credentials%22%3A%5B%22VerifiableId%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%22issuer_state%22%3A%22501414a4-c461-43f0-84b2-c628730c7c02%22%7D%7D%7D"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request - The request could not be understood or was missing required parameters.",
+            "headers" : { },
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "title" : "String",
+                  "type" : "string"
+                },
+                "examples" : {
+                  "Missing issuerKey in the request body." : {
+                    "value" : "Missing issuerKey in the request body."
+                  },
+                  "Invalid issuerKey format." : {
+                    "value" : "Invalid issuerKey format."
+                  },
+                  "Missing issuerDid in the request body." : {
+                    "value" : "Missing issuerDid in the request body."
+                  },
+                  "Missing credentialConfigurationId in the request body." : {
+                    "value" : "Missing credentialConfigurationId in the request body."
+                  },
+                  "Missing credentialData in the request body." : {
+                    "value" : "Missing credentialData in the request body."
+                  },
+                  "Invalid credentialData format." : {
+                    "value" : "Invalid credentialData format."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/openid4vc/jwt/issueBatch" : {
+      "post" : {
+        "tags" : [ "Credential Issuance" ],
+        "summary" : "Signs a list of credentials and starts an OIDC credential exchange flow.",
+        "description" : "This endpoint issues a list of W3C Verifiable Credentials, and returns an issuance URL ",
+        "parameters" : [ {
+          "name" : "statusCallbackUri",
+          "in" : "header",
+          "description" : "Callback to push state changes of the issuance process to",
+          "required" : false,
+          "deprecated" : false,
+          "explode" : false,
+          "schema" : {
+            "title" : "String",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Pass the unsigned credential that you intend to issue as the body of the request.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "title" : "List<IssuanceRequest>",
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/id.walt.issuer.issuance.IssuanceRequest"
+                }
+              },
+              "examples" : {
+                "Batch example" : {
+                  "value" : "[{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"OKP\",\"d\":\"mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI\",\"crv\":\"Ed25519\",\"kid\":\"Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8\",\"x\":\"T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM\"}},\"credentialConfigurationId\":\"OpenBadgeCredential_jwt_vc_json\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\",\"https://purl.imsglobal.org/spec/ob/v3p0/context.json\"],\"id\":\"urn:uuid:THIS WILL BE REPLACED WITH DYNAMIC DATA FUNCTION (see below)\",\"type\":[\"VerifiableCredential\",\"OpenBadgeCredential\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"issuer\":{\"type\":[\"Profile\"],\"name\":\"Jobs for the Future (JFF)\",\"url\":\"https://www.jff.org/\",\"image\":\"https://w3c-ccg.github.io/vc-ed/plugfest-1-2022/images/JFF_LogoLockup.png\"},\"credentialSubject\":{\"type\":[\"AchievementSubject\"],\"achievement\":{\"id\":\"urn:uuid:ac254bd5-8fad-4bb1-9d29-efd938536926\",\"type\":[\"Achievement\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"description\":\"This wallet supports the use of W3C Verifiable Credentials and has demonstrated interoperability during the presentation request workflow during JFF x VC-EDU PlugFest 3.\",\"criteria\":{\"type\":\"Criteria\",\"narrative\":\"Wallet solutions providers earned this badge by demonstrating interoperability during the presentation request workflow. This includes successfully receiving a presentation request, allowing the holder to select at least two types of verifiable credentials to create a verifiable presentation, returning the presentation to the requestor, and passing verification of the presentation and the included credentials.\"},\"image\":{\"id\":\"https://w3c-ccg.github.io/vc-ed/plugfest-3-2023/images/JFF-VC-EDU-PLUGFEST3-badge-image.png\",\"type\":\"Image\"}}}},\"mapping\":{\"id\":\"<uuid>\",\"issuer\":{\"id\":\"<issuerDid>\"},\"credentialSubject\":{\"id\":\"<subjectDid>\"},\"issuanceDate\":\"<timestamp>\",\"expirationDate\":\"<timestamp-in:365d>\"},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"issuerDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\"},{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"OKP\",\"d\":\"mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI\",\"crv\":\"Ed25519\",\"kid\":\"Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8\",\"x\":\"T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM\"}},\"credentialConfigurationId\":\"BankId_jwt_vc_json\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\"],\"type\":[\"VerifiableCredential\",\"BankId\"],\"credentialSubject\":{\"accountId\":\"1234567890\",\"IBAN\":\"DE99123456789012345678\",\"BIC\":\"DEUTDEDBBER\",\"birthDate\":\"1958-08-17\",\"familyName\":\"DOE\",\"givenName\":\"JOHN\",\"id\":\"identity#bankId\"},\"issuer\":{\"image\":{\"id\":\"https://images.squarespace-cdn.com/content/v1/609c0ddf94bcc0278a7cbdb4/1660296169313-K159K9WX8J8PPJE005HV/Walt+Bot_Logo.png?format=100w\",\"type\":\"Image\"},\"name\":\"CH Authority\",\"type\":\"Profile\",\"url\":\"https://images.squarespace-cdn.com/content/v1/609c0ddf94bcc0278a7cbdb4/1660296169313-K159K9WX8J8PPJE005HV/Walt+Bot_Logo.png?format=100w\"}},\"mapping\":{\"id\":\"<uuid>\",\"issuer\":{\"id\":\"<issuerDid>\"},\"credentialSubject\":{\"id\":\"<subjectDid>\"},\"issuanceDate\":\"<timestamp>\",\"expirationDate\":\"<timestamp-in:365d>\"},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"issuerDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\"}]"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Credential signed (with the *proof* attribute added)",
+            "headers" : { },
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "title" : "String",
+                  "type" : "string"
+                },
+                "examples" : {
+                  "Issuance URL" : {
+                    "value" : "openid-credential-offer://localhost/?credential_offer=%7B%22credential_issuer%22%3A%22http%3A%2F%2Flocalhost%3A8000%22%2C%22credentials%22%3A%5B%22VerifiableId%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%22issuer_state%22%3A%22501414a4-c461-43f0-84b2-c628730c7c02%22%7D%7D%7D"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/openid4vc/sdjwt/issue" : {
+      "post" : {
+        "tags" : [ "Credential Issuance" ],
+        "summary" : "Signs credential using SD-JWT and starts an OIDC credential exchange flow.",
+        "description" : "This endpoint issues a W3C or SD-JWT-VC Verifiable Credential, and returns an issuance URL ",
+        "parameters" : [ {
+          "name" : "statusCallbackUri",
+          "in" : "header",
+          "description" : "Callback to push state changes of the issuance process to",
+          "required" : false,
+          "deprecated" : false,
+          "explode" : false,
+          "schema" : {
+            "title" : "String",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Pass the unsigned credential that you intend to issue in the body of the request.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/id.walt.issuer.issuance.IssuanceRequest"
+              },
+              "examples" : {
+                "W3C SD-JWT example" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"OKP\",\"d\":\"mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI\",\"crv\":\"Ed25519\",\"kid\":\"Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8\",\"x\":\"T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM\"}},\"credentialConfigurationId\":\"OpenBadgeCredential_jwt_vc_json\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\",\"https://purl.imsglobal.org/spec/ob/v3p0/context.json\"],\"id\":\"urn:uuid:THIS WILL BE REPLACED WITH DYNAMIC DATA FUNCTION (see below)\",\"type\":[\"VerifiableCredential\",\"OpenBadgeCredential\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"issuer\":{\"type\":[\"Profile\"],\"name\":\"Jobs for the Future (JFF)\",\"url\":\"https://www.jff.org/\",\"image\":\"https://w3c-ccg.github.io/vc-ed/plugfest-1-2022/images/JFF_LogoLockup.png\"},\"credentialSubject\":{\"type\":[\"AchievementSubject\"],\"achievement\":{\"id\":\"urn:uuid:ac254bd5-8fad-4bb1-9d29-efd938536926\",\"type\":[\"Achievement\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"description\":\"This wallet supports the use of W3C Verifiable Credentials and has demonstrated interoperability during the presentation request workflow during JFF x VC-EDU PlugFest 3.\",\"criteria\":{\"type\":\"Criteria\",\"narrative\":\"Wallet solutions providers earned this badge by demonstrating interoperability during the presentation request workflow. This includes successfully receiving a presentation request, allowing the holder to select at least two types of verifiable credentials to create a verifiable presentation, returning the presentation to the requestor, and passing verification of the presentation and the included credentials.\"},\"image\":{\"id\":\"https://w3c-ccg.github.io/vc-ed/plugfest-3-2023/images/JFF-VC-EDU-PLUGFEST3-badge-image.png\",\"type\":\"Image\"}}}},\"mapping\":{\"id\":\"<uuid>\",\"issuer\":{\"id\":\"<issuerDid>\"},\"credentialSubject\":{\"id\":\"<subjectDid>\"},\"issuanceDate\":\"<timestamp>\",\"expirationDate\":\"<timestamp-in:365d>\"},\"selectiveDisclosure\":{\"fields\":{\"name\":{\"sd\":true}},\"decoyMode\":\"NONE\",\"decoys\":0},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"issuerDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\"}"
+                },
+                "W3C SD-JWT PDA1 example" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"EC\",\"x\":\"SgfOvOk1TL5yiXhK5Nq7OwKfn_RUkDizlIhAf8qd2wE\",\"y\":\"u_y5JZOsw3SrnNPydzJkoaiqb8raSdCNE_nPovt1fNI\",\"crv\":\"P-256\",\"d\":\"UqSi2MbJmPczfRmwRDeOJrdivoEy-qk4OEDjFwJYlUI\"}},\"credentialConfigurationId\":\"VerifiablePortableDocumentA1_jwt_vc\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\"],\"id\":\"https://www.w3.org/2018/credentials/v1\",\"type\":[\"VerifiableCredential\",\"VerifiableAttestation\",\"VerifiablePortableDocumentA1\"],\"issuer\":\"did:ebsi:zf39qHTXaLrr6iy3tQhT3UZ\",\"issuanceDate\":\"2020-03-10T04:24:12Z\",\"credentialSubject\":{\"id\":\"did:key:z2dmzD81cgPx8Vki7JbuuMmFYrWPgYoytykUZ3eyqht1j9KbrvQgsKodq2xnfBMYGk99qtunHHQuvvi35kRvbH9SDnue2ZNJqcnaU7yAxeKqEqDX4qFzeKYCj6rdbFnTsf4c8QjFXcgGYS21Db9d2FhHxw9ZEnqt9KPgLsLbQHVAmNNZoz\",\"section1\":{\"personalIdentificationNumber\":\"1\",\"sex\":\"01\",\"surname\":\"Savvaidis\",\"forenames\":\"Charalampos\",\"dateBirth\":\"1985-08-15\",\"nationalities\":[\"BE\"],\"stateOfResidenceAddress\":{\"streetNo\":\"sss, nnn \",\"postCode\":\"ppp\",\"town\":\"ccc\",\"countryCode\":\"BE\"},\"stateOfStayAddress\":{\"streetNo\":\"sss, nnn \",\"postCode\":\"ppp\",\"town\":\"ccc\",\"countryCode\":\"BE\"}},\"section2\":{\"memberStateWhichLegislationApplies\":\"DE\",\"startingDate\":\"2022-10-09\",\"endingDate\":\"2022-10-29\",\"certificateForDurationActivity\":true,\"determinationProvisional\":false,\"transitionRulesApplyAsEC8832004\":false},\"section3\":{\"postedEmployedPerson\":false,\"employedTwoOrMoreStates\":false,\"postedSelfEmployedPerson\":true,\"selfEmployedTwoOrMoreStates\":true,\"civilServant\":true,\"contractStaff\":false,\"mariner\":false,\"employedAndSelfEmployed\":false,\"civilAndEmployedSelfEmployed\":true,\"flightCrewMember\":false,\"exception\":false,\"exceptionDescription\":\"\",\"workingInStateUnder21\":false},\"section4\":{\"employee\":false,\"selfEmployedActivity\":true,\"nameBusinessName\":\"1\",\"registeredAddress\":{\"streetNo\":\"1, 1 1\",\"postCode\":\"1\",\"town\":\"1\",\"countryCode\":\"DE\"}},\"section5\":{\"noFixedAddress\":true},\"section6\":{\"name\":\"National Institute for the Social Security of the Self-employed (NISSE)\",\"address\":{\"streetNo\":\"Quai de Willebroeck 35\",\"postCode\":\"1000\",\"town\":\"Bruxelles\",\"countryCode\":\"BE\"},\"institutionID\":\"NSSIE/INASTI/RSVZ\",\"officeFaxNo\":\"\",\"officePhoneNo\":\"0800 12 018\",\"email\":\"info@rsvz-inasti.fgov.be\",\"date\":\"2022-10-28\",\"signature\":\"Official signature\"}}},\"mapping\":{\"id\":\"<uuid>\",\"issuer\":\"<issuerDid>\",\"credentialSubject\":{\"id\":\"<subjectDid>\"},\"issuanceDate\":\"<timestamp-ebsi>\",\"issued\":\"<timestamp-ebsi>\",\"validFrom\":\"<timestamp-ebsi>\",\"expirationDate\":\"<timestamp-ebsi-in:365d>\",\"credentialSchema\":{\"id\":\"https://api-conformance.ebsi.eu/trusted-schemas-registry/v3/schemas/z5qB8tydkn3Xk3VXb15SJ9dAWW6wky1YEoVdGzudWzhcW\",\"type\":\"FullJsonSchemaValidator2021\"}},\"selectiveDisclosure\":{\"fields\":{\"credentialSubject\":{\"sd\":false,\"children\":{\"fields\":{\"section1\":{\"sd\":false,\"children\":{\"fields\":{\"personalIdentificationNumber\":{\"sd\":true},\"sex\":{\"sd\":true},\"surname\":{\"sd\":true},\"forenames\":{\"sd\":true},\"dateBirth\":{\"sd\":true},\"nationalities\":{\"sd\":true},\"stateOfResidenceAddress\":{\"sd\":true},\"stateOfStayAddress\":{\"sd\":true}},\"decoyMode\":\"NONE\",\"decoys\":0}},\"section3\":{\"sd\":false,\"children\":{\"fields\":{\"postedEmployedPerson\":{\"sd\":true},\"employedTwoOrMoreStates\":{\"sd\":true},\"postedSelfEmployedPerson\":{\"sd\":true},\"selfEmployedTwoOrMoreStates\":{\"sd\":true},\"civilServant\":{\"sd\":true},\"contractStaff\":{\"sd\":true},\"mariner\":{\"sd\":true},\"employedAndSelfEmployed\":{\"sd\":true},\"civilAndEmployedSelfEmployed\":{\"sd\":true},\"flightCrewMember\":{\"sd\":true},\"exception\":{\"sd\":true},\"exceptionDescription\":{\"sd\":true},\"workingInStateUnder21\":{\"sd\":true}},\"decoyMode\":\"NONE\",\"decoys\":0}},\"section4\":{\"sd\":false,\"children\":{\"fields\":{\"employee\":{\"sd\":true},\"selfEmployedActivity\":{\"sd\":true},\"nameBusinessName\":{\"sd\":true},\"registeredAddress\":{\"sd\":true}},\"decoyMode\":\"NONE\",\"decoys\":0}},\"section5\":{\"sd\":false,\"children\":{\"fields\":{\"noFixedAddress\":{\"sd\":true}},\"decoyMode\":\"NONE\",\"decoys\":0}},\"section6\":{\"sd\":false,\"children\":{\"fields\":{\"name\":{\"sd\":true},\"address\":{\"sd\":true},\"institutionID\":{\"sd\":true},\"officeFaxNo\":{\"sd\":true},\"officePhoneNo\":{\"sd\":true},\"email\":{\"sd\":true},\"date\":{\"sd\":true},\"signature\":{\"sd\":true}},\"decoyMode\":\"NONE\",\"decoys\":0}}},\"decoyMode\":\"NONE\",\"decoys\":0}}},\"decoyMode\":\"NONE\",\"decoys\":0},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"issuerDid\":\"did:ebsi:zf39qHTXaLrr6iy3tQhT3UZ\"}"
+                },
+                "SD-JWT-VC example" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"EC\",\"d\":\"KJ4k3Vcl5Sj9Mfq4rrNXBm2MoPoY3_Ak_PIR_EgsFhQ\",\"crv\":\"P-256\",\"x\":\"G0RINBiF-oQUD3d5DGnegQuXenI29JDaMGoMvioKRBM\",\"y\":\"ed3eFGs2pEtrp7vAZ7BLcbrUtpKkYWAT2JPUQK4lN4E\"}},\"credentialConfigurationId\":\"identity_credential_vc+sd-jwt\",\"credentialData\":{\"given_name\":\"John\",\"family_name\":\"Doe\",\"email\":\"johndoe@example.com\",\"phone_number\":\"+1-202-555-0101\",\"address\":{\"street_address\":\"123 Main St\",\"locality\":\"Anytown\",\"region\":\"Anystate\",\"country\":\"US\"},\"birthdate\":\"1940-01-01\",\"is_over_18\":true,\"is_over_21\":true,\"is_over_65\":true},\"mapping\":{\"id\":\"<uuid>\",\"iat\":\"<timestamp-seconds>\",\"nbf\":\"<timestamp-seconds>\",\"exp\":\"<timestamp-in-seconds:365d>\"},\"selectiveDisclosure\":{\"fields\":{\"birthdate\":{\"sd\":true},\"family_name\":{\"sd\":false}},\"decoyMode\":\"NONE\",\"decoys\":0},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"x5Chain\":[\"-----BEGIN CERTIFICATE-----\\nMIIBRzCB7qADAgECAgg57ch6mnj5KjAKBggqhkjOPQQDAjAXMRUwEwYDVQQDDAxNRE9DIFJPT1QgQ0EwHhcNMjQwNTAyMTMxMzMwWhcNMjUwNTAyMTMxMzMwWjAbMRkwFwYDVQQDDBBNRE9DIFRlc3QgSXNzdWVyMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEG0RINBiF+oQUD3d5DGnegQuXenI29JDaMGoMvioKRBN53d4UazakS2unu8BnsEtxutS2kqRhYBPYk9RAriU3gaMgMB4wDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCB4AwCgYIKoZIzj0EAwIDSAAwRQIhAI5wBBAA3ewqIwslhuzFn4rNFW9dkz2TY7xeImO7CraYAiAYhai1NzJ6abAiYg8HxcRdYpO4bu2Sej8E6CzFHK34Yw==\\n-----END CERTIFICATE-----\"],\"trustedRootCAs\":[\"-----BEGIN CERTIFICATE-----\\nMIIBQzCB66ADAgECAgjbHnT+6LsrbDAKBggqhkjOPQQDAjAYMRYwFAYDVQQDDA1NRE9DIFJPT1QgQ1NQMB4XDTI0MDUwMjEzMTMzMFoXDTI0MDUwMzEzMTMzMFowFzEVMBMGA1UEAwwMTURPQyBST09UIENBMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEWP0sG+CkjItZ9KfM3sLF+rLGb8HYCfnlsIH/NWJjiXkTx57ryDLYfTU6QXYukVKHSq6MEebvQPqTJT1blZ/xeKMgMB4wDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDRwAwRAIgWM+JtnhdqbTzFD1S3byTvle0n/6EVALbkKCbdYGLn8cCICOoSETqwk1oPnJEEPjUbdR4txiNqkHQih8HKAQoe8t5\\n-----END CERTIFICATE-----\\n\"]}"
+                },
+                "SD-JWT-VC example featuring selectively disclosable sub and iat claims" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"EC\",\"d\":\"KJ4k3Vcl5Sj9Mfq4rrNXBm2MoPoY3_Ak_PIR_EgsFhQ\",\"crv\":\"P-256\",\"x\":\"G0RINBiF-oQUD3d5DGnegQuXenI29JDaMGoMvioKRBM\",\"y\":\"ed3eFGs2pEtrp7vAZ7BLcbrUtpKkYWAT2JPUQK4lN4E\"}},\"credentialConfigurationId\":\"identity_credential_vc+sd-jwt\",\"credentialData\":{\"given_name\":\"John\",\"family_name\":\"Doe\",\"email\":\"johndoe@example.com\",\"phone_number\":\"+1-202-555-0101\",\"address\":{\"street_address\":\"123 Main St\",\"locality\":\"Anytown\",\"region\":\"Anystate\",\"country\":\"US\"},\"birthdate\":\"1940-01-01\",\"is_over_18\":true,\"is_over_21\":true,\"is_over_65\":true},\"mapping\":{\"id\":\"<uuid>\",\"iat\":\"<timestamp-seconds>\",\"nbf\":\"<timestamp-seconds>\",\"exp\":\"<timestamp-in-seconds:365d>\"},\"selectiveDisclosure\":{\"fields\":{\"birthdate\":{\"sd\":true},\"sub\":{\"sd\":true},\"iat\":{\"sd\":true}},\"decoyMode\":\"NONE\",\"decoys\":0},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"x5Chain\":[\"-----BEGIN CERTIFICATE-----\\nMIIBRzCB7qADAgECAgg57ch6mnj5KjAKBggqhkjOPQQDAjAXMRUwEwYDVQQDDAxNRE9DIFJPT1QgQ0EwHhcNMjQwNTAyMTMxMzMwWhcNMjUwNTAyMTMxMzMwWjAbMRkwFwYDVQQDDBBNRE9DIFRlc3QgSXNzdWVyMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEG0RINBiF+oQUD3d5DGnegQuXenI29JDaMGoMvioKRBN53d4UazakS2unu8BnsEtxutS2kqRhYBPYk9RAriU3gaMgMB4wDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCB4AwCgYIKoZIzj0EAwIDSAAwRQIhAI5wBBAA3ewqIwslhuzFn4rNFW9dkz2TY7xeImO7CraYAiAYhai1NzJ6abAiYg8HxcRdYpO4bu2Sej8E6CzFHK34Yw==\\n-----END CERTIFICATE-----\"],\"trustedRootCAs\":[\"-----BEGIN CERTIFICATE-----\\nMIIBQzCB66ADAgECAgjbHnT+6LsrbDAKBggqhkjOPQQDAjAYMRYwFAYDVQQDDA1NRE9DIFJPT1QgQ1NQMB4XDTI0MDUwMjEzMTMzMFoXDTI0MDUwMzEzMTMzMFowFzEVMBMGA1UEAwwMTURPQyBST09UIENBMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEWP0sG+CkjItZ9KfM3sLF+rLGb8HYCfnlsIH/NWJjiXkTx57ryDLYfTU6QXYukVKHSq6MEebvQPqTJT1blZ/xeKMgMB4wDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDRwAwRAIgWM+JtnhdqbTzFD1S3byTvle0n/6EVALbkKCbdYGLn8cCICOoSETqwk1oPnJEEPjUbdR4txiNqkHQih8HKAQoe8t5\\n-----END CERTIFICATE-----\\n\"]}"
+                },
+                "SD-JWT-VC example with issuer DID" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"EC\",\"d\":\"KJ4k3Vcl5Sj9Mfq4rrNXBm2MoPoY3_Ak_PIR_EgsFhQ\",\"crv\":\"P-256\",\"x\":\"G0RINBiF-oQUD3d5DGnegQuXenI29JDaMGoMvioKRBM\",\"y\":\"ed3eFGs2pEtrp7vAZ7BLcbrUtpKkYWAT2JPUQK4lN4E\"}},\"credentialConfigurationId\":\"identity_credential_vc+sd-jwt\",\"credentialData\":{\"given_name\":\"John\",\"family_name\":\"Doe\",\"email\":\"johndoe@example.com\",\"phone_number\":\"+1-202-555-0101\",\"address\":{\"street_address\":\"123 Main St\",\"locality\":\"Anytown\",\"region\":\"Anystate\",\"country\":\"US\"},\"birthdate\":\"1940-01-01\",\"is_over_18\":true,\"is_over_21\":true,\"is_over_65\":true},\"mapping\":{\"id\":\"<uuid>\",\"iat\":\"<timestamp-seconds>\",\"nbf\":\"<timestamp-seconds>\",\"exp\":\"<timestamp-in-seconds:365d>\"},\"selectiveDisclosure\":{\"fields\":{\"birthdate\":{\"sd\":true},\"family_name\":{\"sd\":false}},\"decoyMode\":\"NONE\",\"decoys\":0},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"issuerDid\":\"did:jwk:eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IkcwUklOQmlGLW9RVUQzZDVER25lZ1F1WGVuSTI5SkRhTUdvTXZpb0tSQk0iLCJ5IjoiZWQzZUZHczJwRXRycDd2QVo3QkxjYnJVdHBLa1lXQVQySlBVUUs0bE40RSJ9\"}"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Credential signed (with the *proof* attribute added)",
+            "headers" : { },
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "title" : "String",
+                  "type" : "string"
+                },
+                "examples" : {
+                  "Issuance URL" : {
+                    "value" : "openid-credential-offer://localhost/?credential_offer=%7B%22credential_issuer%22%3A%22http%3A%2F%2Flocalhost%3A8000%22%2C%22credentials%22%3A%5B%22VerifiableId%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%22issuer_state%22%3A%22501414a4-c461-43f0-84b2-c628730c7c02%22%7D%7D%7D"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/openid4vc/sdjwt/issueBatch" : {
+      "post" : {
+        "tags" : [ "Credential Issuance" ],
+        "summary" : "Signs a list of credentials with SD and starts an OIDC credential exchange flow.",
+        "description" : "This endpoint issues a list of W3C Verifiable Credentials, and returns an issuance URL ",
+        "parameters" : [ {
+          "name" : "statusCallbackUri",
+          "in" : "header",
+          "description" : "Callback to push state changes of the issuance process to",
+          "required" : false,
+          "deprecated" : false,
+          "explode" : false,
+          "schema" : {
+            "title" : "String",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Pass the unsigned credential that you intend to issue as the body of the request.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "title" : "List<IssuanceRequest>",
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/id.walt.issuer.issuance.IssuanceRequest"
+                }
+              },
+              "examples" : {
+                "Batch example" : {
+                  "value" : "[{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"OKP\",\"d\":\"mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI\",\"crv\":\"Ed25519\",\"kid\":\"Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8\",\"x\":\"T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM\"}},\"credentialConfigurationId\":\"OpenBadgeCredential_jwt_vc\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\",\"https://purl.imsglobal.org/spec/ob/v3p0/context.json\"],\"id\":\"urn:uuid:THIS WILL BE REPLACED WITH DYNAMIC DATA FUNCTION (see below)\",\"type\":[\"VerifiableCredential\",\"OpenBadgeCredential\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"issuer\":{\"type\":[\"Profile\"],\"name\":\"Jobs for the Future (JFF)\",\"url\":\"https://www.jff.org/\",\"image\":\"https://w3c-ccg.github.io/vc-ed/plugfest-1-2022/images/JFF_LogoLockup.png\"},\"credentialSubject\":{\"type\":[\"AchievementSubject\"],\"achievement\":{\"id\":\"urn:uuid:ac254bd5-8fad-4bb1-9d29-efd938536926\",\"type\":[\"Achievement\"],\"name\":\"JFF x vc-edu PlugFest 3 Interoperability\",\"description\":\"This wallet supports the use of W3C Verifiable Credentials and has demonstrated interoperability during the presentation request workflow during JFF x VC-EDU PlugFest 3.\",\"criteria\":{\"type\":\"Criteria\",\"narrative\":\"Wallet solutions providers earned this badge by demonstrating interoperability during the presentation request workflow. This includes successfully receiving a presentation request, allowing the holder to select at least two types of verifiable credentials to create a verifiable presentation, returning the presentation to the requestor, and passing verification of the presentation and the included credentials.\"},\"image\":{\"id\":\"https://w3c-ccg.github.io/vc-ed/plugfest-3-2023/images/JFF-VC-EDU-PLUGFEST3-badge-image.png\",\"type\":\"Image\"}}}},\"mapping\":{\"id\":\"<uuid>\",\"issuer\":{\"id\":\"<issuerDid>\"},\"credentialSubject\":{\"id\":\"<subjectDid>\"},\"issuanceDate\":\"<timestamp>\",\"expirationDate\":\"<timestamp-in:365d>\"},\"selectiveDisclosure\":{\"fields\":{\"name\":{\"sd\":true}},\"decoyMode\":\"NONE\",\"decoys\":0},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"issuerDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\"},{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"OKP\",\"d\":\"mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI\",\"crv\":\"Ed25519\",\"kid\":\"Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8\",\"x\":\"T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM\"}},\"credentialConfigurationId\":\"BankId_jwt_vc\",\"credentialData\":{\"@context\":[\"https://www.w3.org/2018/credentials/v1\"],\"type\":[\"VerifiableCredential\",\"BankId\"],\"credentialSubject\":{\"accountId\":\"1234567890\",\"IBAN\":\"DE99123456789012345678\",\"BIC\":\"DEUTDEDBBER\",\"birthDate\":\"1958-08-17\",\"familyName\":\"DOE\",\"givenName\":\"JOHN\",\"id\":\"identity#bankId\"},\"issuer\":{\"image\":{\"id\":\"https://images.squarespace-cdn.com/content/v1/609c0ddf94bcc0278a7cbdb4/1660296169313-K159K9WX8J8PPJE005HV/Walt+Bot_Logo.png?format=100w\",\"type\":\"Image\"},\"name\":\"CH Authority\",\"type\":\"Profile\",\"url\":\"https://images.squarespace-cdn.com/content/v1/609c0ddf94bcc0278a7cbdb4/1660296169313-K159K9WX8J8PPJE005HV/Walt+Bot_Logo.png?format=100w\"}},\"mapping\":{\"id\":\"<uuid>\",\"issuer\":{\"id\":\"<issuerDid>\"},\"credentialSubject\":{\"id\":\"<subjectDid>\"},\"issuanceDate\":\"<timestamp>\",\"expirationDate\":\"<timestamp-in:365d>\"},\"selectiveDisclosure\":{\"fields\":{\"credentialSubject\":{\"sd\":true}},\"decoyMode\":\"NONE\",\"decoys\":0},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"issuerDid\":\"did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp\"}]"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Credential signed (with the *proof* attribute added)",
+            "headers" : { },
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "title" : "String",
+                  "type" : "string"
+                },
+                "examples" : {
+                  "Issuance URL" : {
+                    "value" : "openid-credential-offer://localhost/?credential_offer=%7B%22credential_issuer%22%3A%22http%3A%2F%2Flocalhost%3A8000%22%2C%22credentials%22%3A%5B%22VerifiableId%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%22issuer_state%22%3A%22501414a4-c461-43f0-84b2-c628730c7c02%22%7D%7D%7D"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/openid4vc/mdoc/issue" : {
+      "post" : {
+        "tags" : [ "Credential Issuance" ],
+        "summary" : "Signs a credential based on the IEC/ISO18013-5 mdoc/mDL format.",
+        "description" : "This endpoint issues a mdoc and returns an issuance URL ",
+        "parameters" : [ {
+          "name" : "statusCallbackUri",
+          "in" : "header",
+          "description" : "Callback to push state changes of the issuance process to",
+          "required" : false,
+          "deprecated" : false,
+          "explode" : false,
+          "schema" : {
+            "title" : "String",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Pass the unsigned credential that you intend to issue as the body of the request.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/id.walt.issuer.issuance.IssuanceRequest"
+              },
+              "examples" : {
+                "mDL/MDOC example" : {
+                  "value" : "{\"issuerKey\":{\"type\":\"jwk\",\"jwk\":{\"kty\":\"EC\",\"d\":\"KJ4k3Vcl5Sj9Mfq4rrNXBm2MoPoY3_Ak_PIR_EgsFhQ\",\"crv\":\"P-256\",\"x\":\"G0RINBiF-oQUD3d5DGnegQuXenI29JDaMGoMvioKRBM\",\"y\":\"ed3eFGs2pEtrp7vAZ7BLcbrUtpKkYWAT2JPUQK4lN4E\"}},\"credentialConfigurationId\":\"org.iso.18013.5.1.mDL\",\"mdocData\":{\"org.iso.18013.5.1\":{\"family_name\":\"Doe\",\"given_name\":\"John\",\"birth_date\":\"1980-01-02\"}},\"authenticationMethod\":\"PRE_AUTHORIZED\",\"issuerDid\":\"\",\"x5Chain\":[\"-----BEGIN CERTIFICATE-----\\nMIIBRzCB7qADAgECAgg57ch6mnj5KjAKBggqhkjOPQQDAjAXMRUwEwYDVQQDDAxNRE9DIFJPT1QgQ0EwHhcNMjQwNTAyMTMxMzMwWhcNMjUwNTAyMTMxMzMwWjAbMRkwFwYDVQQDDBBNRE9DIFRlc3QgSXNzdWVyMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEG0RINBiF+oQUD3d5DGnegQuXenI29JDaMGoMvioKRBN53d4UazakS2unu8BnsEtxutS2kqRhYBPYk9RAriU3gaMgMB4wDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCB4AwCgYIKoZIzj0EAwIDSAAwRQIhAI5wBBAA3ewqIwslhuzFn4rNFW9dkz2TY7xeImO7CraYAiAYhai1NzJ6abAiYg8HxcRdYpO4bu2Sej8E6CzFHK34Yw==\\n-----END CERTIFICATE-----\"],\"trustedRootCAs\":[\"-----BEGIN CERTIFICATE-----\\nMIIBQzCB66ADAgECAgjbHnT+6LsrbDAKBggqhkjOPQQDAjAYMRYwFAYDVQQDDA1NRE9DIFJPT1QgQ1NQMB4XDTI0MDUwMjEzMTMzMFoXDTI0MDUwMzEzMTMzMFowFzEVMBMGA1UEAwwMTURPQyBST09UIENBMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEWP0sG+CkjItZ9KfM3sLF+rLGb8HYCfnlsIH/NWJjiXkTx57ryDLYfTU6QXYukVKHSq6MEebvQPqTJT1blZ/xeKMgMB4wDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDRwAwRAIgWM+JtnhdqbTzFD1S3byTvle0n/6EVALbkKCbdYGLn8cCICOoSETqwk1oPnJEEPjUbdR4txiNqkHQih8HKAQoe8t5\\n-----END CERTIFICATE-----\\n\"]}"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : { },
+        "deprecated" : false
+      }
+    },
+    "/openid4vc/credentialOffer" : {
+      "get" : {
+        "tags" : [ "Credential Issuance" ],
+        "summary" : "Gets a credential offer based on the session id",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "required" : true,
+          "deprecated" : false,
+          "explode" : false,
+          "schema" : {
+            "title" : "String",
+            "type" : "string"
+          }
+        } ],
+        "responses" : { },
+        "deprecated" : false
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "id.walt.commons.web.modules.FeatureFlagInformationModule.FeatureFlagInformation" : {
+        "title" : "FeatureFlagInformation",
+        "required" : [ "features", "total" ],
+        "type" : "object",
+        "properties" : {
+          "features" : {
+            "title" : "Map<String,String>",
+            "type" : "object",
+            "additionalProperties" : {
+              "title" : "String",
+              "type" : "string"
+            }
+          },
+          "total" : {
+            "title" : "Int",
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "id.walt.commons.web.modules.FeatureFlagInformationModule.FeatureFlagInformations" : {
+        "title" : "FeatureFlagInformations",
+        "required" : [ "defaulted", "disabled", "enabled" ],
+        "type" : "object",
+        "properties" : {
+          "defaulted" : {
+            "$ref" : "#/components/schemas/id.walt.commons.web.modules.FeatureFlagInformationModule.FeatureFlagInformation"
+          },
+          "disabled" : {
+            "$ref" : "#/components/schemas/id.walt.commons.web.modules.FeatureFlagInformationModule.FeatureFlagInformation"
+          },
+          "enabled" : {
+            "$ref" : "#/components/schemas/id.walt.commons.web.modules.FeatureFlagInformationModule.FeatureFlagInformation"
+          }
+        }
+      },
+      "id.walt.issuer.issuance.OnboardRequestDid" : {
+        "title" : "OnboardRequestDid",
+        "required" : [ "method" ],
+        "type" : "object",
+        "properties" : {
+          "config" : {
+            "title" : "JsonObject",
+            "type" : "object",
+            "additionalProperties" : {
+              "title" : "*",
+              "type" : "object"
+            }
+          },
+          "method" : {
+            "title" : "String",
+            "type" : "string"
+          }
+        }
+      },
+      "id.walt.crypto.keys.KeyGenerationRequest" : {
+        "title" : "KeyGenerationRequest",
+        "required" : [ "backend", "keyType" ],
+        "type" : "object",
+        "properties" : {
+          "backend" : {
+            "title" : "String",
+            "type" : "string"
+          },
+          "config" : {
+            "title" : "JsonObject",
+            "type" : "object",
+            "additionalProperties" : {
+              "title" : "*",
+              "type" : "object"
+            }
+          },
+          "keyType" : {
+            "$ref" : "#/components/schemas/id.walt.crypto.keys.KeyType"
+          }
+        }
+      },
+      "id.walt.crypto.keys.KeyType" : {
+        "title" : "KeyType",
+        "enum" : [ "Ed25519", "secp256k1", "secp256r1", "RSA" ]
+      },
+      "id.walt.issuer.issuance.OnboardingRequest" : {
+        "title" : "OnboardingRequest",
+        "required" : [ "did", "key" ],
+        "type" : "object",
+        "properties" : {
+          "did" : {
+            "$ref" : "#/components/schemas/id.walt.issuer.issuance.OnboardRequestDid"
+          },
+          "key" : {
+            "$ref" : "#/components/schemas/id.walt.crypto.keys.KeyGenerationRequest"
+          }
+        }
+      },
+      "kotlinx.serialization.json.JsonElement" : {
+        "title" : "JsonElement",
+        "anyOf" : [ {
+          "title" : "JsonArray",
+          "type" : "array",
+          "items" : {
+            "title" : "*",
+            "type" : "object"
+          }
+        }, {
+          "title" : "JsonObject",
+          "type" : "object",
+          "additionalProperties" : {
+            "title" : "*",
+            "type" : "object"
+          }
+        }, {
+          "$ref" : "#/components/schemas/kotlinx.serialization.json.JsonPrimitive"
+        } ]
+      },
+      "kotlinx.serialization.json.JsonPrimitive" : {
+        "title" : "JsonPrimitive",
+        "anyOf" : [ {
+          "$ref" : "#/components/schemas/kotlinx.serialization.json.JsonLiteral"
+        }, {
+          "$ref" : "#/components/schemas/kotlinx.serialization.json.JsonNull"
+        } ]
+      },
+      "kotlinx.serialization.json.JsonLiteral" : {
+        "title" : "JsonLiteral",
+        "required" : [ "content", "isString" ],
+        "type" : "object",
+        "properties" : {
+          "content" : {
+            "title" : "String",
+            "type" : "string"
+          },
+          "isString" : {
+            "title" : "Boolean",
+            "type" : "boolean"
+          }
+        }
+      },
+      "kotlinx.serialization.json.JsonNull" : {
+        "title" : "JsonNull",
+        "required" : [ "content", "isString" ],
+        "type" : "object",
+        "properties" : {
+          "isString" : {
+            "title" : "Boolean",
+            "type" : "boolean"
+          },
+          "content" : {
+            "title" : "String",
+            "type" : "string"
+          }
+        }
+      },
+      "id.walt.issuer.issuance.IssuerOnboardingResponse" : {
+        "title" : "IssuerOnboardingResponse",
+        "required" : [ "issuerDid", "issuerKey" ],
+        "type" : "object",
+        "properties" : {
+          "issuerDid" : {
+            "title" : "String",
+            "type" : "string"
+          },
+          "issuerKey" : {
+            "$ref" : "#/components/schemas/kotlinx.serialization.json.JsonElement"
+          }
+        }
+      },
+      "id.walt.oid4vc.data.AuthenticationMethod" : {
+        "title" : "AuthenticationMethod",
+        "enum" : [ "PRE_AUTHORIZED", "PWD", "VP_TOKEN", "ID_TOKEN", "NONE" ]
+      },
+      "id.walt.oid4vc.data.CredentialFormat" : {
+        "title" : "CredentialFormat",
+        "enum" : [ "jwt_vc_json", "jwt_vc_json_ld", "ldp_vc", "sd_jwt_vc", "mso_mdoc", "jwt_vp_json", "jwt_vp_json_ld", "ldp_vp", "jwt_vc", "jwt_vp" ]
+      },
+      "id.walt.oid4vc.data.OpenId4VPProfile" : {
+        "title" : "OpenId4VPProfile",
+        "enum" : [ "DEFAULT", "ISO_18013_7_MDOC", "EBSIV3", "HAIP" ]
+      },
+      "id.walt.issuer.issuance.IssuanceRequest" : {
+        "title" : "IssuanceRequest",
+        "required" : [ "credentialConfigurationId" ],
+        "type" : "object",
+        "properties" : {
+          "authenticationMethod" : {
+            "$ref" : "#/components/schemas/id.walt.oid4vc.data.AuthenticationMethod"
+          },
+          "credentialConfigurationId" : {
+            "title" : "String",
+            "type" : "string"
+          },
+          "credentialData" : {
+            "title" : "JsonObject",
+            "type" : "object",
+            "additionalProperties" : {
+              "title" : "*",
+              "type" : "object"
+            }
+          },
+          "credentialFormat" : {
+            "$ref" : "#/components/schemas/id.walt.oid4vc.data.CredentialFormat"
+          },
+          "issuerDid" : {
+            "title" : "String",
+            "type" : "string"
+          },
+          "issuerKey" : {
+            "title" : "JsonObject",
+            "type" : "object",
+            "additionalProperties" : {
+              "title" : "*",
+              "type" : "object"
+            }
+          },
+          "mapping" : {
+            "title" : "JsonObject",
+            "type" : "object",
+            "additionalProperties" : {
+              "title" : "*",
+              "type" : "object"
+            }
+          },
+          "mdocData" : {
+            "title" : "Map<String,JsonObject>",
+            "type" : "object",
+            "additionalProperties" : {
+              "title" : "JsonObject",
+              "type" : "object",
+              "additionalProperties" : {
+                "title" : "*",
+                "type" : "object"
+              }
+            }
+          },
+          "selectiveDisclosure" : {
+            "title" : "SDMap",
+            "type" : "object",
+            "additionalProperties" : {
+              "title" : "*",
+              "type" : "object"
+            }
+          },
+          "trustedRootCAs" : {
+            "title" : "List<String>",
+            "type" : "array",
+            "items" : {
+              "title" : "String",
+              "type" : "string"
+            }
+          },
+          "useJar" : {
+            "title" : "Boolean",
+            "type" : "boolean"
+          },
+          "vct" : {
+            "title" : "String",
+            "type" : "string"
+          },
+          "vpProfile" : {
+            "$ref" : "#/components/schemas/id.walt.oid4vc.data.OpenId4VPProfile"
+          },
+          "vpRequestValue" : {
+            "title" : "String",
+            "type" : "string"
+          },
+          "x5Chain" : {
+            "title" : "List<String>",
+            "type" : "array",
+            "items" : {
+              "title" : "String",
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "examples" : {
+      "Uuid" : {
+        "value" : "12345678-abcd-9876-efgh-543210123456"
+      },
+      "Instant" : {
+        "value" : "2024-11-24T18:36:02.531793339Z"
+      }
+    }
+  }
+}

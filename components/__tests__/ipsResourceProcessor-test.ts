@@ -1,23 +1,14 @@
-import {AllergyIntoleranceSectionProcessor, getResourceWrappersForSections, getProcessor, getFlattenedIpsSections}
+import {AllergyIntoleranceSectionProcessor, getProcessor, getFlattenedIpsSections}
     from '../ipsResourceProcessor';
 import {FhirUrlStreamProcessor} from "@/components/fhirStreamProcessorUrl";
 import {IpsData, IpsSectionCode} from "@/components/fhirIpsModels";
 import yaml from 'js-yaml';
-
-
-interface FhirResource {
-    resourceType: string;
-    id: string;
-    [key: string]: any;
-}
-
-interface FlattenedResource {
-    [key: string]: string | number | boolean | null;
-}
+import {FlattenedResource} from "@/components/fhirIpsModels";
 
 
 async function loadPatient(patientId: string): Promise<IpsData> {
-    const ipsUrl = `http://localhost:8800/fhir-examples/ips-fhir/${patientId}-ips.json`
+    const ipsUrl = `https://fhir-static.healthwallet.li/fhir-examples/ips-fhir/${patientId}-ips.json`;
+    //const ipsUrl = `http://localhost:8800/fhir-examples/ips-fhir/${patientId}-ips.json`
     const sectionProcessor = new FhirUrlStreamProcessor()
     return await sectionProcessor.streamData(ipsUrl);
 }

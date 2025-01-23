@@ -2,7 +2,7 @@
 export interface IpsData {
     sectionResource: FhirResource;
     sections: any[];
-    resources: FhirResource[];
+    resources: FhirResourceWrapper[];
 }
 
 export interface FhirResourceWrapper {

@@ -1,0 +1,442 @@
+{
+    "@context": [
+      "https://www.w3.org/2018/credentials/v1"
+    ],
+    "id": "urn:uuid:b21d51f2-3c72-43fd-bbef-74c8bc08f0c5",
+    "type": [
+      "VerifiableCredential",
+      "SmartHealthCard"
+    ],
+    "issuer": {
+      "id": "did:jwk:eyJrdHkiOiJPS1AiLCJjcnYiOiJFZDI1NTE5Iiwia2lkIjoiM1ROOWQteUN6Y2FLSWt5d0sxb3FPZUhZTjdkR3NOUXRzWEt2Si1qOG0wYyIsIngiOiJ4ekVkUGRrVHpKUUpqbEhFMWNTdTBScHY3djlnQVBOaG5VVklyVGZrektVIn0",
+      "name": "SmartHealthCard",
+      "url": "https://smarthealth.cards",
+      "image": "https://en.wikipedia.org/wiki/SMART_Health_Card#/media/File:SMART_Health_IT_logo.png"
+    },
+    "issuanceDate": "2025-01-22T15:54:38.431126218Z",
+    "issued": "2025-01-22T15:54:38.431505511Z",
+    "expirationDate": "2026-01-22T15:54:38.431724122Z",
+    "credentialSubject": {
+      "id": "did:jwk:eyJrdHkiOiJPS1AiLCJjcnYiOiJFZDI1NTE5Iiwia2lkIjoiekRPWmtHZnhCRlBhazhqNkhERTRzSmtGVVBGc1lDYlcxM3VXWERBdmptZyIsIngiOiJqbjBzdWRJYUxIZDhCOVNoeU1FMlZXWk5PbEthV05YT1V4TlJuUVlJQmpFIn0",
+      "fhirVersion": "4.0.1",
+      "fhirBundle": {
+        "resourceType": "Bundle",
+        "type": "collection",
+        "entry": [
+          {
+            "resource": {
+              "fullUrl": "urn:uuid:ac542f12-084f-4355-8927-228edf1ec28b",
+              "resource": {
+                "address": [
+                  {
+                    "city": "Bellingham",
+                    "country": "US",
+                    "extension": [
+                      {
+                        "extension": [
+                          {
+                            "url": "latitude",
+                            "valueDecimal": 42.04829248570033
+                          },
+                          {
+                            "url": "longitude",
+                            "valueDecimal": -71.48965259278238
+                          }
+                        ],
+                        "url": "http://hl7.org/fhir/StructureDefinition/geolocation"
+                      }
+                    ],
+                    "line": [
+                      "705 Hirthe Common"
+                    ],
+                    "state": "Massachusetts"
+                  }
+                ],
+                "birthDate": "1951-09-30",
+                "communication": [
+                  {
+                    "language": {
+                      "coding": [
+                        {
+                          "code": "en-US",
+                          "display": "English",
+                          "system": "urn:ietf:bcp:47"
+                        }
+                      ],
+                      "text": "English"
+                    }
+                  }
+                ],
+                "deceasedDateTime": "2015-12-07T11:58:57+01:00",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName",
+                    "valueString": "Casandra937 Cruickshank494"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/patient-birthPlace",
+                    "valueAddress": {
+                      "city": "Brookline",
+                      "country": "US",
+                      "state": "Massachusetts"
+                    }
+                  },
+                  {
+                    "url": "http://synthetichealth.github.io/synthea/disability-adjusted-life-years",
+                    "valueDecimal": 2.309202680412174
+                  },
+                  {
+                    "url": "http://synthetichealth.github.io/synthea/quality-adjusted-life-years",
+                    "valueDecimal": 60.69079731958782
+                  }
+                ],
+                "gender": "female",
+                "identifier": [
+                  {
+                    "system": "https://github.com/synthetichealth/synthea",
+                    "value": "18c1edcd-5bb6-81a0-6365-596cf08ed550"
+                  },
+                  {
+                    "system": "http://hospital.smarthealthit.org",
+                    "type": {
+                      "coding": [
+                        {
+                          "code": "MR",
+                          "display": "Medical Record Number",
+                          "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+                        }
+                      ],
+                      "text": "Medical Record Number"
+                    },
+                    "value": "18c1edcd-5bb6-81a0-6365-596cf08ed550"
+                  },
+                  {
+                    "system": "http://hl7.org/fhir/sid/us-ssn",
+                    "type": {
+                      "coding": [
+                        {
+                          "code": "SS",
+                          "display": "Social Security Number",
+                          "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+                        }
+                      ],
+                      "text": "Social Security Number"
+                    },
+                    "value": "999-72-5451"
+                  },
+                  {
+                    "system": "urn:oid:2.16.840.1.113883.4.3.25",
+                    "type": {
+                      "coding": [
+                        {
+                          "code": "DL",
+                          "display": "Driver's License",
+                          "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+                        }
+                      ],
+                      "text": "Driver's License"
+                    },
+                    "value": "S99973062"
+                  },
+                  {
+                    "system": "http://standardhealthrecord.org/fhir/StructureDefinition/passportNumber",
+                    "type": {
+                      "coding": [
+                        {
+                          "code": "PPN",
+                          "display": "Passport Number",
+                          "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+                        }
+                      ],
+                      "text": "Passport Number"
+                    },
+                    "value": "X78517412X"
+                  }
+                ],
+                "maritalStatus": {
+                  "coding": [
+                    {
+                      "code": "S",
+                      "display": "S",
+                      "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"
+                    }
+                  ],
+                  "text": "S"
+                },
+                "meta": {
+                  "lastUpdated": "2024-09-20T13:14:59.529+02:00",
+                  "source": "#f7dhOnG0auZdiJgv",
+                  "versionId": "1"
+                },
+                "multipleBirthBoolean": false,
+                "name": [
+                  {
+                    "family": "Altenwerth646",
+                    "given": [
+                      "Adah626"
+                    ],
+                    "prefix": [
+                      "Ms."
+                    ],
+                    "use": "official"
+                  }
+                ],
+                "resourceType": "Patient",
+                "telecom": [
+                  {
+                    "system": "phone",
+                    "use": "home",
+                    "value": "555-687-6600"
+                  }
+                ],
+                "text": {
+                  "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Generated by <a href=\"https://github.com/synthetichealth/synthea\">Synthea</a>.Version identifier: synthea-java .   Person seed: -7254050089764288875  Population seed: 1709661719604</div>",
+                  "status": "generated"
+                }
+              }
+            }
+          },
+          {
+            "fullUrl": "urn:uuid:51e4cab9-7fbe-475a-9f16-bc1fa2779650",
+            "resource": {
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "code": "active",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+                  }
+                ]
+              },
+              "code": {
+                "coding": [
+                  {
+                    "code": "162864005",
+                    "display": "Body mass index 30+ - obesity (finding)",
+                    "system": "http://snomed.info/sct"
+                  }
+                ],
+                "text": "Body mass index 30+ - obesity (finding)"
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/narrativeLink",
+                  "valueUrl": "urn:uuid:d0227cd2-fba1-4f6c-a036-21461924c07a#Condition-urn:uuid:51e4cab9-7fbe-475a-9f16-bc1fa2779650"
+                }
+              ],
+              "meta": {
+                "lastUpdated": "2024-09-20T13:14:59.529+02:00",
+                "source": "#f7dhOnG0auZdiJgv",
+                "versionId": "1"
+              },
+              "onsetDateTime": "1973-12-02T10:53:57+01:00",
+              "recordedDate": "1973-12-02T10:53:57+01:00",
+              "resourceType": "Condition",
+              "subject": {
+                "reference": "urn:uuid:ac542f12-084f-4355-8927-228edf1ec28b"
+              },
+              "verificationStatus": {
+                "coding": [
+                  {
+                    "code": "confirmed",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "fullUrl": "urn:uuid:b5837db1-57ec-457a-aa94-8912a2eaa88d",
+            "resource": {
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "code": "active",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+                  }
+                ]
+              },
+              "code": {
+                "coding": [
+                  {
+                    "code": "19169002",
+                    "display": "Miscarriage in first trimester",
+                    "system": "http://snomed.info/sct"
+                  }
+                ],
+                "text": "Miscarriage in first trimester"
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/narrativeLink",
+                  "valueUrl": "urn:uuid:d0227cd2-fba1-4f6c-a036-21461924c07a#Condition-urn:uuid:b5837db1-57ec-457a-aa94-8912a2eaa88d"
+                }
+              ],
+              "meta": {
+                "lastUpdated": "2024-09-20T13:14:59.529+02:00",
+                "source": "#f7dhOnG0auZdiJgv",
+                "versionId": "1"
+              },
+              "onsetDateTime": "2001-04-29T11:53:57+02:00",
+              "recordedDate": "2001-04-29T11:53:57+02:00",
+              "resourceType": "Condition",
+              "subject": {
+                "reference": "urn:uuid:ac542f12-084f-4355-8927-228edf1ec28b"
+              },
+              "verificationStatus": {
+                "coding": [
+                  {
+                    "code": "confirmed",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "fullUrl": "urn:uuid:96c41a28-c537-4990-ac14-22564d02c9fe",
+            "resource": {
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "code": "active",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+                  }
+                ]
+              },
+              "code": {
+                "coding": [
+                  {
+                    "code": "64859006",
+                    "display": "Osteoporosis (disorder)",
+                    "system": "http://snomed.info/sct"
+                  }
+                ],
+                "text": "Osteoporosis (disorder)"
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/narrativeLink",
+                  "valueUrl": "urn:uuid:d0227cd2-fba1-4f6c-a036-21461924c07a#Condition-urn:uuid:96c41a28-c537-4990-ac14-22564d02c9fe"
+                }
+              ],
+              "meta": {
+                "lastUpdated": "2024-09-20T13:14:59.529+02:00",
+                "source": "#f7dhOnG0auZdiJgv",
+                "versionId": "1"
+              },
+              "onsetDateTime": "2011-11-27T10:53:57+01:00",
+              "recordedDate": "2011-11-27T10:53:57+01:00",
+              "resourceType": "Condition",
+              "subject": {
+                "reference": "urn:uuid:ac542f12-084f-4355-8927-228edf1ec28b"
+              },
+              "verificationStatus": {
+                "coding": [
+                  {
+                    "code": "confirmed",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "fullUrl": "urn:uuid:55e96da3-6a9d-4dcb-adf8-95814d3a34d8",
+            "resource": {
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "code": "active",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+                  }
+                ]
+              },
+              "code": {
+                "coding": [
+                  {
+                    "code": "40055000",
+                    "display": "Chronic sinusitis (disorder)",
+                    "system": "http://snomed.info/sct"
+                  }
+                ],
+                "text": "Chronic sinusitis (disorder)"
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/narrativeLink",
+                  "valueUrl": "urn:uuid:d0227cd2-fba1-4f6c-a036-21461924c07a#Condition-urn:uuid:55e96da3-6a9d-4dcb-adf8-95814d3a34d8"
+                }
+              ],
+              "meta": {
+                "lastUpdated": "2024-09-20T13:14:59.529+02:00",
+                "source": "#f7dhOnG0auZdiJgv",
+                "versionId": "1"
+              },
+              "onsetDateTime": "2012-01-08T10:53:57+01:00",
+              "recordedDate": "2012-01-08T10:53:57+01:00",
+              "resourceType": "Condition",
+              "subject": {
+                "reference": "urn:uuid:ac542f12-084f-4355-8927-228edf1ec28b"
+              },
+              "verificationStatus": {
+                "coding": [
+                  {
+                    "code": "confirmed",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "fullUrl": "urn:uuid:3bdd4196-cf44-439f-88c4-faeb388ae430",
+            "resource": {
+              "clinicalStatus": {
+                "coding": [
+                  {
+                    "code": "active",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+                  }
+                ]
+              },
+              "code": {
+                "coding": [
+                  {
+                    "code": "88805009",
+                    "display": "Chronic congestive heart failure (disorder)",
+                    "system": "http://snomed.info/sct"
+                  }
+                ],
+                "text": "Chronic congestive heart failure (disorder)"
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/narrativeLink",
+                  "valueUrl": "urn:uuid:d0227cd2-fba1-4f6c-a036-21461924c07a#Condition-urn:uuid:3bdd4196-cf44-439f-88c4-faeb388ae430"
+                }
+              ],
+              "meta": {
+                "lastUpdated": "2024-09-20T13:14:59.529+02:00",
+                "source": "#f7dhOnG0auZdiJgv",
+                "versionId": "1"
+              },
+              "onsetDateTime": "2014-09-22T11:53:57+02:00",
+              "recordedDate": "2014-09-22T11:53:57+02:00",
+              "resourceType": "Condition",
+              "subject": {
+                "reference": "urn:uuid:ac542f12-084f-4355-8927-228edf1ec28b"
+              },
+              "verificationStatus": {
+                "coding": [
+                  {
+                    "code": "confirmed",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  } 
