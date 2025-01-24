@@ -1,57 +1,68 @@
 import React from "react";
-import { View, Text, StyleSheet, ImageBackground } from "react-native";
-import { Icon } from "@/components/MultiSourceIcon";
-import Colors from "@/constants/Colors";
-import { useThemeColor } from "./Themed";
+import {
+  View,
+  Text,
+  StyleSheet,
+  useColorScheme,
+} from "react-native";
+import { getPalette } from "@/constants/Colors";
 
 const SectionCard = (resource: any) => {
   const { name, criticality, clinicalStatus, status, category, type } =
     resource.resource;
 
-    const backgroundColor = useThemeColor({ light: Colors.light.cardBackground, dark: Colors.dark.cardBackground }, 'background');
-    const labelColor = useThemeColor({ light: Colors.light.label, dark: Colors.dark.label }, 'text');
+  const theme = useColorScheme() ?? "light";
 
-    return (
-    <View style={[styles.card,{backgroundColor}]}>
+  const palette = getPalette(theme === "dark");
+  const labelColor = palette.neutral.black;
+
+  return (
+    <View style={[styles.card, { backgroundColor: palette.background,borderColor:palette.primary.lighter}]}>
       <View style={styles.rowContainer}>
-        <View style={styles.iconContainer}>
-          <ImageBackground
-            source={require("../assets/images/iconBackground.png")}
-            style={styles.iconContainer}
-          >
-            <Icon name="allergies" size={24} color="#fff" type="fontawesome5" />
-          </ImageBackground>
-        </View>
         <View style={styles.titleAndDetails}>
-          <Text style={[styles.title,{color:labelColor}]}>{name}</Text>
+          <Text style={[styles.title, { color: palette.primary.main}]}>{name}</Text>
 
           <View style={styles.detailsContainer}>
             <View style={styles.detailColumn}>
               <View style={styles.detailRow}>
-                <Text style={[styles.label,{color:labelColor}]}>Type:</Text>
-                <Text style={[styles.value,{color:labelColor}]}>{type || "-"}</Text>
+                <Text style={[styles.label, { color: labelColor }]}>Type:</Text>
+                <Text style={[styles.value, { color: labelColor }]}>
+                  {type || "-"}
+                </Text>
               </View>
               <View style={styles.detailRow}>
-                <Text style={[styles.label,{color:labelColor}]}>Category:</Text>
-                <Text style={[styles.value,{color:labelColor}]}>{category || "-"}</Text>
+                <Text style={[styles.label, { color: labelColor }]}>
+                  Category:
+                </Text>
+                <Text style={[styles.value, { color: labelColor }]}>
+                  {category || "-"}
+                </Text>
               </View>
             </View>
             <View style={styles.detailColumn}>
               <View style={styles.detailRow}>
-                <Text style={[styles.label,{color:labelColor}]}>Criticality:</Text>
-                <Text style={[styles.value,{color:labelColor}]}>{criticality || "-"}</Text>
+                <Text style={[styles.label, { color: labelColor }]}>
+                  Criticality:
+                </Text>
+                <Text style={[styles.value, { color: labelColor }]}>
+                  {criticality || "-"}
+                </Text>
               </View>
               <View style={styles.detailRow}>
-                <Text style={[styles.label,{color:labelColor}]}>Clinical Status:</Text>
-                <Text style={[styles.value,{color:labelColor}]}>{clinicalStatus || "-"}</Text>
+                <Text style={[styles.label, { color: labelColor }]}>
+                  Clinical Status:
+                </Text>
+                <Text style={[styles.value, { color: labelColor }]}>
+                  {clinicalStatus || "-"}
+                </Text>
               </View>
             </View>
           </View>
         </View>
       </View>
 
-      <View style={styles.statusContainer}>
-        <Text style={styles.statusText}>{"Active"}</Text>
+      <View style={[styles.statusContainer,{backgroundColor:palette.primary.dark}]}>
+        <Text style={[styles.statusText,{color:palette.neutral.white}]}>{status || "Active"}</Text>
       </View>
     </View>
   );
@@ -59,18 +70,11 @@ const SectionCard = (resource: any) => {
 
 const styles = StyleSheet.create({
   card: {
-    width: "90%",
-    backgroundColor: "#fff",
-    borderRadius: 12,
+    width: "92%",
+    borderRadius: 20,
     padding: 16,
     marginVertical: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: "#2563EA",
+    borderWidth: 2,
   },
   rowContainer: {
     flexDirection: "row",
@@ -91,7 +95,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
     marginBottom: 8,
   },
   detailsContainer: {
@@ -110,20 +113,18 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 14,
-    color: "#777",
   },
   statusContainer: {
     alignSelf: "flex-end",
-    backgroundColor: "#2D77FEC7",
     paddingHorizontal: 5,
     paddingVertical: 1,
-    borderRadius: 12,
+    borderRadius: 20,
     marginTop: 1,
   },
   statusText: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#000000",
+    padding:4
   },
   detailColumn: {
     flex: 1,

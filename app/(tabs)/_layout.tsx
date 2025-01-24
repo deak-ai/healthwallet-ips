@@ -2,12 +2,11 @@ import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs, useNavigation } from "expo-router";
 
-import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
-import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import * as SecureStore from "expo-secure-store";
 import { useClickedTab } from "@/components/clickedTabContext";
 import { useIpsData } from "@/components/IpsDataContext";
+import { getPalette } from "@/constants/Colors";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -20,7 +19,7 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation(); // Access navigation object
-
+  const palette = getPalette(colorScheme==="dark");
   const { clickedTab, setClickedTab } = useClickedTab();
   const { ipsData } = useIpsData();
 
@@ -31,7 +30,13 @@ export default function TabLayout() {
     try {
       setClickedTab(!clickedTab);
       const patientId = await SecureStore.getItemAsync("patientId");
-      if (patientId &&ipsData) {
+      //be sure that we have patient id and a valid ips  data downloaded before move to other tabs
+      if (
+        patientId &&
+        ipsData &&
+        ipsData.sections.length !== 0 &&
+        ipsData.resources.length !== 0
+      ) {
         navigation.navigate(routeName as never);
       }
     } catch (error) {
@@ -42,14 +47,13 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: palette.primary.dark,
         headerShown: false,
-        headerPressColor: Colors[colorScheme ?? "light"].tint,
-        tabBarActiveBackgroundColor: Colors[colorScheme ?? "light"].selected,
-        tabBarInactiveTintColor: Colors[colorScheme ?? "light"].tint,
-        tabBarIconStyle: { color: Colors[colorScheme ?? "light"].tint },
+        headerPressColor: palette.primary.main,
+        tabBarInactiveTintColor: palette.primary.main,
+        tabBarIconStyle: { color:  palette.primary.main},
         tabBarInactiveBackgroundColor:
-          Colors[colorScheme ?? "light"].tabBarBackground,
+        palette.neutral.white,
       }}
     >
       {/* <Tabs.Screen

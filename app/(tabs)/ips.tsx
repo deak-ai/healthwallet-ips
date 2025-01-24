@@ -1,8 +1,6 @@
 import {
   StyleSheet,
   ScrollView,
-  ImageBackground,
-  SafeAreaView,
   useColorScheme,
 } from "react-native";
 import { Text, View } from "@/components/Themed";
@@ -85,67 +83,35 @@ export default function TabIpsScreen() {
      */
   };
 
-  const ipsMainContent = () => {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Patient Summary</Text>
-        <ScrollView contentContainerStyle={styles.tilesContainer}>
-          {filteredTiles.map((tile) => (
-            <IpsSectionTile
-              key={tile.id}
-              tile={tile}
-              onPress={() => handleTilePress(tile)}
-            />
-          ))}
-        </ScrollView>
-      </View>
-    );
-  };
-
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      {theme === "dark" ? (
-        ipsMainContent()
-      ) : (
-        <ImageBackground
-          source={require("../../assets/images/bg.png")}
-          style={styles.backgroundImage}
-          resizeMode="cover"
-        >
-          {ipsMainContent()}
-        </ImageBackground>
-      )}
-    </SafeAreaView>
+    <View style={styles.container}>
+      <Text style={styles.title}>Patient Summary</Text>
+      <ScrollView contentContainerStyle={styles.tilesContainer}>
+        {filteredTiles.map((tile) => (
+          <IpsSectionTile
+            key={tile.id}
+            tile={tile}
+            onPress={() => handleTilePress(tile)}
+          />
+        ))}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    margin: 4,
-    backgroundColor: "transparent",
+    paddingHorizontal: 10,
+    paddingVertical: 25,textAlign:"center"
   },
   title: {
+    flex: 1,
     fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
+    fontWeight: 500,
+    textAlign:"center"
   },
   tilesContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    flexGrow: 1,
-    backgroundColor: "transparent",
-    padding: 8,
-  },
-  backgroundImage: {
-    flex: 1,
-    resizeMode: "cover",
+    padding: 16,
   },
 });

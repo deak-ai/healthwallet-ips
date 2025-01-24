@@ -4,7 +4,6 @@ import {
   Platform,
   StyleSheet,
   ScrollView,
-  ImageBackground,
   View,
   Text,
   useColorScheme,
@@ -14,9 +13,8 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import { useIpsData } from "@/components/IpsDataContext";
 import { getProcessor } from "@/components/ipsResourceProcessor";
 import SectionCard from "@/components/card";
-import { useThemeColor } from "@/components/Themed";
-import Colors from "@/constants/Colors";
 import { Icon } from "@/components/MultiSourceIcon";
+import { getPalette } from "@/constants/Colors";
 
 export default function SectionScreen() {
   const route = useRoute();
@@ -27,24 +25,21 @@ export default function SectionScreen() {
   const theme = useColorScheme() ?? "light";
 
   const resources = ipsData ? getProcessor(code).process(ipsData) : [];
-  const titleColor = useThemeColor(
-    { light: Colors.light.text, dark: Colors.dark.text },
-    "text"
-  );
 
-  const sectionMainContent = () => {
-    return (
-      <View style={styles.container}>
+  const palette =getPalette(theme==="dark")
+
+  return (
+     <View style={[styles.container,{backgroundColor:palette.background}]}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Icon
               type="ionicon"
               name="chevron-back-circle-outline"
               size={32}
-              color={theme === "dark" ? "#fff" : "#000"}
+              color={theme === "dark" ? palette.neutral.white : palette.neutral.black}
             />
           </TouchableOpacity>
-          <Text style={[styles.title, { color: titleColor }]}>{title}</Text>
+          <Text style={[styles.title, { color: palette.text}]}>{title}</Text>
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContainer}>
           <View style={styles.sectionContainer}>
@@ -55,44 +50,19 @@ export default function SectionScreen() {
         </ScrollView>
         <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
       </View>
-    );
-  };
-
-  return (
-    <View style={styles.root}>
-      {theme === "dark" ? (
-        sectionMainContent()
-      ) : (
-        <ImageBackground
-          source={require("../assets/images/bg.png")}
-          style={styles.backgroundImage}
-          resizeMode="cover"
-        >
-          {sectionMainContent()}
-        </ImageBackground>
-      )}
-    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
-  backgroundImage: {
-    flex: 1,
-    justifyContent: "center",
-  },
+
   container: {
     flex: 1,
-    backgroundColor: "transparent",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    backgroundColor: "transparent",
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
   backButton: {
     marginRight: 16,
@@ -104,7 +74,6 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     flexGrow: 1,
-    backgroundColor: "transparent",
     paddingTop: 20,
   },
   sectionContainer: {

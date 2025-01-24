@@ -1,18 +1,24 @@
 // components/IpsSectionTile.tsx
 
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { Text, useThemeColor } from "@/components/Themed";
-import { IconType, Icon } from "@/components/MultiSourceIcon";
-import Colors from "@/constants/Colors";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+  Image,
+  ImageSourcePropType,
+} from "react-native";
+import { Text } from "@/components/Themed";
+import { IconType } from "@/components/MultiSourceIcon";
 import { IpsSectionCode, IpsSectionCodeKey } from "@/components/fhirIpsModels";
+import { getPalette } from "@/constants/Colors";
 
 // Define a type for the tiles array
 export type Tile = {
   id: number;
   label: string;
-  icon: string;
-  type: IconType;
+  icon: ImageSourcePropType;
+  type?: IconType;
   code: (typeof IpsSectionCode)[IpsSectionCodeKey]["code"];
 };
 
@@ -20,110 +26,87 @@ export const IPS_TILES: readonly Tile[] = [
   {
     id: 1,
     label: IpsSectionCode.Allergies.label,
-    icon: "allergies",
-    type: "fontawesome5",
+    icon: require("../assets/icons/allergies.png"),
     code: IpsSectionCode.Allergies.code,
   },
   {
     id: 2,
     label: IpsSectionCode.Medications.label,
-    icon: "pills",
-    type: "fontawesome6",
+    icon: require("../assets/icons/medications.png"),
     code: IpsSectionCode.Medications.code,
   },
   {
     id: 3,
     label: IpsSectionCode.Problems.label,
-    icon: "report-problem",
-    type: "materialicons",
+    icon: require("../assets/icons/problems.png"),
     code: IpsSectionCode.Problems.code,
   },
   {
     id: 4,
     label: IpsSectionCode.Procedures.label,
-    icon: "bandage-outline",
-    type: "ionicon",
+    icon: require("../assets/icons/procedures.png"),
     code: IpsSectionCode.Procedures.code,
   },
   {
     id: 5,
     label: IpsSectionCode.Immunizations.label,
-    icon: "shield-checkmark-outline",
-    type: "ionicon",
+    icon: require("../assets/icons/immunizations.png"),
     code: IpsSectionCode.Immunizations.code,
   },
   {
     id: 6,
     label: IpsSectionCode.Results.label,
-    icon: "list-outline",
-    type: "ionicon",
+    icon: require("../assets/icons/results.png"),
     code: IpsSectionCode.Results.code,
   },
   {
     id: 7,
     label: IpsSectionCode.Devices.label,
-    icon: "devices-other",
-    type: "materialicons",
+    icon: require("../assets/icons/allergies.png"),
     code: IpsSectionCode.Devices.code,
   },
 ] as const;
 
 export function IpsSectionTile(props: { onPress: () => void; tile: Tile }) {
-  const backgroundColor = useThemeColor(
-    { light: Colors.light.tileBackground, dark: Colors.dark.tileBackground },
-    "tileBackground"
-  );
-  const iconColor = useThemeColor(
-    { light: Colors.light.icon, dark: Colors.dark.icon },
-    "icon"
-  );
-  const textColor = useThemeColor(
-    { light: Colors.light.text, dark: Colors.dark.text },
-    "text"
-  );
+  const theme = useColorScheme();
+  const palette = getPalette(theme === "dark");
 
   return (
     <TouchableOpacity
-      style={[{backgroundColor},cardStyles.card]}
-      activeOpacity={0.8}
+      style={[
+        {
+          backgroundColor: palette.background,
+          borderColor: palette.primary.lighter,
+        },
+        cardStyles.card,
+      ]}
       onPress={props.onPress}
     >
-      <Icon
-        type={props.tile.type}
-        name={props.tile.icon}
-        size={38}
-        color={iconColor}
-      />
-      <Text style={[{color:textColor},cardStyles.title]}>{props.tile.label}</Text>
+      <Image source={props.tile.icon} style={cardStyles.image} />
+      <Text style={[cardStyles.title, { color: palette.primary.main }]}>
+        {props.tile.label}
+      </Text>
     </TouchableOpacity>
   );
 }
 
-
 const cardStyles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    padding: 16,
-  },
   card: {
-    borderRadius: 20,
-    justifyContent: "center",
+    flexDirection: "row",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 2,
-    width: "45%",
-    height: "17%",
-    aspectRatio: 1,
-    marginBottom: 20,
+    borderRadius: 17,
+    padding: 12,
+    marginBottom: 12,
+    borderWidth: 2,
+  },
+  image: {
+    width: 55,
+    height: 55,
+    borderRadius: 8,
+    marginRight: 12,
   },
   title: {
     fontSize: 16,
-    fontWeight: "bold",
-    marginTop: 5,
+    fontWeight: 500,
   },
 });
