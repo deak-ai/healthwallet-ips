@@ -4,7 +4,7 @@ import { Text, View, TextInput } from "@/components/Themed";
 import * as SecureStore from "expo-secure-store";
 import RBSheet from "react-native-raw-bottom-sheet";
 import { Icon } from "@/components/MultiSourceIcon";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useNavigation } from "expo-router";
 import { useIpsData } from "@/components/IpsDataContext";
 import { FhirUrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
 import CustomLoader from "@/components/loader";
@@ -22,6 +22,7 @@ export default function TabSettingsScreen() {
   const palette = getPalette(theme === "dark");
 
   const { setIpsData, ipsData } = useIpsData();
+  const navigation = useNavigation();
   // Load the patient ID from SecureStore when the component mounts
   useEffect(() => {
     const loadPatientId = async () => {
@@ -30,6 +31,16 @@ export default function TabSettingsScreen() {
 
         setPatientId(savedPatientId);
         setInputValue(savedPatientId || "");
+
+        //if we have already data navigate to ips screen
+        if (
+          savedPatientId &&
+          ipsData &&
+          ipsData.sections.length !== 0 &&
+          ipsData.resources.length !== 0
+        ) {
+          navigation.navigate("ips" as never);
+        }
       } catch (error) {
         console.error("Error loading patient ID:", error);
       }
@@ -161,7 +172,8 @@ export default function TabSettingsScreen() {
             alignItems: "center",
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
-            backgroundColor: theme === "dark" ?palette.neutral.grey : palette.neutral.white,
+            backgroundColor:
+              theme === "dark" ? palette.neutral.grey : palette.neutral.white,
           },
         }}
       >
@@ -169,7 +181,12 @@ export default function TabSettingsScreen() {
           <View
             style={[
               styles.titleRow,
-              { backgroundColor: theme === "dark" ? palette.neutral.grey : palette.neutral.white},
+              {
+                backgroundColor:
+                  theme === "dark"
+                    ? palette.neutral.grey
+                    : palette.neutral.white,
+              },
             ]}
           >
             <Icon
@@ -178,7 +195,9 @@ export default function TabSettingsScreen() {
               size={38}
               color={palette.primary.main}
             />
-            <Text style={[styles.infoTitle,{color:palette.primary.main}]}> ID Required</Text>
+            <Text style={[styles.infoTitle, { color: palette.primary.main }]}>
+              ID Required
+            </Text>
           </View>
           <Text style={styles.infoDescription}>
             A valid Patient ID is required to continue.
@@ -195,7 +214,12 @@ export default function TabSettingsScreen() {
       <TextInput
         style={[
           styles.input,
-          { borderColor: theme === "light" ? palette.secondary.light : palette.neutral.white },
+          {
+            borderColor:
+              theme === "light"
+                ? palette.secondary.light
+                : palette.neutral.white,
+          },
         ]}
         placeholder="Enter Patient ID"
         value={inputValue}
@@ -203,7 +227,10 @@ export default function TabSettingsScreen() {
       />
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button,{backgroundColor:palette.secondary.light}]} onPress={savePatientId}>
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: palette.secondary.light }]}
+          onPress={savePatientId}
+        >
           <Text style={styles.buttonText}>Save Patient ID</Text>
         </TouchableOpacity>
       </View>
@@ -223,7 +250,9 @@ export default function TabSettingsScreen() {
             size={24}
             color={palette.primary.main}
           />
-          <Text style={[styles.downloadTitle,{color:palette.primary.main}]}> Download</Text>
+          <Text style={[styles.downloadTitle, { color: palette.primary.main }]}>
+            Download
+          </Text>
         </TouchableOpacity>
       )}
     </View>
