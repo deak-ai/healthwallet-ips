@@ -23,7 +23,8 @@ function getPatientResource(ipsData: IpsData) {
 
 test('Should correctly issue SmartHealthCard credential', async () => {
         const ipsData = await loadPatient('801941');
-        const resourceWrappers = filterResourceWrappers(ipsData, IpsSectionCode.Allergies.code);
+        const ipsSection = IpsSectionCode.Allergies;
+        const resourceWrappers = filterResourceWrappers(ipsData, ipsSection.code);
         const patientResourceWrapper = getPatientResource(ipsData);
         expect(patientResourceWrapper.resource.resourceType).toBe('Patient');
 
@@ -32,7 +33,7 @@ test('Should correctly issue SmartHealthCard credential', async () => {
 
         const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(issuerApi, walletApi);
 
-        const vc = await smartHealthCardIssuer.issueAndAddToWallet('Self-issued Allergies', patientResourceWrapper, resourceWrappers);
+        const vc = await smartHealthCardIssuer.issueAndAddToWallet('Self-issued '+ipsSection.label, patientResourceWrapper, resourceWrappers);
 
        expect(vc[0].id).toBeDefined(); 
        
