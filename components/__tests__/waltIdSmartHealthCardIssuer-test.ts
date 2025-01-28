@@ -32,7 +32,7 @@ test('Should correctly issue SmartHealthCard credential', async () => {
 
         const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(issuerApi, walletApi);
 
-        const vc = await smartHealthCardIssuer.issueAndAddToWallet(patientResourceWrapper, resourceWrappers);
+        const vc = await smartHealthCardIssuer.issueAndAddToWallet('Self-issued Allergies', patientResourceWrapper, resourceWrappers);
 
        expect(vc[0].id).toBeDefined(); 
        

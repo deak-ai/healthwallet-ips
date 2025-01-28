@@ -33,6 +33,7 @@ export class WaltIdSmartHealthCardIssuer {
      * @returns Promise<IssuanceRequest>
      */
     private async createCredentialRequest(
+        issuerName: string,
         patientResourceWrapper: FhirResourceWrapper,
         resourceWrappers: FhirResourceWrapper[]
     ): Promise<IssuanceRequest> {
@@ -58,7 +59,7 @@ export class WaltIdSmartHealthCardIssuer {
                 type: ['VerifiableCredential', 'SmartHealthCard'],
                 issuer: {
                     id: '[INSERT ISSUER DID]',
-                    name: 'SmartHealthCard',
+                    name: issuerName,
                     url: 'https://smarthealth.cards',
                     image: 'https://en.wikipedia.org/wiki/SMART_Health_Card#/media/File:SMART_Health_IT_logo.png'
                 },
@@ -96,12 +97,13 @@ export class WaltIdSmartHealthCardIssuer {
      * @returns Promise<VerifiableCredential[]>
      */
     async issueAndAddToWallet(
+        issuerName: string,
         patientResourceWrapper: FhirResourceWrapper,
         resourceWrappers: FhirResourceWrapper[]
     ): Promise<VerifiableCredential[]> {
 
         console.log('Issuing credential')
-        const credentialRequest = await this.createCredentialRequest(patientResourceWrapper, resourceWrappers);
+        const credentialRequest = await this.createCredentialRequest(issuerName, patientResourceWrapper, resourceWrappers);
         const issuanceResponse = await this.issuerApi.issueCredential(credentialRequest);
         
         // console log the issuanceResponse.url

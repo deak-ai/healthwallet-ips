@@ -53,9 +53,11 @@ export default function SectionScreen() {
     try {
       setLoading(true);
       if (ipsData) {
+        const ipsSection = IpsSectionCode.Allergies
+        // FIXME: don't hardcode section
         const resourceWrappers = filterResourceWrappers(
           ipsData,
-          IpsSectionCode.Allergies.code
+          ipsSection.code
         );
         const patientResourceWrapper = ipsData.resources[0];
 
@@ -71,6 +73,7 @@ export default function SectionScreen() {
           walletApi
         );
         const vc = await smartHealthCardIssuer.issueAndAddToWallet(
+          'Self-issued '+ipsSection.label,
           patientResourceWrapper,
           resourceWrappers
         );
