@@ -30,6 +30,8 @@ export const lightPalette: ColorPalette = {
   secondary: {
     main: "#2C3D8F",
     light: "#CEE5FF",
+    dark: "#2E6FF3",
+    lighter: "#2E6FF314",
   },
   neutral: {
     black: "#000000",
@@ -50,7 +52,9 @@ export const darkPalette: ColorPalette = {
   },
   secondary: {
     main: "#2C3D8F",
+    dark: "#2E6FF3",
     light: "#CEE5FF",
+    lighter: "#2E6FF314",
   },
   neutral: {
     black: "#000000",

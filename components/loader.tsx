@@ -1,8 +1,17 @@
+import { getPalette } from "@/constants/Colors";
 import React, { useEffect, useRef } from "react";
-import { View, StyleSheet, Animated, Easing } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Animated,
+  Easing,
+  useColorScheme,
+} from "react-native";
 
 const CustomLoader = () => {
   const rotation = useRef(new Animated.Value(0)).current;
+  const theme = useColorScheme() ?? "light";
+  const palette = getPalette(theme === "dark");
 
   useEffect(() => {
     Animated.loop(
@@ -22,7 +31,9 @@ const CustomLoader = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.circle}>
+      <View
+        style={[styles.circle, { backgroundColor: palette.secondary.light }]}
+      >
         <Animated.Image
           source={require("../assets/images/loader.png")}
           style={[styles.image, { transform: [{ rotate }] }]}
@@ -41,7 +52,6 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 50,
-    backgroundColor: "#CEE5FF",
     justifyContent: "center",
     alignItems: "center",
   },

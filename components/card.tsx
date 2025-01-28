@@ -4,23 +4,45 @@ import {
   Text,
   StyleSheet,
   useColorScheme,
+  TouchableOpacity,
 } from "react-native";
 import { getPalette } from "@/constants/Colors";
 
-const SectionCard = (resource: any) => {
-  const { name, criticality, clinicalStatus, status, category, type } =
-    resource.resource;
+type SectionCardProps = {
+  resource: any;
+  selected: boolean;
+  onSelect: () => void;
+};
 
+const SectionCard = ({ resource, selected, onSelect }: SectionCardProps) => {
+
+  const { name, criticality, clinicalStatus, status, category, type } =
+    resource;
   const theme = useColorScheme() ?? "light";
 
   const palette = getPalette(theme === "dark");
   const labelColor = palette.neutral.black;
 
   return (
-    <View style={[styles.card, { backgroundColor: palette.background,borderColor:palette.primary.lighter}]}>
+    <TouchableOpacity
+      style={[
+        styles.card,
+        {
+          backgroundColor: !selected
+            ? palette.background
+            : palette.secondary.lighter,
+          borderColor: !selected
+            ? palette.primary.lighter
+            : palette.secondary.dark,
+        },
+      ]}
+      onPress={onSelect}
+    >
       <View style={styles.rowContainer}>
         <View style={styles.titleAndDetails}>
-          <Text style={[styles.title, { color: palette.primary.main}]}>{name}</Text>
+          <Text style={[styles.title, { color: palette.primary.main }]}>
+            {name}
+          </Text>
 
           <View style={styles.detailsContainer}>
             <View style={styles.detailColumn}>
@@ -61,10 +83,17 @@ const SectionCard = (resource: any) => {
         </View>
       </View>
 
-      <View style={[styles.statusContainer,{backgroundColor:palette.primary.dark}]}>
-        <Text style={[styles.statusText,{color:palette.neutral.white}]}>{status || "Active"}</Text>
+      <View
+        style={[
+          styles.statusContainer,
+          { backgroundColor: palette.primary.dark },
+        ]}
+      >
+        <Text style={[styles.statusText, { color: palette.neutral.white }]}>
+          {status || "Active"}
+        </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -124,7 +153,7 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 14,
     fontWeight: "bold",
-    padding:4
+    padding: 4,
   },
   detailColumn: {
     flex: 1,
