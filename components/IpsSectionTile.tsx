@@ -13,7 +13,6 @@ import { IconType } from "@/components/MultiSourceIcon";
 import { IpsSectionCode, IpsSectionCodeKey } from "@/components/fhirIpsModels";
 import { getPalette } from "@/constants/Colors";
 
-// Define a type for the tiles array
 export type Tile = {
   id: number;
   label: string;

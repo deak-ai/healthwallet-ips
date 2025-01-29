@@ -30,20 +30,31 @@ const CustomLoader = () => {
   });
 
   return (
-    <View style={styles.container}>
-      <View
-        style={[styles.circle, { backgroundColor: palette.secondary.light }]}
-      >
+    <View style={styles.overlay} pointerEvents="auto">
+    <View style={[styles.background, { backgroundColor: palette.neutral.lightGrey, opacity: 0.7}]} />
+      <View style={styles.container}>
+      <View style={[styles.circle, { backgroundColor: palette.secondary.light }]}>
         <Animated.Image
-          source={require("../assets/images/loader.png")}
+          source={require("../../assets/images/loader.png")}
           style={[styles.image, { transform: [{ rotate }] }]}
         />
       </View>
     </View>
+  </View>
   );
 };
 
 const styles = StyleSheet.create({
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000, 
+  },
   container: {
     justifyContent: "center",
     alignItems: "center",
@@ -59,6 +70,13 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     resizeMode: "contain",
+  },
+  background: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 });
 

@@ -15,6 +15,8 @@ import { getPalette } from "@/constants/Colors";
 import { useEffect, useRef, useState } from "react";
 import RBSheet from "react-native-raw-bottom-sheet";
 import { Icon } from "@/components/MultiSourceIcon";
+import BottomSheet from "@/components/reusable/bottomSheet";
+import CustomSwitch from "@/components/reusable/customSwitch";
 
 /*
 These are all the relevant IPS sections with corresponding loinc codes :
@@ -51,10 +53,14 @@ export default function TabIpsScreen() {
   const palette = getPalette(theme === "dark");
   const refRBSheet = useRef<any>(null);
   const [clickedShare, setClickedShare] = useState(false);
+  const [shareMode, setShareMode] = useState(false);
+
   // Extract codes from ipsData.sections
   const sectionCodes =
     ipsData?.sections?.map((section: any) => section.code.coding[0].code) || [];
-    const [selectedElement, setSelectedElement] = useState<{ code: string; label:string;sectionCodes: string[] }[]>([]);
+  const [selectedElement, setSelectedElement] = useState<
+    { code: string; label: string; sectionCodes: string[] }[]
+  >([]);
 
   // Filter tiles based on section codes
   const filteredTiles = IPS_TILES.filter((tile) =>
@@ -66,37 +72,42 @@ export default function TabIpsScreen() {
     "Patient.name.where(use='official').given.first()"
   );
 
- 
-const handleTilePress = (tile: Tile) => {
-  setSelectedElement((prevSelectedElements) => {
-      const existingElement = prevSelectedElements.find(
+  const handleTilePress = (tile: Tile) => {
+    if (shareMode) {
+      setSelectedElement((prevSelectedElements) => {
+        const existingElement = prevSelectedElements.find(
           (element) => element.code === tile.code
-      );
+        );
 
-      if (existingElement) {
+        if (existingElement) {
           // Remove the existing element
           return prevSelectedElements.filter(
-              (element) => element.code !== tile.code
+            (element) => element.code !== tile.code
           );
-      } else {
+        } else {
           // Add the new object with code and sectionCodes
-          return [...prevSelectedElements, { code: tile.code,label:tile.label, sectionCodes: [] }];
+          return [
+            ...prevSelectedElements,
+            { code: tile.code, label: tile.label, sectionCodes: [] },
+          ];
+        }
+      });
+    } else {
+      if (ipsData) {
+        let names = getProcessor(tile.code)
+          .process(ipsData)
+          .map((fr) => fr.name as string);
+        router.push({
+          pathname: "/section",
+          params: {
+            code: tile.code,
+            title: patientName + " " + tile.label,
+            label: tile.label,
+          },
+        });
       }
-  });
+    }
 
-    // if (ipsData) {
-    //   let names = getProcessor(tile.code)
-    //     .process(ipsData)
-    //     .map((fr) => fr.name as string);
-    //   router.push({
-    //     pathname: "/section",
-    //     params: {
-    //       code: tile.code,
-    //       title: patientName + " " + tile.label,
-    //       label: tile.label,
-    //     },
-    //   });
-    // }
     /*
         if (ipsData) {
       router.push({
@@ -115,7 +126,7 @@ const handleTilePress = (tile: Tile) => {
       setClickedShare(true);
     } else {
       setClickedShare(false);
-      if(ipsData){
+      if (ipsData) {
         router.push({
           pathname: "/shareStepper",
           params: {
@@ -125,14 +136,19 @@ const handleTilePress = (tile: Tile) => {
       }
     }
   };
-  console.log("selectedIds", selectedElement);
+
+  const handleShareMode = () => {
+    if (shareMode) {
+      setSelectedElement([]);
+    }
+    setShareMode((prev) => !prev);
+  };
 
   useEffect(() => {
-    if (clickedShare && selectedElement.length === 0) {
-      console.log("hhh", clickedShare);
+    if (clickedShare && shareMode && selectedElement.length === 0) {
       refRBSheet?.current.open();
     }
-  }, [clickedShare, selectedElement]);
+  }, [clickedShare, selectedElement, shareMode]);
 
   const rBSheet = () => {
     return (
@@ -182,36 +198,58 @@ const handleTilePress = (tile: Tile) => {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Patient Summary</Text> */}
-      {rBSheet()}
+      <BottomSheet
+        ref={refRBSheet}
+        title="Resources Required"
+        description="Please select which resources to share"
+      />
+      <View style={styles.switchContainer}>
+        <CustomSwitch
+          icon="close-circle-outline"
+          iconActive="checkmark-circle-outline"
+          text=" Share Mode"
+          onToggle={handleShareMode}
+          activeColor={palette.primary.main}
+          inactiveColor={palette.neutral.lightGrey}
+        />
+      </View>
+
       <ScrollView contentContainerStyle={styles.tilesContainer}>
         {filteredTiles.map((tile) => (
           <IpsSectionTile
             key={tile.id}
             tile={tile}
             onPress={() => handleTilePress(tile)}
-            selected={selectedElement.findIndex((element)=>element.code===tile.code)!==-1}
+            selected={
+              selectedElement.findIndex(
+                (element) => element.code === tile.code
+              ) !== -1
+            }
           />
         ))}
       </ScrollView>
       <View style={styles.shareContainer}>
-        <TouchableOpacity
-          style={[
-            styles.shareButton,
-            { backgroundColor: palette.secondary.lighter },
-          ]}
-          onPress={handleShare}
-        >
-          <AntDesign
-            name="sharealt"
-            size={30}
-            color={
-              selectedElement.length !== 0
-                ? palette.primary.dark
-                : palette.primary.light
-            }
-          />
-        </TouchableOpacity>
+        {shareMode && (
+          <TouchableOpacity
+            style={[
+              styles.shareButton,
+              {
+                backgroundColor: palette.secondary.lighter,
+              },
+            ]}
+            onPress={handleShare}
+          >
+            <AntDesign
+              name="sharealt"
+              size={30}
+              color={
+                selectedElement.length !== 0
+                  ? palette.primary.dark
+                  : palette.primary.light
+              }
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -235,11 +273,14 @@ const styles = StyleSheet.create({
   },
   shareContainer: {
     position: "absolute",
-    bottom: 20,
-    left: "50%",
-    transform: [{ translateX: -100 }],
-    width: 200,
+    bottom: 45,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    backgroundColor: "transparent",
   },
   shareButton: {
     paddingVertical: 12,
@@ -249,6 +290,8 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 50,
+    position: "absolute",
+    left: "50%",
   },
   sheetContent: {
     flex: 1,
@@ -267,4 +310,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   infoDescription: { fontWeight: 700 },
+  switchContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginRight: 10,
+  },
 });

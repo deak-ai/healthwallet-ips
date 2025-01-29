@@ -5,12 +5,14 @@ import {
   getProcessor,
 } from "@/components/ipsResourceProcessor";
 import { Icon } from "@/components/MultiSourceIcon";
+import CustomLoader from "@/components/reusable/loader";
 import { WaltIdIssuerApi } from "@/components/waltIdIssuerApi";
 import { WaltIdSmartHealthCardIssuer } from "@/components/waltIdSmartHealthCardIssuer";
 import { WaltIdWalletApi } from "@/components/waltIdWalletApi";
 import { getPalette } from "@/constants/Colors";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -19,26 +21,30 @@ import {
   useColorScheme,
   ScrollView,
 } from "react-native";
+import Toast from "react-native-toast-message";
 
 const Stepper = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const route = useRoute();
+  const router = useRouter();
   const { selectedElement } = route.params as {
     setSelectedElement: React.Dispatch<any>;
     selectedElement: any;
   };
-  console.log("selectedElement", selectedElement);
+
   const parsedSelectedElement = JSON.parse(selectedElement);
   const stepNumber = parsedSelectedElement.length;
   const theme = useColorScheme() ?? "light";
   const palette = getPalette(theme === "dark");
   const navigation = useNavigation();
-  console.log("parsedSelectedElement", parsedSelectedElement);
+
   const { ipsData } = useIpsData();
   const titles = parsedSelectedElement.map(
     (item: { code: string; label: string }) => item.label
   );
+  const [loading, setLoading] = useState(false);
+
   const [localSelectedElement, setLocalSelectedElement] = useState<
     { code: string; label: string; sectionCodes: string[] }[]
   >(parsedSelectedElement);
@@ -47,37 +53,61 @@ const Stepper = () => {
     if (currentStep < stepNumber - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {
-      if (ipsData) {
-        localSelectedElement.forEach(async (element) => {
-          const resourceWrappers = filterResourceWrappers(
-            ipsData,
-            element.code
-          );
+      try {
+        setLoading(true);
+        if (ipsData) {
+          for (const element of localSelectedElement) {
+            const resourceWrappers = filterResourceWrappers(
+              ipsData,
+              element.code
+            );
 
-          const issuerApi = new WaltIdIssuerApi(
-            "https://issuer.healthwallet.li"
-          );
-          const walletApi = new WaltIdWalletApi(
-            "https://wallet.healthwallet.li",
-            "user@email.com",
-            "password"
-          );
-          const selectedPatientRessourcesWrappers = resourceWrappers.filter(
-            (resourceWrapper: any) => {
-              return element.sectionCodes.includes(
-                resourceWrapper.resource.code.coding[0].code
-              );
-            }
-          );
-          const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(
-            issuerApi,
-            walletApi
-          );
-          const vc = await smartHealthCardIssuer.issueAndAddToWallet(
-            "Self-issued " + element.label,
-            selectedPatientRessourcesWrappers[0],
-            []
-          );
+            const issuerApi = new WaltIdIssuerApi(
+              "https://issuer.healthwallet.li"
+            );
+            const walletApi = new WaltIdWalletApi(
+              "https://wallet.healthwallet.li",
+              "user@email.com",
+              "password"
+            );
+
+            const selectedPatientRessourcesWrappers = resourceWrappers.filter(
+              (resourceWrapper: any) =>
+                element.sectionCodes.includes(
+                  resourceWrapper.resource?.code?.coding?.[0].code
+                )
+            );
+
+            const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(
+              issuerApi,
+              walletApi
+            );
+
+            await smartHealthCardIssuer.issueAndAddToWallet(
+              "Self-issued " + element.label,
+              selectedPatientRessourcesWrappers[0],
+              []
+            );
+          }
+        }
+        Toast.show({
+          type: "success",
+          text1: "success",
+          text2: "Data shared successfully",
+          position: "bottom",
+        });
+      } catch (error) {
+        console.error("Error sharing data:", error);
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Failed share data",
+          position: "bottom",
+        });
+      } finally {
+        setLoading(false);
+        router.push({
+          pathname: "/ips",
         });
       }
     }
@@ -120,7 +150,7 @@ const Stepper = () => {
     });
   };
 
-  console.log("localSelectedElement", localSelectedElement);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -206,6 +236,7 @@ const Stepper = () => {
           />
         ))}
       </View>
+      {loading && <CustomLoader />}
     </View>
   );
 };

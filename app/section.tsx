@@ -21,8 +21,7 @@ import { getPalette } from "@/constants/Colors";
 import { WaltIdIssuerApi } from "@/components/waltIdIssuerApi";
 import { WaltIdSmartHealthCardIssuer } from "@/components/waltIdSmartHealthCardIssuer";
 import { WaltIdWalletApi } from "@/components/waltIdWalletApi";
-import { IpsSectionCode } from "@/components/fhirIpsModels";
-import CustomLoader from "@/components/loader";
+import CustomLoader from "@/components/reusable/loader";
 import Toast from "react-native-toast-message";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
@@ -132,10 +131,10 @@ export default function SectionScreen() {
         </View>
       </ScrollView>
 
-      <View style={styles.fixedButtonContainer}>
-        {loading ? (
-          <CustomLoader />
-        ) : (
+      {loading ? (
+        <CustomLoader />
+      ) : (
+        <View style={styles.fixedButtonContainer}>
           <TouchableOpacity
             style={[
               styles.shareButton,
@@ -145,8 +144,8 @@ export default function SectionScreen() {
           >
             <AntDesign name="sharealt" size={30} color={palette.primary.dark} />
           </TouchableOpacity>
-        )}
-      </View>
+        </View>
+      )}
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
     </View>
   );

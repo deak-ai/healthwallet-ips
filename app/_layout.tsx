@@ -13,9 +13,9 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { IpsDataProvider, useIpsData } from "@/components/IpsDataContext";
-import CustomToast from "@/components/customToast";
+import CustomToast from "@/components/reusable/customToast";
 import { ClickedTabProvider } from "@/components/clickedTabContext";
-import CustomLoader from "@/components/loader";
+import CustomLoader from "@/components/reusable/loader";
 import { FhirUrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
 import * as SecureStore from "expo-secure-store";
 
@@ -154,6 +154,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f0f8ff",
   },
 });

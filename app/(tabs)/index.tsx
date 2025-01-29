@@ -2,15 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, useColorScheme, TouchableOpacity } from "react-native";
 import { Text, View, TextInput } from "@/components/Themed";
 import * as SecureStore from "expo-secure-store";
-import RBSheet from "react-native-raw-bottom-sheet";
 import { Icon } from "@/components/MultiSourceIcon";
 import { useFocusEffect, useNavigation } from "expo-router";
 import { useIpsData } from "@/components/IpsDataContext";
 import { FhirUrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
-import CustomLoader from "@/components/loader";
+import CustomLoader from "@/components/reusable/loader";
 import Toast from "react-native-toast-message";
 import { useClickedTab } from "@/components/clickedTabContext";
 import { getPalette } from "@/constants/Colors";
+import BottomSheet from "@/components/reusable/bottomSheet";
 
 export default function TabSettingsScreen() {
   const [patientId, setPatientId] = useState<string | null>(null);
@@ -161,55 +161,11 @@ export default function TabSettingsScreen() {
     }
   };
 
-  const rBSheet = () => {
-    return (
-      <RBSheet
-        ref={refRBSheet}
-        height={200}
-        customStyles={{
-          container: {
-            justifyContent: "center",
-            alignItems: "center",
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-            backgroundColor:
-              theme === "dark" ? palette.neutral.grey : palette.neutral.white,
-          },
-        }}
-      >
-        <View style={[styles.sheetContent]}>
-          <View
-            style={[
-              styles.titleRow,
-              {
-                backgroundColor:
-                  theme === "dark"
-                    ? palette.neutral.grey
-                    : palette.neutral.white,
-              },
-            ]}
-          >
-            <Icon
-              type={"ionicon"}
-              name={"information-circle"}
-              size={38}
-              color={palette.primary.main}
-            />
-            <Text style={[styles.infoTitle, { color: palette.primary.main }]}>
-              ID Required
-            </Text>
-          </View>
-          <Text style={styles.infoDescription}>
-            A valid Patient ID is required to continue.
-          </Text>
-        </View>
-      </RBSheet>
-    );
-  };
 
   return (
     <View style={styles.container}>
-      {rBSheet()}
+      <BottomSheet ref={refRBSheet} title="ID Required" description="A valid Patient ID is required to continue." />
+
       <Text style={styles.label}>Enter Patient ID:</Text>
       <TextInput
         style={[
