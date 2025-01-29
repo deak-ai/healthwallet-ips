@@ -24,13 +24,16 @@ import { WaltIdWalletApi } from "@/components/waltIdWalletApi";
 import { IpsSectionCode } from "@/components/fhirIpsModels";
 import CustomLoader from "@/components/loader";
 import Toast from "react-native-toast-message";
-import AntDesign from '@expo/vector-icons/AntDesign';
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function SectionScreen() {
   const route = useRoute();
   const navigation = useNavigation();
-  const { title } = route.params as { title: string };
-  const { code } = route.params as { code: string };
+  const { title, code, label } = route.params as {
+    title: string;
+    code: string;
+    label: string;
+  };
   const { ipsData } = useIpsData();
   const theme = useColorScheme() ?? "light";
   const [loading, setLoading] = useState(false);
@@ -53,13 +56,7 @@ export default function SectionScreen() {
     try {
       setLoading(true);
       if (ipsData) {
-        const ipsSection = IpsSectionCode.Allergies
-        // FIXME: don't hardcode section
-        const resourceWrappers = filterResourceWrappers(
-          ipsData,
-          ipsSection.code
-        );
-        const patientResourceWrapper = ipsData.resources[0];
+        const resourceWrappers = filterResourceWrappers(ipsData, code);
 
         const issuerApi = new WaltIdIssuerApi("https://issuer.healthwallet.li");
         const walletApi = new WaltIdWalletApi(
@@ -68,14 +65,21 @@ export default function SectionScreen() {
           "password"
         );
 
+        const selectedPatientRessourcesWrappers = resourceWrappers.filter(
+          (resourceWrapper: any) => {
+            return selectedIds.includes(
+              resourceWrapper.resource.code.coding[0].code
+            );
+          }
+        );
         const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(
           issuerApi,
           walletApi
         );
         const vc = await smartHealthCardIssuer.issueAndAddToWallet(
-          'Self-issued '+ipsSection.label,
-          patientResourceWrapper,
-          resourceWrappers
+          "Self-issued " + label,
+          selectedPatientRessourcesWrappers[0],
+          []
         );
         Toast.show({
           type: "success",
@@ -139,7 +143,7 @@ export default function SectionScreen() {
             ]}
             onPress={handleShare}
           >
-            <AntDesign name="sharealt" size={30} color={palette.primary.dark}/>
+            <AntDesign name="sharealt" size={30} color={palette.primary.dark} />
           </TouchableOpacity>
         )}
       </View>
@@ -193,8 +197,5 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 50,
-  },
-  shareButtonText: {
-    fontWeight: "bold",
   },
 });

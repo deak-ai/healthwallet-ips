@@ -67,24 +67,32 @@ export const IPS_TILES: readonly Tile[] = [
   },
 ] as const;
 
-export function IpsSectionTile(props: { onPress: () => void; tile: Tile }) {
+export function IpsSectionTile(props: {
+  onPress: () => void;
+  tile: Tile;
+  selected: boolean;
+}) {
   const theme = useColorScheme();
   const palette = getPalette(theme === "dark");
-
+  const { selected, onPress, tile } = props;
   return (
     <TouchableOpacity
       style={[
         {
-          backgroundColor: palette.background,
-          borderColor: palette.primary.lighter,
+          backgroundColor: !selected
+            ? palette.background
+            : palette.secondary.lighter,
+          borderColor: !selected
+            ? palette.primary.lighter
+            : palette.secondary.dark,
         },
         cardStyles.card,
       ]}
-      onPress={props.onPress}
+      onPress={onPress}
     >
-      <Image source={props.tile.icon} style={cardStyles.image} />
+      <Image source={tile.icon} style={cardStyles.image} />
       <Text style={[cardStyles.title, { color: palette.primary.main }]}>
-        {props.tile.label}
+        {tile.label}
       </Text>
     </TouchableOpacity>
   );

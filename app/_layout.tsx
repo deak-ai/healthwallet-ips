@@ -137,6 +137,12 @@ const RootLayoutNav = () => {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="shareStepper"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
       <CustomToast />
     </ThemeProvider>

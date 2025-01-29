@@ -10,6 +10,7 @@ export interface NeutralColors {
   white: string;
   grey: string;
   red: string;
+  lightGrey:string
 }
 
 export interface ColorPalette {
@@ -38,6 +39,7 @@ export const lightPalette: ColorPalette = {
     white: "#ffffff",
     grey: "#1D1D1F",
     red: "#CD3F3E",
+    lightGrey:"#cccccc"
   },
   background: "#ffffff",
   text: "#000000",
@@ -61,6 +63,7 @@ export const darkPalette: ColorPalette = {
     white: "#ffffff",
     grey: "#1D1D1F",
     red: "#CD3F3E",
+    lightGrey:"#cccccc"
   },
   background: "#121212",
   text: "#ffffff",
