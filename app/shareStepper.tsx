@@ -12,7 +12,7 @@ import { WaltIdWalletApi } from "@/components/waltIdWalletApi";
 import { getPalette } from "@/constants/Colors";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -44,10 +44,56 @@ const Stepper = () => {
     (item: { code: string; label: string }) => item.label
   );
   const [loading, setLoading] = useState(false);
+  const [selectAllStates, setSelectAllStates] = useState<{
+    [key: number]: boolean;
+  }>({});
 
   const [localSelectedElement, setLocalSelectedElement] = useState<
     { code: string; label: string; sectionCodes: string[] }[]
   >(parsedSelectedElement);
+
+  useEffect(() => {
+    if (localSelectedElement.length > 0 && ipsData) {
+      const selectedCodes =
+        localSelectedElement.find(
+          (item: any) => item.code === parsedSelectedElement[currentStep].code
+        )?.sectionCodes || [];
+
+      const totalItems = getProcessor(
+        parsedSelectedElement[currentStep].code
+      ).process(ipsData).length;
+
+      setSelectAllStates((prev) => ({
+        ...prev,
+        [currentStep]: selectedCodes.length === totalItems,
+      }));
+    }
+  }, [localSelectedElement, currentStep]);
+
+  const handleSelectAll = () => {
+    setSelectAllStates((prev) => {
+      const newSelectAll = !prev[currentStep];
+
+      if (ipsData) {
+        setLocalSelectedElement((prevSelectedElement: any) =>
+          prevSelectedElement.map((item: any) =>
+            item.code === parsedSelectedElement[currentStep].code
+              ? {
+                  ...item,
+                  sectionCodes: newSelectAll
+                    ? getProcessor(item.code)
+                        .process(ipsData)
+                        .map((resource: any) => resource.code)
+                    : [], // Deselect all
+                }
+              : item
+          )
+        );
+      }
+
+      return { ...prev, [currentStep]: newSelectAll };
+    });
+  };
 
   const handleNext = async () => {
     if (currentStep < stepNumber - 1) {
@@ -118,38 +164,37 @@ const Stepper = () => {
       setCurrentStep((prev) => prev - 1);
     }
   };
+
   const handleSelect = (code: string) => {
     setLocalSelectedElement((prevSelectedElement: any) => {
-      const existingItem = prevSelectedElement.find(
-        (item: any) => item.code === parsedSelectedElement[currentStep].code
+      const updatedSelection = prevSelectedElement.map((item: any) =>
+        item.code === parsedSelectedElement[currentStep].code
+          ? {
+              ...item,
+              sectionCodes: item.sectionCodes.includes(code)
+                ? item.sectionCodes.filter(
+                    (sectionCode: string) => sectionCode !== code
+                  )
+                : [...item.sectionCodes, code],
+            }
+          : item
       );
 
-      const isCodeInSection = existingItem?.sectionCodes.includes(code);
+      // Check if all items are selected
+      if (ipsData) {
+        const allSelected =
+          updatedSelection.find(
+            (item: any) => item.code === parsedSelectedElement[currentStep].code
+          )?.sectionCodes.length ===
+          getProcessor(parsedSelectedElement[currentStep].code).process(ipsData)
+            .length;
 
-      if (isCodeInSection) {
-        return prevSelectedElement.map((item: any) =>
-          item.code === parsedSelectedElement[currentStep].code
-            ? {
-                ...item,
-                sectionCodes: item.sectionCodes.filter(
-                  (sectionCode: string) => sectionCode !== code
-                ),
-              }
-            : item
-        );
-      } else {
-        return prevSelectedElement.map((item: any) =>
-          item.code === parsedSelectedElement[currentStep].code
-            ? {
-                ...item,
-                sectionCodes: [...item.sectionCodes, code],
-              }
-            : item
-        );
+        setSelectAllStates((prev) => ({ ...prev, [currentStep]: allSelected }));
       }
+
+      return updatedSelection;
     });
   };
-
 
   return (
     <View style={styles.container}>
@@ -170,6 +215,22 @@ const Stepper = () => {
         <Text style={[styles.title, { color: palette.text }]}>
           {titles[currentStep]}
         </Text>
+        <TouchableOpacity
+          style={[
+            styles.selectAllButton,
+            { backgroundColor: palette.secondary.main },
+          ]}
+          onPress={handleSelectAll}
+        >
+          <Text
+            style={[
+              styles.selectAllButtonText,
+              { color: palette.neutral.white },
+            ]}
+          >
+            {selectAllStates[currentStep] ? "Deselect All" : "Select All"}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.contentContainer}>
@@ -290,9 +351,9 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 20,
+    alignItems: "center",
   },
   backButton: {
     marginRight: 16,
@@ -301,6 +362,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     flex: 1,
+    textAlign: "center",
   },
   scrollViewContainer: {
     flexGrow: 1,
@@ -312,6 +374,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     paddingHorizontal: 10,
+  },
+  selectAllButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+  },
+  selectAllButtonText: {
+    fontWeight: "bold",
   },
 });
 
