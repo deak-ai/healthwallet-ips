@@ -24,6 +24,7 @@ import { WaltIdWalletApi } from "@/components/waltIdWalletApi";
 import CustomLoader from "@/components/reusable/loader";
 import Toast from "react-native-toast-message";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import Header from "@/components/reusable/header";
 
 export default function SectionScreen() {
   const route = useRoute();
@@ -102,22 +103,7 @@ export default function SectionScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: palette.background }]}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Icon
-            type="ionicon"
-            name="chevron-back-circle-outline"
-            size={32}
-            color={
-              theme === "dark" ? palette.neutral.white : palette.neutral.black
-            }
-          />
-        </TouchableOpacity>
-        <Text style={[styles.title, { color: palette.text }]}>{title}</Text>
-      </View>
+      <Header title={title} />
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.sectionContainer}>
           {resources.map((item: any, index) => (

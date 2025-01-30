@@ -41,7 +41,7 @@ export default function RootLayout() {
   });
 
   const [appReady, setAppReady] = useState(false);
-  
+
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -139,6 +139,18 @@ const RootLayoutNav = () => {
         />
         <Stack.Screen
           name="shareStepper"
+          options={{
+            headerShown: false,
+          }}
+        />
+         <Stack.Screen
+          name="connectors"
+          options={{
+            headerShown: false,
+          }}
+        />
+         <Stack.Screen
+          name="settingsWallet"
           options={{
             headerShown: false,
           }}
