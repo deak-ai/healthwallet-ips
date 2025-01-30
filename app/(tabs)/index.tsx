@@ -57,7 +57,7 @@ export default function TabSettingsScreen() {
     ) {
       refRBSheet?.current.open();
     }
-  }, [clickedTab]);
+  }, [patientId, clickedTab, ipsData]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -81,13 +81,6 @@ export default function TabSettingsScreen() {
       setPatientId(inputValue);
 
       await loadFhirData(inputValue);
-
-      // Toast.show({
-      //   type: "success",
-      //   text1: "Success",
-      //   text2: "Patient ID saved securely!",
-      //   position: "bottom",
-      // });
     } catch (error) {
       console.error("Error saving patient ID:", error);
       Toast.show({
@@ -161,10 +154,13 @@ export default function TabSettingsScreen() {
     }
   };
 
-
   return (
     <View style={styles.container}>
-      <BottomSheet ref={refRBSheet} title="ID Required" description="A valid Patient ID is required to continue." />
+      <BottomSheet
+        ref={refRBSheet}
+        title="ID Required"
+        description="A valid Patient ID is required to continue."
+      />
 
       <Text style={styles.label}>Enter Patient ID:</Text>
       <TextInput

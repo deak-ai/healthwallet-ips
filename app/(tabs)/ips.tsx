@@ -145,6 +145,7 @@ export default function TabIpsScreen() {
   useEffect(() => {
     if (clickedShare && shareMode && selectedElement.length === 0) {
       refRBSheet?.current.open();
+      setClickedShare(false)
     }
   }, [clickedShare, selectedElement, shareMode]);
 
