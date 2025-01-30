@@ -4,7 +4,7 @@ import {
   useColorScheme,
   TouchableOpacity,
 } from "react-native";
-import { Text, View } from "@/components/Themed";
+import { View } from "@/components/Themed";
 import { IPS_TILES, IpsSectionTile, Tile } from "@/components/IpsSectionTile";
 import { useIpsData } from "@/components/IpsDataContext";
 import { useRouter } from "expo-router";
@@ -13,8 +13,6 @@ import { getProcessor } from "@/components/ipsResourceProcessor";
 import { AntDesign } from "@expo/vector-icons";
 import { getPalette } from "@/constants/Colors";
 import { useEffect, useRef, useState } from "react";
-import RBSheet from "react-native-raw-bottom-sheet";
-import { Icon } from "@/components/MultiSourceIcon";
 import BottomSheet from "@/components/reusable/bottomSheet";
 import CustomSwitch from "@/components/reusable/customSwitch";
 
@@ -150,52 +148,6 @@ export default function TabIpsScreen() {
     }
   }, [clickedShare, selectedElement, shareMode]);
 
-  const rBSheet = () => {
-    return (
-      <RBSheet
-        ref={refRBSheet}
-        height={200}
-        customStyles={{
-          container: {
-            justifyContent: "center",
-            alignItems: "center",
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-            backgroundColor:
-              theme === "dark" ? palette.neutral.grey : palette.neutral.white,
-          },
-        }}
-      >
-        <View style={[styles.sheetContent]}>
-          <View
-            style={[
-              styles.titleRow,
-              {
-                backgroundColor:
-                  theme === "dark"
-                    ? palette.neutral.grey
-                    : palette.neutral.white,
-              },
-            ]}
-          >
-            <Icon
-              type={"ionicon"}
-              name={"information-circle"}
-              size={38}
-              color={palette.primary.main}
-            />
-            <Text style={[styles.infoTitle, { color: palette.primary.main }]}>
-              Resources Required
-            </Text>
-          </View>
-          <Text style={styles.infoDescription}>
-            Please select which resources to share
-          </Text>
-        </View>
-      </RBSheet>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <BottomSheet
@@ -205,12 +157,11 @@ export default function TabIpsScreen() {
       />
       <View style={styles.switchContainer}>
         <CustomSwitch
-          icon="close-circle-outline"
-          iconActive="checkmark-circle-outline"
-          text=" Share Mode"
-          onToggle={handleShareMode}
-          activeColor={palette.primary.main}
-          inactiveColor={palette.neutral.lightGrey}
+          selectionMode={2}
+          option1={"Share"}
+          option2={"Browse"}
+          onSelectSwitch={handleShareMode}
+          selectionColor={palette.primary.main}
         />
       </View>
 

@@ -1,97 +1,86 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+
+import { Text, View, TouchableOpacity } from "react-native";
 
 interface CustomSwitchProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  iconActive: keyof typeof Ionicons.glyphMap;
-  text: string;
-  onToggle?: (isEnabled: boolean) => void;
-  activeColor: string;
-  inactiveColor: string;
+  selectionMode: number;
+  option1: string;
+  option2: string;
+  onSelectSwitch: (val: number) => void;
+  selectionColor: string;
 }
 
-const CustomSwitch: React.FC<CustomSwitchProps> = ({
-  icon,
-  iconActive,
-  text,
-  onToggle,
-  activeColor,
-  inactiveColor,
-}) => {
-  const [isEnabled, setIsEnabled] = useState<boolean>(false);
+const CustomSwitch = ({
+  selectionMode,
+  option1,
+  option2,
+  onSelectSwitch,
+  selectionColor,
+}: CustomSwitchProps) => {
+  const [getSelectionMode, setSelectionMode] = useState(selectionMode);
 
-  const toggleSwitch = () => {
-    const newState = !isEnabled;
-    setIsEnabled(newState);
-    if (onToggle) onToggle(newState);
+  const updatedSwitchData = (val: number) => {
+    setSelectionMode(val);
+    onSelectSwitch(val);
   };
 
   return (
-    <View style={styles.container}>
-      <Text
-        style={[
-          styles.text,
-          { color: isEnabled ? activeColor : inactiveColor },
-        ]}
+    <View>
+      <View
+        style={{
+          height: 44,
+          width: 215,
+          backgroundColor: "white",
+          borderRadius: 25,
+          borderWidth: 1,
+          borderColor: selectionColor,
+          flexDirection: "row",
+          justifyContent: "center",
+          padding: 2,
+        }}
       >
-        {text}
-      </Text>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => updatedSwitchData(1)}
+          style={{
+            flex: 1,
 
-      <TouchableOpacity
-        onPress={toggleSwitch}
-        style={[
-          styles.switchContainer,
-          {
-            backgroundColor: isEnabled ? activeColor : inactiveColor,
-          },
-        ]}
-      >
-        <View
-          style={[
-            styles.iconContainer,
-            {
-              backgroundColor: "white",
-              transform: [{ translateX: isEnabled ? 30 : 0 }],
-            },
-          ]}
+            backgroundColor: getSelectionMode == 1 ? selectionColor : "white",
+            borderRadius: 25,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <Ionicons
-            name={isEnabled ? iconActive : icon}
-            size={30}
-            color={isEnabled ? activeColor : inactiveColor}
-          />
-        </View>
-      </TouchableOpacity>
+          <Text
+            style={{
+              color: getSelectionMode == 1 ? "white" : selectionColor,
+            }}
+          >
+            {option1}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => updatedSwitchData(2)}
+          style={{
+            flex: 1,
+
+            backgroundColor: getSelectionMode == 2 ? selectionColor : "white",
+            borderRadius: 25,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              color: getSelectionMode == 2 ? "white" : selectionColor,
+            }}
+          >
+            {option2}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    fontSize: 16,
-    marginRight: 10,
-  },
-  iconContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 30,
-    borderRadius: 20,
-    position: "absolute",
-    left: 1,
-  },
-  switchContainer: {
-    width: 60,
-    height: 30,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
-
 export default CustomSwitch;
