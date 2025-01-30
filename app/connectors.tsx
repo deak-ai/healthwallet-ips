@@ -11,6 +11,7 @@ import Toast from "react-native-toast-message";
 import { useClickedTab } from "@/components/clickedTabContext";
 import { getPalette } from "@/constants/Colors";
 import BottomSheet from "@/components/reusable/bottomSheet";
+import Header from "@/components/reusable/header";
 
 export default function Connectores() {
   const [patientId, setPatientId] = useState<string | null>(null);
@@ -39,7 +40,7 @@ export default function Connectores() {
           ipsData.sections.length !== 0 &&
           ipsData.resources.length !== 0
         ) {
-       //   navigation.navigate("ips" as never);
+          //   navigation.navigate("ips" as never);
         }
       } catch (error) {
         console.error("Error loading patient ID:", error);
@@ -156,6 +157,8 @@ export default function Connectores() {
 
   return (
     <View style={styles.container}>
+      <Header title={"Connectors"} />
+
       <BottomSheet
         ref={refRBSheet}
         title="ID Required"
@@ -215,7 +218,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    padding: 10,
     paddingHorizontal: 20,
     backgroundColor: "transparent",
     gap: 18,
