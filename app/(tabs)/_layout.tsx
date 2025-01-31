@@ -19,7 +19,8 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation(); // Access navigation object
-  const palette = getPalette(colorScheme==="dark");
+  const isDarkMode=colorScheme==="dark"
+  const palette = getPalette(isDarkMode);
   const { clickedTab, setClickedTab } = useClickedTab();
   const { ipsData } = useIpsData();
 
@@ -47,13 +48,14 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: palette.primary.dark,
+        tabBarActiveTintColor: isDarkMode?palette.primary.light :palette.primary.dark,
         headerShown: false,
         headerPressColor: palette.primary.main,
         tabBarInactiveTintColor: palette.primary.main,
         tabBarIconStyle: { color:  palette.primary.main},
         tabBarInactiveBackgroundColor:
-        palette.neutral.white,
+        isDarkMode?palette.primary.dark: palette.neutral.white,
+        tabBarActiveBackgroundColor: isDarkMode?palette.primary.dark: palette.neutral.white
       }}
     >
       {/* <Tabs.Screen

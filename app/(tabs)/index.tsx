@@ -80,7 +80,7 @@ const TabSettingsScreen = () => {
     <View style={styles.container}>
       {menuItems.map((section, index) => (
         <View key={index} style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>{section.section}</Text>
+          <Text style={[styles.sectionTitle,{color:palette.text}]}>{section.section}</Text>
           {section.items.map((item, idx) => (
             <TouchableOpacity
               key={idx}

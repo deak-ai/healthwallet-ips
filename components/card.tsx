@@ -33,8 +33,8 @@ const SectionCard = ({
   } = resource;
   const theme = useColorScheme() ?? "light";
   const palette = getPalette(theme === "dark");
-  const labelColor = palette.neutral.black;
-
+  const labelColor =
+    theme === "light" ? palette.neutral.black : palette.neutral.white;
   const renderContentByLabel = (label: string | undefined) => {
     switch (label) {
       case "Allergies":
@@ -223,7 +223,9 @@ const SectionCard = ({
             ? palette.background
             : palette.secondary.lighter,
           borderColor: !selected
-            ? palette.primary.lighter
+            ? theme === "dark"
+              ? palette.secondary.light
+              : palette.primary.lighter
             : palette.secondary.dark,
         },
       ]}

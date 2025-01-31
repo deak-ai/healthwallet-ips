@@ -49,7 +49,7 @@ export const darkPalette: ColorPalette = {
   primary: {
     main: "#5A81FA",
     light: "#CDDEFF",
-    lighter: "#2E6FF31A",
+    lighter:"#0955EE4F",
     dark: "#2B318A",
   },
   secondary: {

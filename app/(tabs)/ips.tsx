@@ -49,7 +49,8 @@ export default function TabIpsScreen() {
   const { ipsData } = useIpsData();
   const router = useRouter();
   const theme = useColorScheme() ?? "light";
-  const palette = getPalette(theme === "dark");
+  const isDarkMode = theme === "dark";
+  const palette = getPalette(isDarkMode);
   const refRBSheet = useRef<any>(null);
   const [clickedShare, setClickedShare] = useState(false);
   const [shareMode, setShareMode] = useState(false);
@@ -121,7 +122,7 @@ export default function TabIpsScreen() {
   };
 
   const handleShare = () => {
-    if(disabledShareMode){
+    if (disabledShareMode) {
       setClickedShare(true);
     }
     if (selectedElement.length === 0) {
@@ -226,7 +227,10 @@ export default function TabIpsScreen() {
             style={[
               styles.shareButton,
               {
-                backgroundColor: palette.secondary.lighter,
+                backgroundColor: isDarkMode
+                  ? palette.secondary.main
+                  : palette.secondary.lighter,
+                opacity: isDarkMode && selectedElement.length === 0 ? 0.5 : 1,
               },
             ]}
             onPress={handleShare}
@@ -236,7 +240,9 @@ export default function TabIpsScreen() {
               size={30}
               color={
                 selectedElement.length !== 0
-                  ? palette.primary.dark
+                  ? isDarkMode
+                    ? palette.primary.light
+                    : palette.primary.dark
                   : palette.primary.light
               }
             />
