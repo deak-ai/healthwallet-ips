@@ -135,8 +135,8 @@ const Stepper = () => {
 
               await smartHealthCardIssuer.issueAndAddToWallet(
                 "Self-issued " + element.label,
-                selectedPatientRessourcesWrappers[0],
-                []
+                resourceWrappers[0],
+                selectedPatientRessourcesWrappers
               );
 
               Toast.show({
@@ -168,7 +168,6 @@ const Stepper = () => {
         });
       } finally {
         setLoading(false);
-
       }
     }
   };
@@ -261,6 +260,7 @@ const Stepper = () => {
                       currentStep
                     ].sectionCodes.includes(item.code)}
                     onSelect={() => handleSelect(item.code)}
+                    label={localSelectedElement[currentStep].label}
                   />
                 ))}
           </View>

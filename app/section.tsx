@@ -69,8 +69,7 @@ export default function SectionScreen() {
         //test login before sharing
         const loginData = await walletApi.login();
         if (loginData.token) {
-          walletApi;
-          const selectedPatientRessourcesWrappers = resourceWrappers.filter(
+          const selectedPatientResourcesWrappers = resourceWrappers.filter(
             (resourceWrapper: any) => {
               return selectedIds.includes(
                 resourceWrapper.resource.code.coding[0].code
@@ -83,8 +82,8 @@ export default function SectionScreen() {
           );
           const vc = await smartHealthCardIssuer.issueAndAddToWallet(
             "Self-issued " + label,
-            selectedPatientRessourcesWrappers[0],
-            []
+            resourceWrappers[0],
+            selectedPatientResourcesWrappers,
           );
           Toast.show({
             type: "success",

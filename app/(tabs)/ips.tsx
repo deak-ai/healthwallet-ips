@@ -141,9 +141,6 @@ export default function TabIpsScreen() {
   };
 
   const handleShareMode = async () => {
-    if (shareMode) {
-      setSelectedElement([]);
-    } else {
       const savedUsername = await SecureStore.getItemAsync("username");
       const savedPassword = await SecureStore.getItemAsync("password");
       if (!savedUsername || !savedPassword) {
@@ -154,9 +151,8 @@ export default function TabIpsScreen() {
         setDisabledShareMode(false);
       }
     }
-  };
 
-  useEffect(() => {
+    useEffect(() => {
     const loadWalletCredentials = async () => {
       try {
         const savedUsername = await SecureStore.getItemAsync("username");

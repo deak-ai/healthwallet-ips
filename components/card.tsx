@@ -12,7 +12,7 @@ type SectionCardProps = {
   resource: any;
   selected: boolean;
   onSelect: () => void;
-  label?: string;
+  label: string;
 };
 
 const SectionCard = ({
