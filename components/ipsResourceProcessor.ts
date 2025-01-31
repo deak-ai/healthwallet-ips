@@ -40,6 +40,8 @@ export class AllergyIntoleranceSectionProcessor implements IpsSectionProcessor {
             clinicalStatus: resource.clinicalStatus?.coding?.[0]?.code || null,
             verificationStatus: resource.verificationStatus?.coding?.[0]?.code || null,
             recordedDate: resource.recordedDate || null,
+            type:resource?.type,
+            category:resource?.category
         };
         return flattenedResource;
         // Filter out keys with null values
