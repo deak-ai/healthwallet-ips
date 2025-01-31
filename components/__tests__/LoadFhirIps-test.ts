@@ -74,7 +74,7 @@ test('FhirUrlStreamProcessor.streamData should succeed parsing from valid FHIR I
     expect(resultString.startsWith('[{"code')).toBeTruthy();
     expect(result.resources.length).toBeGreaterThan(190);
 
-    let titles = findKeysAtAnyDepth(result.sections, "title" );
+    let titles = findKeysAtAnyDepth(result.sections, "title" ); 
 
     console.log(titles )
 

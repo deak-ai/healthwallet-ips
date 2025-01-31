@@ -49,6 +49,86 @@ export class AllergyIntoleranceSectionProcessor implements IpsSectionProcessor {
     }
 }
 
+interface DosageInstruction {
+    asNeededBoolean?: boolean;
+    text?: string;
+    timing?: {
+        repeat?: {
+            frequency?: number;
+            period?: number;
+            periodUnit?: string;
+        };
+    };
+    doseAndRate?: Array<{
+        doseQuantity?: {
+            value?: number;
+        };
+    }>;
+    additionalInstruction?: Array<{
+        text?: string;
+        coding?: Array<{
+            display?: string;
+        }>;
+    }>;
+}
+
+function formatDosageInstructions(dosageInstructions?: DosageInstruction[]): string {
+    if (!dosageInstructions || dosageInstructions.length === 0) {
+        return 'No dosage instructions available.';
+    }
+
+    // We'll process the first dosage instruction (most common case)
+    const instruction = dosageInstructions[0];
+
+    // Handle "as needed" case first
+    if (instruction.asNeededBoolean === true) {
+        return instruction.text?.endsWith('.') ? instruction.text : (instruction.text || 'Take as needed') + '.';
+    }
+
+    // Build the instruction string
+    const parts: string[] = [];
+
+    // Add any additional instructions first
+    if (instruction.additionalInstruction && instruction.additionalInstruction.length > 0) {
+        const additionalText = instruction.additionalInstruction[0].text || 
+                             instruction.additionalInstruction[0].coding?.[0]?.display;
+        if (additionalText) {
+            // Remove any trailing periods as we'll add them when joining
+            parts.push(additionalText.replace(/\.+$/, ''));
+        }
+    }
+
+    // Add dosage quantity if available
+    const doseQuantity = instruction.doseAndRate?.[0]?.doseQuantity?.value;
+    const timing = instruction.timing?.repeat;
+
+    if (doseQuantity !== undefined && timing) {
+        const frequency = timing.frequency || 1;
+        const period = timing.period || 1;
+        const periodUnit = timing.periodUnit || 'd';
+
+        let timingStr = '';
+        if (frequency === 1 && period === 1 && periodUnit === 'd') {
+            timingStr = 'once per day';
+        } else if (frequency === 2 && period === 1 && periodUnit === 'd') {
+            timingStr = 'twice per day';
+        } else if (frequency === 3 && period === 1 && periodUnit === 'd') {
+            timingStr = 'three times per day';
+        } else {
+            // Convert frequency to words for 1 and 2
+            const frequencyWord = frequency === 1 ? 'once' :
+                                frequency === 2 ? 'twice' :
+                                `${frequency} times`;
+            timingStr = `${frequencyWord} per ${period} ${periodUnit}`;
+        }
+
+        parts.push(`Quantity of ${doseQuantity}, ${timingStr}`);
+    }
+
+    const result = parts.join('. ');
+    return result ? result + '.' : 'No specific dosage instructions available.';
+}
+
 class MedicationSectionProcessor implements IpsSectionProcessor {
     process(ipsData: IpsData): FlattenedResource[] {
         return filterResourceWrappers(ipsData, IpsSectionCode.Medications.code)
@@ -57,16 +137,19 @@ class MedicationSectionProcessor implements IpsSectionProcessor {
 
     private flattenMedicationRequest(wrapper: FhirResourceWrapper): FlattenedResource {
         const resource = wrapper.resource;
-        const flattenedResource: FlattenedResource = {
+        const coding = resource.medicationCodeableConcept?.coding?.[0];
+        const dosageInstructions = formatDosageInstructions(resource.dosageInstruction);
+        
+        return {
             uri: wrapper.fullUrl,
             intent: resource.intent || null,
-            name: resource.medicationCodeableConcept?.coding?.[0]?.display || resource.medicationCodeableConcept?.text || null,
-            code: resource.medicationCodeableConcept?.coding?.[0]?.code || null,
-            codeSystem: resource.medicationCodeableConcept?.coding?.[0]?.system || null,
+            name: coding?.display || resource.medicationCodeableConcept?.text || null,
+            code: coding?.code || null,
+            codeSystem: coding?.system || null,
             status: resource.status || null,
             authoredOn: resource.authoredOn || null,
+            dosageInstructions,
         };
-        return flattenedResource;
     }
 }
 
@@ -90,7 +173,6 @@ class ProblemSectionProcessor implements IpsSectionProcessor {
         return flattenedResource;
     }
 }
-
 
 class ProcedureSectionProcessor implements IpsSectionProcessor {
     process(ipsData: IpsData): FlattenedResource[] {
