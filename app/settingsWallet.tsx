@@ -87,24 +87,27 @@ export default function SettingsWallet() {
         credentials.username,
         credentials.password
       );
-     await walletApi
+      await walletApi
         .login()
-        .then(() => {
-          Toast.show({
-            type: "success",
-            text1: "Success",
-            text2: "Login Successful",
-            position: "bottom",
-          });
+        .then((data) => {
+          if (data.token) {
+            Toast.show({
+              type: "success",
+              text1: "Success",
+              text2: "Login Successful",
+              position: "bottom",
+            });
+          } else {
+            Toast.show({
+              type: "error",
+              text1: "Error",
+              text2: "Failed to login.",
+              position: "bottom",
+            });
+          }
         })
         .catch((error) => {
           console.error("Error login:", error);
-          Toast.show({
-            type: "error",
-            text1: "Error",
-            text2: "Failed to login.",
-            position: "bottom",
-          });
         });
     } catch (error) {
       console.error("Error login:", error);
@@ -173,7 +176,9 @@ export default function SettingsWallet() {
           style={[
             styles.button,
             {
-              backgroundColor: !disabledTestConnection ? palette.secondary.light:palette.neutral.lightGrey,
+              backgroundColor: !disabledTestConnection
+                ? palette.secondary.light
+                : palette.neutral.lightGrey,
               opacity: disabledTestConnection ? 0.5 : 1,
             },
           ]}

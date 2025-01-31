@@ -17,10 +17,8 @@ const CustomSwitch = ({
   onSelectSwitch,
   selectionColor,
 }: CustomSwitchProps) => {
-  const [getSelectionMode, setSelectionMode] = useState(selectionMode);
 
   const updatedSwitchData = (val: number) => {
-    setSelectionMode(val);
     onSelectSwitch(val);
   };
 
@@ -45,7 +43,7 @@ const CustomSwitch = ({
           style={{
             flex: 1,
 
-            backgroundColor: getSelectionMode == 1 ? selectionColor : "white",
+            backgroundColor: selectionMode == 1 ? selectionColor : "white",
             borderRadius: 25,
             justifyContent: "center",
             alignItems: "center",
@@ -53,7 +51,7 @@ const CustomSwitch = ({
         >
           <Text
             style={{
-              color: getSelectionMode == 1 ? "white" : selectionColor,
+              color: selectionMode == 1 ? "white" : selectionColor,
             }}
           >
             {option1}
@@ -65,7 +63,7 @@ const CustomSwitch = ({
           style={{
             flex: 1,
 
-            backgroundColor: getSelectionMode == 2 ? selectionColor : "white",
+            backgroundColor: selectionMode == 2 ? selectionColor : "white",
             borderRadius: 25,
             justifyContent: "center",
             alignItems: "center",
@@ -73,7 +71,7 @@ const CustomSwitch = ({
         >
           <Text
             style={{
-              color: getSelectionMode == 2 ? "white" : selectionColor,
+              color: selectionMode == 2 ? "white" : selectionColor,
             }}
           >
             {option2}

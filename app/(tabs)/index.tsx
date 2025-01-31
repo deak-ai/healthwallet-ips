@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -6,14 +6,53 @@ import {
   StyleSheet,
   useColorScheme,
 } from "react-native";
-import { Href, useRouter } from "expo-router";
+import { Href, useNavigation, useRouter } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { getPalette } from "@/constants/Colors";
+import * as SecureStore from "expo-secure-store";
+import { useIpsData } from "@/components/IpsDataContext";
+import BottomSheet from "@/components/reusable/bottomSheet";
+import { useClickedTab } from "@/components/clickedTabContext";
 
 const TabSettingsScreen = () => {
   const router = useRouter();
   const theme = useColorScheme();
   const palette = getPalette(theme === "dark");
+  const { ipsData } = useIpsData();
+  const navigation = useNavigation();
+  const refRBSheet = useRef<any>(null);
+  const { clickedTab } = useClickedTab();
+
+  useEffect(() => {
+    if (
+      !ipsData ||
+      ipsData.resources.length === 0 ||
+      ipsData.sections.length === 0
+    ) {
+      refRBSheet?.current.open();
+    }
+  }, [clickedTab, ipsData,refRBSheet]);
+
+  useEffect(() => {
+    const loadPatientId = async () => {
+      try {
+        const savedPatientId = await SecureStore.getItemAsync("patientId");
+
+        //Condition to navigate directly to home page
+        if (
+          savedPatientId &&
+          ipsData &&
+          ipsData.sections.length !== 0 &&
+          ipsData.resources.length !== 0
+        ) {
+          navigation.navigate("ips" as never);
+        }
+      } catch (error) {
+        console.error("Error loading patient ID:", error);
+      }
+    };
+    loadPatientId();
+  }, []);
 
   const menuItems = [
     {
@@ -21,12 +60,16 @@ const TabSettingsScreen = () => {
       items: [
         {
           title: "Connectors",
-          icon: <AntDesign name="user" size={24} color={palette.primary.dark} />,
+          icon: (
+            <AntDesign name="user" size={24} color={palette.primary.dark} />
+          ),
           route: "/connectors",
         },
         {
           title: "Wallet",
-          icon: <AntDesign name="wallet" size={24} color={palette.primary.dark}/>,
+          icon: (
+            <AntDesign name="wallet" size={24} color={palette.primary.dark} />
+          ),
           route: "/settingsWallet",
         },
       ],
@@ -41,15 +84,29 @@ const TabSettingsScreen = () => {
           {section.items.map((item, idx) => (
             <TouchableOpacity
               key={idx}
-              style={[styles.menuItem,,{shadowColor:palette.neutral.black,backgroundColor:palette.neutral.white}]}
+              style={[
+                styles.menuItem,
+                ,
+                {
+                  shadowColor: palette.neutral.black,
+                  backgroundColor: palette.neutral.white,
+                },
+              ]}
               onPress={() => router.push(item.route as Href<string | object>)}
             >
               <View style={styles.iconContainer}>{item.icon}</View>
-              <Text style={[styles.menuText,{color:palette.primary.dark}]}>{item.title}</Text>
+              <Text style={[styles.menuText, { color: palette.primary.dark }]}>
+                {item.title}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
       ))}
+      <BottomSheet
+        ref={refRBSheet}
+        title="ID Required"
+        description="A valid Patient ID is required to continue."
+      />
     </View>
   );
 };

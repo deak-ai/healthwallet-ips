@@ -3,7 +3,7 @@ import { StyleSheet, useColorScheme, TouchableOpacity } from "react-native";
 import { Text, View, TextInput } from "@/components/Themed";
 import * as SecureStore from "expo-secure-store";
 import { Icon } from "@/components/MultiSourceIcon";
-import { useFocusEffect, useNavigation } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { useIpsData } from "@/components/IpsDataContext";
 import { FhirUrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
 import CustomLoader from "@/components/reusable/loader";
@@ -23,8 +23,8 @@ export default function Connectores() {
   const palette = getPalette(theme === "dark");
 
   const { setIpsData, ipsData } = useIpsData();
-  const navigation = useNavigation();
-  // Load the patient ID from SecureStore when the component mounts
+
+  //Load the patient ID from SecureStore when the component mounts
   useEffect(() => {
     const loadPatientId = async () => {
       try {
@@ -32,16 +32,6 @@ export default function Connectores() {
 
         setPatientId(savedPatientId);
         setInputValue(savedPatientId || "");
-
-        //if we have already data navigate to ips screen
-        if (
-          savedPatientId &&
-          ipsData &&
-          ipsData.sections.length !== 0 &&
-          ipsData.resources.length !== 0
-        ) {
-          //   navigation.navigate("ips" as never);
-        }
       } catch (error) {
         console.error("Error loading patient ID:", error);
       }
@@ -51,7 +41,6 @@ export default function Connectores() {
 
   useEffect(() => {
     if (
-      !patientId ||
       !ipsData ||
       ipsData.resources.length === 0 ||
       ipsData.sections.length === 0

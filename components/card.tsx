@@ -12,17 +12,18 @@ type SectionCardProps = {
   resource: any;
   selected: boolean;
   onSelect: () => void;
+  label?:string
 };
 
-const SectionCard = ({ resource, selected, onSelect }: SectionCardProps) => {
-
-  const { name, criticality, clinicalStatus, status, category, type } =
+const SectionCard = ({ resource, selected, onSelect ,label}: SectionCardProps) => {
+  const { name, criticality, clinicalStatus, category, type } =
     resource;
   const theme = useColorScheme() ?? "light";
-
   const palette = getPalette(theme === "dark");
   const labelColor = palette.neutral.black;
-
+console.log(
+  "resource",resource
+);
   return (
     <TouchableOpacity
       style={[
@@ -83,16 +84,18 @@ const SectionCard = ({ resource, selected, onSelect }: SectionCardProps) => {
         </View>
       </View>
 
-      <View
-        style={[
-          styles.statusContainer,
-          { backgroundColor: palette.primary.dark },
-        ]}
-      >
-        <Text style={[styles.statusText, { color: palette.neutral.white }]}>
-          {status || "Active"}
-        </Text>
-      </View>
+      {clinicalStatus && (
+        <View
+          style={[
+            styles.statusContainer,
+            { backgroundColor: palette.primary.dark },
+          ]}
+        >
+          <Text style={[styles.statusText, { color: palette.neutral.white }]}>
+            {clinicalStatus}
+          </Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 };

@@ -15,6 +15,7 @@ import { getPalette } from "@/constants/Colors";
 import { useEffect, useRef, useState } from "react";
 import BottomSheet from "@/components/reusable/bottomSheet";
 import CustomSwitch from "@/components/reusable/customSwitch";
+import * as SecureStore from "expo-secure-store";
 
 /*
 These are all the relevant IPS sections with corresponding loinc codes :
@@ -52,7 +53,7 @@ export default function TabIpsScreen() {
   const refRBSheet = useRef<any>(null);
   const [clickedShare, setClickedShare] = useState(false);
   const [shareMode, setShareMode] = useState(false);
-
+  const [disabledShareMode, setDisabledShareMode] = useState(false);
   // Extract codes from ipsData.sections
   const sectionCodes =
     ipsData?.sections?.map((section: any) => section.code.coding[0].code) || [];
@@ -120,6 +121,9 @@ export default function TabIpsScreen() {
   };
 
   const handleShare = () => {
+    if(disabledShareMode){
+      setClickedShare(true);
+    }
     if (selectedElement.length === 0) {
       setClickedShare(true);
     } else {
@@ -135,17 +139,44 @@ export default function TabIpsScreen() {
     }
   };
 
-  const handleShareMode = () => {
+  const handleShareMode = async () => {
     if (shareMode) {
       setSelectedElement([]);
+    } else {
+      const savedUsername = await SecureStore.getItemAsync("username");
+      const savedPassword = await SecureStore.getItemAsync("password");
+      if (!savedUsername || !savedPassword) {
+        setDisabledShareMode(true);
+        refRBSheet?.current.open();
+      } else {
+        setShareMode((prev) => !prev);
+        setDisabledShareMode(false);
+      }
     }
-    setShareMode((prev) => !prev);
   };
+
+  useEffect(() => {
+    const loadWalletCredentials = async () => {
+      try {
+        const savedUsername = await SecureStore.getItemAsync("username");
+        const savedPassword = await SecureStore.getItemAsync("password");
+        if (!savedUsername || !savedPassword) {
+          setDisabledShareMode(true);
+          setShareMode(false);
+        } else {
+          setDisabledShareMode(true);
+        }
+      } catch (error) {
+        console.error("Error loading wallet credentials:", error);
+      }
+    };
+    loadWalletCredentials();
+  }, []);
 
   useEffect(() => {
     if (clickedShare && shareMode && selectedElement.length === 0) {
       refRBSheet?.current.open();
-      setClickedShare(false)
+      setClickedShare(false);
     }
   }, [clickedShare, selectedElement, shareMode]);
 
@@ -153,12 +184,21 @@ export default function TabIpsScreen() {
     <View style={styles.container}>
       <BottomSheet
         ref={refRBSheet}
-        title="Resources Required"
-        description="Please select which resources to share"
+        title={
+          disabledShareMode
+            ? "Wallet credentials Required"
+            : "Resources Required"
+        }
+        description={
+          disabledShareMode
+            ? "A valid wallet credentials are required to continue."
+            : "Please select which resources to share"
+        }
       />
+
       <View style={styles.switchContainer}>
         <CustomSwitch
-          selectionMode={2}
+          selectionMode={shareMode ? 1 : 2}
           option1={"Share"}
           option2={"Browse"}
           onSelectSwitch={handleShareMode}

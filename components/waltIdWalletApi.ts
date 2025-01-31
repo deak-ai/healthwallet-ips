@@ -105,7 +105,7 @@ export class WaltIdWalletApi {
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({ message: 'Unknown error' }));
-      throw new Error(`API Error: ${error.message}`);
+      return new Error(`API Error: ${error.message}`);
     }
 
     if (response.status === 204) {

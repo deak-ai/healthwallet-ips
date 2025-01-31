@@ -9,14 +9,13 @@ import {
   useColorScheme,
   TouchableOpacity,
 } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { useIpsData } from "@/components/IpsDataContext";
 import {
   filterResourceWrappers,
   getProcessor,
 } from "@/components/ipsResourceProcessor";
 import SectionCard from "@/components/card";
-import { Icon } from "@/components/MultiSourceIcon";
 import { getPalette } from "@/constants/Colors";
 import { WaltIdIssuerApi } from "@/components/waltIdIssuerApi";
 import { WaltIdSmartHealthCardIssuer } from "@/components/waltIdSmartHealthCardIssuer";
@@ -25,10 +24,10 @@ import CustomLoader from "@/components/reusable/loader";
 import Toast from "react-native-toast-message";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Header from "@/components/reusable/header";
+import * as SecureStore from "expo-secure-store";
 
 export default function SectionScreen() {
   const route = useRoute();
-  const navigation = useNavigation();
   const { title, code, label } = route.params as {
     title: string;
     code: string;
@@ -57,36 +56,50 @@ export default function SectionScreen() {
       setLoading(true);
       if (ipsData) {
         const resourceWrappers = filterResourceWrappers(ipsData, code);
+        const savedUsername = await SecureStore.getItemAsync("username");
+        const savedPassword = await SecureStore.getItemAsync("password");
 
         const issuerApi = new WaltIdIssuerApi("https://issuer.healthwallet.li");
         const walletApi = new WaltIdWalletApi(
           "https://wallet.healthwallet.li",
-          "user@email.com",
-          "password"
+          savedUsername || "",
+          savedPassword || ""
         );
 
-        const selectedPatientRessourcesWrappers = resourceWrappers.filter(
-          (resourceWrapper: any) => {
-            return selectedIds.includes(
-              resourceWrapper.resource.code.coding[0].code
-            );
-          }
-        );
-        const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(
-          issuerApi,
-          walletApi
-        );
-        const vc = await smartHealthCardIssuer.issueAndAddToWallet(
-          "Self-issued " + label,
-          selectedPatientRessourcesWrappers[0],
-          []
-        );
-        Toast.show({
-          type: "success",
-          text1: "success",
-          text2: "Data shared successfully",
-          position: "bottom",
-        });
+        //test login before sharing
+        const loginData = await walletApi.login();
+        if (loginData.token) {
+          walletApi;
+          const selectedPatientRessourcesWrappers = resourceWrappers.filter(
+            (resourceWrapper: any) => {
+              return selectedIds.includes(
+                resourceWrapper.resource.code.coding[0].code
+              );
+            }
+          );
+          const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(
+            issuerApi,
+            walletApi
+          );
+          const vc = await smartHealthCardIssuer.issueAndAddToWallet(
+            "Self-issued " + label,
+            selectedPatientRessourcesWrappers[0],
+            []
+          );
+          Toast.show({
+            type: "success",
+            text1: "success",
+            text2: "Data shared successfully",
+            position: "bottom",
+          });
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: "Failed to login.",
+            position: "bottom",
+          });
+        }
       }
     } catch (error) {
       console.error("Error sharing data:", error);
@@ -112,6 +125,7 @@ export default function SectionScreen() {
               resource={item}
               selected={selectedIds.includes(item.code)}
               onSelect={() => handleSelect(item.code)}
+              label={label}
             />
           ))}
         </View>

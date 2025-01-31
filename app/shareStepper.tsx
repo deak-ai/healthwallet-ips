@@ -22,6 +22,7 @@ import {
   ScrollView,
 } from "react-native";
 import Toast from "react-native-toast-message";
+import * as SecureStore from "expo-secure-store";
 
 const Stepper = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -107,41 +108,56 @@ const Stepper = () => {
               ipsData,
               element.code
             );
+            const savedUsername = await SecureStore.getItemAsync("username");
+            const savedPassword = await SecureStore.getItemAsync("password");
 
             const issuerApi = new WaltIdIssuerApi(
               "https://issuer.healthwallet.li"
             );
             const walletApi = new WaltIdWalletApi(
               "https://wallet.healthwallet.li",
-              "user@email.com",
-              "password"
+              savedUsername || "",
+              savedPassword || ""
             );
+            const loginData = await walletApi.login();
+            if (loginData.token) {
+              const selectedPatientRessourcesWrappers = resourceWrappers.filter(
+                (resourceWrapper: any) =>
+                  element.sectionCodes.includes(
+                    resourceWrapper.resource?.code?.coding?.[0].code
+                  )
+              );
 
-            const selectedPatientRessourcesWrappers = resourceWrappers.filter(
-              (resourceWrapper: any) =>
-                element.sectionCodes.includes(
-                  resourceWrapper.resource?.code?.coding?.[0].code
-                )
-            );
+              const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(
+                issuerApi,
+                walletApi
+              );
 
-            const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(
-              issuerApi,
-              walletApi
-            );
+              await smartHealthCardIssuer.issueAndAddToWallet(
+                "Self-issued " + element.label,
+                selectedPatientRessourcesWrappers[0],
+                []
+              );
 
-            await smartHealthCardIssuer.issueAndAddToWallet(
-              "Self-issued " + element.label,
-              selectedPatientRessourcesWrappers[0],
-              []
-            );
+              Toast.show({
+                type: "success",
+                text1: "success",
+                text2: "Data shared successfully",
+                position: "bottom",
+              });
+              router.push({
+                pathname: "/ips",
+              });
+            } else {
+              Toast.show({
+                type: "error",
+                text1: "Error",
+                text2: "Failed to login.",
+                position: "bottom",
+              });
+            }
           }
         }
-        Toast.show({
-          type: "success",
-          text1: "success",
-          text2: "Data shared successfully",
-          position: "bottom",
-        });
       } catch (error) {
         console.error("Error sharing data:", error);
         Toast.show({
@@ -152,9 +168,7 @@ const Stepper = () => {
         });
       } finally {
         setLoading(false);
-        router.push({
-          pathname: "/ips",
-        });
+
       }
     }
   };
