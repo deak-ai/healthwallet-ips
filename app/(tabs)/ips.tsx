@@ -52,7 +52,6 @@ export default function TabIpsScreen() {
   const isDarkMode = theme === "dark";
   const palette = getPalette(isDarkMode);
   const refRBSheet = useRef<any>(null);
-  const [clickedShare, setClickedShare] = useState(false);
   const [shareMode, setShareMode] = useState(false);
   const [disabledShareMode, setDisabledShareMode] = useState(false);
   // Extract codes from ipsData.sections
@@ -71,6 +70,18 @@ export default function TabIpsScreen() {
     ipsData?.resources[0]?.resource,
     "Patient.name.where(use='official').given.first()"
   );
+
+  const checkWalletCredentials = async () => {
+    const savedUsername = await SecureStore.getItemAsync("username");
+    const savedPassword = await SecureStore.getItemAsync("password");
+    if (!savedUsername || !savedPassword) {
+      setDisabledShareMode(true)
+      return false;
+    } else {
+      setDisabledShareMode(false)
+      return true;
+    }
+  };
 
   const handleTilePress = (tile: Tile) => {
     if (shareMode) {
@@ -121,14 +132,11 @@ export default function TabIpsScreen() {
      */
   };
 
-  const handleShare = () => {
-    if (disabledShareMode) {
-      setClickedShare(true);
-    }
-    if (selectedElement.length === 0) {
-      setClickedShare(true);
+  const handleShare = async() => {
+    const hasWalletCredentials = await checkWalletCredentials();
+    if (selectedElement.length === 0 || !hasWalletCredentials) {
+      refRBSheet?.current.open();
     } else {
-      setClickedShare(false);
       if (ipsData) {
         router.push({
           pathname: "/shareStepper",
@@ -141,27 +149,25 @@ export default function TabIpsScreen() {
   };
 
   const handleShareMode = async () => {
-      const savedUsername = await SecureStore.getItemAsync("username");
-      const savedPassword = await SecureStore.getItemAsync("password");
-      if (!savedUsername || !savedPassword) {
-        setDisabledShareMode(true);
-        refRBSheet?.current.open();
-      } else {
-        setShareMode((prev) => !prev);
-        setDisabledShareMode(false);
-      }
+    const hasWalletCredentials = await checkWalletCredentials();
+    if (!hasWalletCredentials) {
+      setDisabledShareMode(true);
+      refRBSheet?.current.open();
+    } else {
+      setShareMode((prev) => !prev);
+      setDisabledShareMode(false);
     }
+  };
 
-    useEffect(() => {
+  useEffect(() => {
     const loadWalletCredentials = async () => {
       try {
-        const savedUsername = await SecureStore.getItemAsync("username");
-        const savedPassword = await SecureStore.getItemAsync("password");
-        if (!savedUsername || !savedPassword) {
+        const hasWalletCredentials =await checkWalletCredentials();
+        if (!hasWalletCredentials) {
           setDisabledShareMode(true);
           setShareMode(false);
         } else {
-          setDisabledShareMode(true);
+          setDisabledShareMode(false);
         }
       } catch (error) {
         console.error("Error loading wallet credentials:", error);
@@ -169,13 +175,6 @@ export default function TabIpsScreen() {
     };
     loadWalletCredentials();
   }, []);
-
-  useEffect(() => {
-    if (clickedShare && shareMode && selectedElement.length === 0) {
-      refRBSheet?.current.open();
-      setClickedShare(false);
-    }
-  }, [clickedShare, selectedElement, shareMode]);
 
   return (
     <View style={styles.container}>
