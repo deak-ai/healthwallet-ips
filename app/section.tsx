@@ -41,12 +41,12 @@ export default function SectionScreen() {
 
   const palette = getPalette(theme === "dark");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const handleSelect = (code: string) => {
+  const handleSelect = (uri: string) => {
     setSelectedIds((prevSelectedIds) => {
-      if (prevSelectedIds.includes(code)) {
-        return prevSelectedIds.filter((selectedId) => selectedId !== code);
+      if (prevSelectedIds.includes(uri)) {
+        return prevSelectedIds.filter((selectedId) => selectedId !== uri);
       } else {
-        return [...prevSelectedIds, code];
+        return [...prevSelectedIds, uri];
       }
     });
   };
@@ -72,7 +72,7 @@ export default function SectionScreen() {
           const selectedPatientResourcesWrappers = resourceWrappers.filter(
             (resourceWrapper: any) => {
               return selectedIds.includes(
-                resourceWrapper.resource.code.coding[0].code
+                resourceWrapper.fullUrl
               );
             }
           );
@@ -82,7 +82,7 @@ export default function SectionScreen() {
           );
           const vc = await smartHealthCardIssuer.issueAndAddToWallet(
             "Self-issued " + label,
-            resourceWrappers[0],
+            ipsData.getPatientResource(),
             selectedPatientResourcesWrappers,
           );
           Toast.show({
@@ -122,8 +122,8 @@ export default function SectionScreen() {
             <SectionCard
               key={index}
               resource={item}
-              selected={selectedIds.includes(item.code)}
-              onSelect={() => handleSelect(item.code)}
+              selected={selectedIds.includes(item.uri)}
+              onSelect={() => handleSelect(item.uri)}
               label={label}
             />
           ))}
