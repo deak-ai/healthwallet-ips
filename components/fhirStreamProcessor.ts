@@ -1,5 +1,5 @@
 import { JSONParser } from '@streamparser/json';
-import {IpsData, FhirResource, FhirResourceWrapper} from "@/components/fhirIpsModels";
+import {IpsData, FhirResource, FhirResourceWrapper, IpsDataImpl} from "@/components/fhirIpsModels";
 
 export interface StreamProcessor {
     streamData(source: string): Promise<IpsData>;
@@ -14,7 +14,7 @@ export abstract class AbstractStreamProcessor implements StreamProcessor {
             try {
                 const reader = await this.getReader(source);
                 const jsonParser = new JSONParser();
-                let ipsData: IpsData = { sectionResource: {} as FhirResource, sections: [], resources: [] };
+                let ipsData = new IpsDataImpl({} as FhirResource, [], []);
 
                 jsonParser.onValue = (parsedElementInfo) => {
                     if (parsedElementInfo.key === 'resource'

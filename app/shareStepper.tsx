@@ -23,6 +23,7 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
+import { IpsData } from "@/components/fhirIpsModels";
 
 const Stepper = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -52,6 +53,22 @@ const Stepper = () => {
   const [localSelectedElement, setLocalSelectedElement] = useState<
     { code: string; label: string; sectionCodes: string[] }[]
   >(parsedSelectedElement);
+
+  // Reset state when component mounts or when selectedElement changes
+  useEffect(() => {
+    setCurrentStep(0);
+    setLocalSelectedElement(parsedSelectedElement);
+    setSelectAllStates({});
+    setLoading(false);
+
+    // Cleanup function when component unmounts
+    return () => {
+      setCurrentStep(0);
+      setLocalSelectedElement([]);
+      setSelectAllStates({});
+      setLoading(false);
+    };
+  }, [selectedElement]);
 
   useEffect(() => {
     if (localSelectedElement.length > 0 && ipsData) {
@@ -135,7 +152,7 @@ const Stepper = () => {
 
               await smartHealthCardIssuer.issueAndAddToWallet(
                 "Self-issued " + element.label,
-                resourceWrappers[0],
+                ipsData.getPatientResource(),
                 selectedPatientRessourcesWrappers
               );
 

@@ -1,8 +1,8 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
-import { IpsData } from "@/components/fhirIpsModels";
+import { IpsData, IpsDataImpl } from "@/components/fhirIpsModels";
 
 interface IpsDataContextType {
-  ipsData: IpsData | null;
+  ipsData: IpsDataImpl | null;
   setIpsData: (data: IpsData | null) => void;
 }
 
@@ -11,7 +11,7 @@ const IpsDataContext = createContext<IpsDataContextType | undefined>(undefined);
 export const IpsDataProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [ipsData, setIpsData] = useState<any | null>(null);
+  const [ipsData, setIpsData] = useState<IpsDataImpl | null>(null);
 
   return (
     <IpsDataContext.Provider value={{ ipsData, setIpsData }}>
