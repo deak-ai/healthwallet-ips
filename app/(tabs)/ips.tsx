@@ -58,7 +58,7 @@ export default function TabIpsScreen() {
   const sectionCodes =
     ipsData?.sections?.map((section: any) => section.code.coding[0].code) || [];
   const [selectedElement, setSelectedElement] = useState<
-    { code: string; label: string; sectionCodes: string[] }[]
+    { code: string; label: string; resourceUris: string[] }[]
   >([]);
 
   // Filter tiles based on section codes
@@ -99,7 +99,7 @@ export default function TabIpsScreen() {
           // Add the new object with code and sectionCodes
           return [
             ...prevSelectedElements,
-            { code: tile.code, label: tile.label, sectionCodes: [] },
+            { code: tile.code, label: tile.label, resourceUris: [] },
           ];
         }
       });

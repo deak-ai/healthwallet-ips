@@ -51,7 +51,7 @@ const Stepper = () => {
   }>({});
 
   const [localSelectedElement, setLocalSelectedElement] = useState<
-    { code: string; label: string; sectionCodes: string[] }[]
+    { code: string; label: string; resourceUris: string[] }[]
   >(parsedSelectedElement);
 
   // Reset state when component mounts or when selectedElement changes
@@ -75,7 +75,7 @@ const Stepper = () => {
       const selectedCodes =
         localSelectedElement.find(
           (item: any) => item.code === parsedSelectedElement[currentStep].code
-        )?.sectionCodes || [];
+        )?.resourceUris || [];
 
       const totalItems = getProcessor(
         parsedSelectedElement[currentStep].code
@@ -98,10 +98,10 @@ const Stepper = () => {
             item.code === parsedSelectedElement[currentStep].code
               ? {
                   ...item,
-                  sectionCodes: newSelectAll
+                  resourceUris: newSelectAll
                     ? getProcessor(item.code)
                         .process(ipsData)
-                        .map((resource: any) => resource.code)
+                        .map((resource: any) => resource.uri)
                     : [], // Deselect all
                 }
               : item
@@ -140,8 +140,8 @@ const Stepper = () => {
             if (loginData.token) {
               const selectedPatientRessourcesWrappers = resourceWrappers.filter(
                 (resourceWrapper: any) =>
-                  element.sectionCodes.includes(
-                    resourceWrapper.resource?.code?.coding?.[0].code
+                  element.resourceUris.includes(
+                    resourceWrapper.fullUrl
                   )
               );
 
@@ -195,17 +195,17 @@ const Stepper = () => {
     }
   };
 
-  const handleSelect = (code: string) => {
+  const handleSelect = (uri: string) => {
     setLocalSelectedElement((prevSelectedElement: any) => {
       const updatedSelection = prevSelectedElement.map((item: any) =>
         item.code === parsedSelectedElement[currentStep].code
           ? {
               ...item,
-              sectionCodes: item.sectionCodes.includes(code)
-                ? item.sectionCodes.filter(
-                    (sectionCode: string) => sectionCode !== code
+              resourceUris: item.resourceUris.includes(uri)
+                ? item.resourceUris.filter(
+                    (resourceUri: string) => resourceUri !== uri
                   )
-                : [...item.sectionCodes, code],
+                : [...item.resourceUris, uri],
             }
           : item
       );
@@ -215,7 +215,7 @@ const Stepper = () => {
         const allSelected =
           updatedSelection.find(
             (item: any) => item.code === parsedSelectedElement[currentStep].code
-          )?.sectionCodes.length ===
+          )?.resourceUris.length ===
           getProcessor(parsedSelectedElement[currentStep].code).process(ipsData)
             .length;
 
@@ -275,8 +275,8 @@ const Stepper = () => {
                     resource={item}
                     selected={localSelectedElement[
                       currentStep
-                    ].sectionCodes.includes(item.code)}
-                    onSelect={() => handleSelect(item.code)}
+                    ].resourceUris.includes(item.uri)}
+                    onSelect={() => handleSelect(item.uri)}
                     label={localSelectedElement[currentStep].label}
                   />
                 ))}
