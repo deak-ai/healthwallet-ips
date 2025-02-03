@@ -24,10 +24,11 @@ import {
 import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
 import { IpsData } from "@/components/fhirIpsModels";
+import { useResourceSelection } from "@/hooks/useResourceSelection";
+import { useWalletShare } from "@/hooks/useWalletShare";
 
 const Stepper = () => {
   const [currentStep, setCurrentStep] = useState(0);
-
   const route = useRoute();
   const router = useRouter();
   const { selectedElement } = route.params as {
@@ -45,193 +46,81 @@ const Stepper = () => {
   const titles = parsedSelectedElement.map(
     (item: { code: string; label: string }) => item.label
   );
-  const [loading, setLoading] = useState(false);
-  const [selectAllStates, setSelectAllStates] = useState<{
-    [key: number]: boolean;
-  }>({});
 
   const [localSelectedElement, setLocalSelectedElement] = useState<
     { code: string; label: string; resourceUris: string[] }[]
   >(parsedSelectedElement);
 
+  const currentCode = parsedSelectedElement[currentStep].code;
+  const { selectedIds, handleSelect, selectAllState, handleSelectAll } = useResourceSelection(ipsData, currentCode);
+  const { loading, shareToWallet } = useWalletShare();
+
   // Reset state when component mounts or when selectedElement changes
   useEffect(() => {
     setCurrentStep(0);
     setLocalSelectedElement(parsedSelectedElement);
-    setSelectAllStates({});
-    setLoading(false);
-
-    // Cleanup function when component unmounts
-    return () => {
-      setCurrentStep(0);
-      setLocalSelectedElement([]);
-      setSelectAllStates({});
-      setLoading(false);
-    };
   }, [selectedElement]);
 
+  // Update localSelectedElement when selection changes
   useEffect(() => {
-    if (localSelectedElement.length > 0 && ipsData) {
-      const selectedCodes =
-        localSelectedElement.find(
-          (item: any) => item.code === parsedSelectedElement[currentStep].code
-        )?.resourceUris || [];
-
-      const totalItems = getProcessor(
-        parsedSelectedElement[currentStep].code
-      ).process(ipsData).length;
-
-      setSelectAllStates((prev) => ({
-        ...prev,
-        [currentStep]: selectedCodes.length === totalItems,
-      }));
-    }
-  }, [localSelectedElement, currentStep]);
-
-  const handleSelectAll = () => {
-    setSelectAllStates((prev) => {
-      const newSelectAll = !prev[currentStep];
-
-      if (ipsData) {
-        setLocalSelectedElement((prevSelectedElement: any) =>
-          prevSelectedElement.map((item: any) =>
-            item.code === parsedSelectedElement[currentStep].code
-              ? {
-                  ...item,
-                  resourceUris: newSelectAll
-                    ? getProcessor(item.code)
-                        .process(ipsData)
-                        .map((resource: any) => resource.uri)
-                    : [], // Deselect all
-                }
-              : item
-          )
-        );
-      }
-
-      return { ...prev, [currentStep]: newSelectAll };
-    });
-  };
+    setLocalSelectedElement(prev =>
+      prev.map(item =>
+        item.code === currentCode
+          ? { ...item, resourceUris: selectedIds }
+          : item
+      )
+    );
+  }, [selectedIds, currentCode]);
 
   const handleNext = async () => {
     if (currentStep < stepNumber - 1) {
-      setCurrentStep((prev) => prev + 1);
+      setCurrentStep(prev => prev + 1);
     } else {
       try {
-        setLoading(true);
-        if (ipsData) {
-          for (const element of localSelectedElement) {
-            const resourceWrappers = filterResourceWrappers(
+        if (!ipsData) return;
+
+        for (const element of localSelectedElement) {
+          if (element.resourceUris.length > 0) {
+            const success = await shareToWallet(
               ipsData,
-              element.code
+              element.code,
+              element.label,
+              element.resourceUris
             );
-            const savedUsername = await SecureStore.getItemAsync("username");
-            const savedPassword = await SecureStore.getItemAsync("password");
-
-            const issuerApi = new WaltIdIssuerApi(
-              "https://issuer.healthwallet.li"
-            );
-            const walletApi = new WaltIdWalletApi(
-              "https://wallet.healthwallet.li",
-              savedUsername || "",
-              savedPassword || ""
-            );
-            const loginData = await walletApi.login();
-            if (loginData.token) {
-              const selectedPatientRessourcesWrappers = resourceWrappers.filter(
-                (resourceWrapper: any) =>
-                  element.resourceUris.includes(
-                    resourceWrapper.fullUrl
-                  )
-              );
-
-              const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(
-                issuerApi,
-                walletApi
-              );
-
-              await smartHealthCardIssuer.issueAndAddToWallet(
-                "Self-issued " + element.label,
-                ipsData.getPatientResource(),
-                selectedPatientRessourcesWrappers
-              );
-
-              Toast.show({
-                type: "success",
-                text1: "success",
-                text2: "Data shared successfully",
-                position: "bottom",
-              });
-              router.push({
-                pathname: "/ips",
-              });
-            } else {
-              Toast.show({
-                type: "error",
-                text1: "Error",
-                text2: "Failed to login.",
-                position: "bottom",
-              });
-            }
+            if (!success) return;
           }
         }
+
+        router.push({
+          pathname: "/ips",
+        });
       } catch (error) {
         console.error("Error sharing data:", error);
         Toast.show({
           type: "error",
           text1: "Error",
-          text2: "Failed share data",
+          text2: "Failed to share data",
           position: "bottom",
         });
-      } finally {
-        setLoading(false);
       }
     }
   };
 
   const handlePrevious = () => {
     if (currentStep > 0) {
-      setCurrentStep((prev) => prev - 1);
+      setCurrentStep(prev => prev - 1);
     }
-  };
-
-  const handleSelect = (uri: string) => {
-    setLocalSelectedElement((prevSelectedElement: any) => {
-      const updatedSelection = prevSelectedElement.map((item: any) =>
-        item.code === parsedSelectedElement[currentStep].code
-          ? {
-              ...item,
-              resourceUris: item.resourceUris.includes(uri)
-                ? item.resourceUris.filter(
-                    (resourceUri: string) => resourceUri !== uri
-                  )
-                : [...item.resourceUris, uri],
-            }
-          : item
-      );
-
-      // Check if all items are selected
-      if (ipsData) {
-        const allSelected =
-          updatedSelection.find(
-            (item: any) => item.code === parsedSelectedElement[currentStep].code
-          )?.resourceUris.length ===
-          getProcessor(parsedSelectedElement[currentStep].code).process(ipsData)
-            .length;
-
-        setSelectAllStates((prev) => ({ ...prev, [currentStep]: allSelected }));
-      }
-
-      return updatedSelection;
-    });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
+          style={[
+            styles.backButton,
+            { backgroundColor: palette.secondary.light },
+          ]}
           onPress={() => navigation.goBack()}
-          style={styles.backButton}
         >
           <Icon
             type="ionicon"
@@ -258,7 +147,7 @@ const Stepper = () => {
               { color: palette.neutral.white },
             ]}
           >
-            {selectAllStates[currentStep] ? "Deselect All" : "Select All"}
+            {selectAllState ? "Deselect All" : "Select All"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -267,15 +156,13 @@ const Stepper = () => {
         <ScrollView contentContainerStyle={styles.scrollViewContainer}>
           <View style={styles.sectionContainer}>
             {ipsData &&
-              getProcessor(localSelectedElement[currentStep].code)
+              getProcessor(currentCode)
                 .process(ipsData)
                 .map((item: any, index: number) => (
                   <SectionCard
                     key={index}
                     resource={item}
-                    selected={localSelectedElement[
-                      currentStep
-                    ].resourceUris.includes(item.uri)}
+                    selected={selectedIds.includes(item.uri)}
                     onSelect={() => handleSelect(item.uri)}
                     label={localSelectedElement[currentStep].label}
                   />
@@ -289,10 +176,9 @@ const Stepper = () => {
           style={[
             styles.button,
             {
-              backgroundColor:
-                currentStep === 0
-                  ? palette.neutral.lightGrey
-                  : palette.primary.dark,
+              backgroundColor: currentStep === 0
+                ? palette.neutral.lightGrey
+                : palette.primary.dark,
             },
           ]}
           onPress={handlePrevious}
@@ -306,7 +192,6 @@ const Stepper = () => {
         <TouchableOpacity
           style={[styles.button, { backgroundColor: palette.primary.dark }]}
           onPress={handleNext}
-          //disabled={currentStep === stepNumber - 1}
         >
           <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
             {currentStep === stepNumber - 1 ? "Share" : "Next"}
@@ -320,9 +205,11 @@ const Stepper = () => {
             key={index}
             style={[
               styles.stepIndicator,
-              { backgroundColor: palette.primary.light },
-              currentStep === index && {
-                backgroundColor: palette.primary.dark,
+              {
+                backgroundColor:
+                  index === currentStep
+                    ? palette.primary.dark
+                    : palette.primary.light,
               },
             ]}
           />

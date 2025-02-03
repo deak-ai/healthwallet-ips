@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   Platform,
@@ -17,14 +17,12 @@ import {
 } from "@/components/ipsResourceProcessor";
 import SectionCard from "@/components/card";
 import { getPalette } from "@/constants/Colors";
-import { WaltIdIssuerApi } from "@/components/waltIdIssuerApi";
-import { WaltIdSmartHealthCardIssuer } from "@/components/waltIdSmartHealthCardIssuer";
-import { WaltIdWalletApi } from "@/components/waltIdWalletApi";
 import CustomLoader from "@/components/reusable/loader";
 import Toast from "react-native-toast-message";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Header from "@/components/reusable/header";
-import * as SecureStore from "expo-secure-store";
+import { useResourceSelection } from "@/hooks/useResourceSelection";
+import { useWalletShare } from "@/hooks/useWalletShare";
 
 export default function SectionScreen() {
   const route = useRoute();
@@ -35,83 +33,25 @@ export default function SectionScreen() {
   };
   const { ipsData } = useIpsData();
   const theme = useColorScheme() ?? "light";
-  const [loading, setLoading] = useState(false);
-
-  const resources = ipsData ? getProcessor(code).process(ipsData) : [];
-
   const palette = getPalette(theme === "dark");
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const handleSelect = (uri: string) => {
-    setSelectedIds((prevSelectedIds) => {
-      if (prevSelectedIds.includes(uri)) {
-        return prevSelectedIds.filter((selectedId) => selectedId !== uri);
-      } else {
-        return [...prevSelectedIds, uri];
-      }
-    });
-  };
+
+  const { selectedIds, handleSelect } = useResourceSelection(ipsData, code);
+  const { loading, shareToWallet } = useWalletShare();
 
   const handleShare = async () => {
-    try {
-      setLoading(true);
-      if (ipsData) {
-        const resourceWrappers = filterResourceWrappers(ipsData, code);
-        const savedUsername = await SecureStore.getItemAsync("username");
-        const savedPassword = await SecureStore.getItemAsync("password");
-
-        const issuerApi = new WaltIdIssuerApi("https://issuer.healthwallet.li");
-        const walletApi = new WaltIdWalletApi(
-          "https://wallet.healthwallet.li",
-          savedUsername || "",
-          savedPassword || ""
-        );
-
-        //test login before sharing
-        const loginData = await walletApi.login();
-        if (loginData.token) {
-          const selectedPatientResourcesWrappers = resourceWrappers.filter(
-            (resourceWrapper: any) => {
-              return selectedIds.includes(
-                resourceWrapper.fullUrl
-              );
-            }
-          );
-          const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(
-            issuerApi,
-            walletApi
-          );
-          const vc = await smartHealthCardIssuer.issueAndAddToWallet(
-            "Self-issued " + label,
-            ipsData.getPatientResource(),
-            selectedPatientResourcesWrappers,
-          );
-          Toast.show({
-            type: "success",
-            text1: "success",
-            text2: "Data shared successfully",
-            position: "bottom",
-          });
-        } else {
-          Toast.show({
-            type: "error",
-            text1: "Error",
-            text2: "Failed to login.",
-            position: "bottom",
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error sharing data:", error);
+    if (!ipsData || selectedIds.length === 0) {
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "Failed share data",
+        text2: "Please select at least one item to share",
         position: "bottom",
       });
-    } finally {
-      setLoading(false);
+      return;
     }
+    await shareToWallet(ipsData, code, label, selectedIds);
   };
+
+  const resources = ipsData ? getProcessor(code).process(ipsData) : [];
 
   return (
     <View style={[styles.container, { backgroundColor: palette.background }]}>
