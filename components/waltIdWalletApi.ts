@@ -76,7 +76,8 @@ export class WaltIdWalletApi {
   private baseUrl: string;
   private email: string;
   private password: string;
-  private sessionCookie?: string;
+  private authToken?: string;
+  private tokenExpiry?: number;
 
   constructor(baseUrl: string, email: string, password: string) {
     this.baseUrl = baseUrl;
@@ -84,28 +85,58 @@ export class WaltIdWalletApi {
     this.password = password;
   }
 
+  private decodeJwtToken(token: string): { exp?: number } {
+    try {
+      const base64Payload = token.split('.')[1];
+      // Make the base64 string URL safe
+      const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/');
+      // Decode base64 to string
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error('Error decoding JWT token:', error);
+      return {};
+    }
+  }
+
+  private isTokenExpired(): boolean {
+    if (!this.tokenExpiry) return true;
+    // Add 30 second buffer to handle network latency
+    return Date.now() >= (this.tokenExpiry - 30) * 1000;
+  }
+
+  private async ensureValidToken(): Promise<void> {
+    if (this.authToken && !this.isTokenExpired()) {
+      return;
+    }
+    await this.login();
+  }
+
   private async fetchWithError(url: string, options: RequestInit = {}): Promise<any> {
+    // Skip token check for login request to avoid infinite recursion
+    if (!url.endsWith('/auth/login')) {
+      await this.ensureValidToken();
+    }
+
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
-      ...(this.sessionCookie ? { 'Cookie': this.sessionCookie } : {}),
+      ...(this.authToken ? { 'Authorization': `Bearer ${this.authToken}` } : {}),
       ...options.headers,
     };
 
     const response = await fetch(url, {
       ...options,
-      credentials: 'include',
       headers,
     });
 
-    // Extract and store session cookie if present
-    const setCookie = response.headers.get('set-cookie');
-    if (setCookie) {
-      this.sessionCookie = setCookie.split(';')[0];
-    }
-
     if (!response.ok) {
       const error = await response.json().catch(() => ({ message: 'Unknown error' }));
-      return new Error(`API Error: ${error.message}`);
+      throw new Error(`API Error: ${error.message}`);
     }
 
     if (response.status === 204) {
@@ -116,10 +147,11 @@ export class WaltIdWalletApi {
   }
 
   async login(): Promise<LoginResponse> {
-    // Clear any existing session cookie before login
-    this.sessionCookie = undefined;
+    // Clear any existing auth token before login
+    this.authToken = undefined;
+    this.tokenExpiry = undefined;
 
-    return this.fetchWithError(`${this.baseUrl}/wallet-api/auth/login`, {
+    const response = await this.fetchWithError(`${this.baseUrl}/wallet-api/auth/login`, {
       method: 'POST',
       body: JSON.stringify({
         type: 'email',
@@ -127,6 +159,15 @@ export class WaltIdWalletApi {
         password: this.password,
       }),
     });
+
+    // Store the JWT token and its expiry for subsequent requests
+    if (response.token) {
+      this.authToken = response.token;
+      const decoded = this.decodeJwtToken(response.token);
+      this.tokenExpiry = decoded.exp;
+    }
+
+    return response;
   }
 
   async createUser(): Promise<boolean> {
@@ -149,8 +190,9 @@ export class WaltIdWalletApi {
     const result = await this.fetchWithError(`${this.baseUrl}/wallet-api/auth/logout`, {
       method: 'POST',
     });
-    // Clear session cookie after logout
-    this.sessionCookie = undefined;
+    // Clear auth token and expiry after logout
+    this.authToken = undefined;
+    this.tokenExpiry = undefined;
     return result;
   }
 

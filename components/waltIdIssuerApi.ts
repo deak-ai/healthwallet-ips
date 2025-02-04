@@ -103,7 +103,6 @@ export interface OfferRequest {
 
 export class WaltIdIssuerApi {
   private baseUrl: string;
-  private sessionCookie?: string;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
@@ -114,19 +113,12 @@ export class WaltIdIssuerApi {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        ...(this.sessionCookie ? { Cookie: this.sessionCookie } : {}),
         ...(options.headers || {}),
       },
     });
 
     if (!response.ok) {
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    // Store session cookie if present
-    const setCookie = response.headers.get('set-cookie');
-    if (setCookie) {
-      this.sessionCookie = setCookie;
     }
 
     const contentType = response.headers.get('content-type');

@@ -109,10 +109,7 @@ export class WaltIdSmartHealthCardIssuer {
         // console log the issuanceResponse.url
         console.log('Issued credential: ', issuanceResponse.url)
 
-        console.log('Logging into wallet and accepting credential')
-
-        // ensure we are logged in
-        await this.walletApi.login();
+        console.log('Importing credential into wallet')
 
         // get the wallet id
         const wallets = await this.walletApi.getWallets();
@@ -133,14 +130,7 @@ export class WaltIdSmartHealthCardIssuer {
         };
         const credentials = await this.walletApi.useOfferRequest(offerRequest, offerParams);
 
-        // Accept the credential not needed when requireUserInput is false abover
-        // const acceptCredentialRequest: CredentialRequest = {
-        //     wallet: walletId,
-        //     credentialId: credentials[0].id
-        // };
-        // const accepted = await this.walletApi.acceptCredential(acceptCredentialRequest);
-
-        console.log(`Credential accepted, ID: ${credentials[0].id}`);
+        console.log(`Credential successfuly imported into wallet, ID: ${credentials[0].id}`);
         return credentials;
     }
 }

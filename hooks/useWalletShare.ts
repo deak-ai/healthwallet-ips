@@ -29,17 +29,6 @@ export const useWalletShare = () => {
         savedPassword || ''
       );
 
-      const loginData = await walletApi.login();
-      if (!loginData.token) {
-        Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: 'Failed to login.',
-          position: 'bottom',
-        });
-        return false;
-      }
-
       const selectedResourceWrappers = resourceWrappers.filter(
         wrapper => selectedUris.includes(wrapper.fullUrl)
       );
