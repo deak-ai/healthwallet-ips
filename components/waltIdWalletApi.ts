@@ -186,6 +186,11 @@ export class WaltIdWalletApi {
     this.authToken = undefined;
     this.tokenExpiry = undefined;
 
+    // Validate required fields
+    if (!this.email || !this.password) {
+      throw new Error('Email and password are required for login');
+    }
+
     const response = await this.fetchWithError(`${this.baseUrl}/wallet-api/auth/login`, {
       method: 'POST',
       body: JSON.stringify({

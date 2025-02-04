@@ -1,6 +1,7 @@
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs, useNavigation } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import * as SecureStore from "expo-secure-store";
@@ -46,18 +47,24 @@ export default function TabLayout() {
   };
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: isDarkMode?palette.primary.light :palette.primary.dark,
-        headerShown: false,
-        headerPressColor: palette.primary.main,
-        tabBarInactiveTintColor: palette.primary.main,
-        tabBarIconStyle: { color:  palette.primary.main},
-        tabBarInactiveBackgroundColor:
-        isDarkMode?palette.primary.dark: palette.neutral.white,
-        tabBarActiveBackgroundColor: isDarkMode?palette.primary.dark: palette.neutral.white
-      }}
-    >
+    <SafeAreaView style={{ flex: 1 }}>
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: isDarkMode?palette.primary.light :palette.primary.dark,
+          headerShown: false,
+          headerPressColor: palette.primary.main,
+          tabBarInactiveTintColor: palette.primary.main,
+          tabBarIconStyle: { color:  palette.primary.main},
+          tabBarInactiveBackgroundColor:
+          isDarkMode?palette.primary.dark: palette.neutral.white,
+          tabBarActiveBackgroundColor: isDarkMode?palette.primary.dark: palette.neutral.white,
+          tabBarStyle: {
+            borderTopWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          }
+        }}
+      >
       {/* <Tabs.Screen
         name="index"
         options={{
@@ -110,5 +117,6 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </SafeAreaView>
   );
 }

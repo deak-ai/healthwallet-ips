@@ -12,6 +12,7 @@ import { useClickedTab } from "@/components/clickedTabContext";
 import { getPalette } from "@/constants/Colors";
 import BottomSheet from "@/components/reusable/bottomSheet";
 import Header from "@/components/reusable/header";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ConnectorsScreen() {
   const [patientId, setPatientId] = useState<string | null>(null);
@@ -145,75 +146,81 @@ export default function ConnectorsScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Header title={"Connectors"} />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Header title={"Connectors"} />
 
-      <BottomSheet
-        ref={refRBSheet}
-        title="ID Required"
-        description="A valid Patient ID is required to continue."
-      />
+        <BottomSheet
+          ref={refRBSheet}
+          title="ID Required"
+          description="A valid Patient ID is required to continue."
+        />
 
-      <Text style={styles.label}>Enter Patient ID:</Text>
-      <TextInput
-        style={[
-          styles.input,
-          {
-            borderColor:
-              theme === "light"
-                ? palette.secondary.light
-                : palette.neutral.white,
-          },
-        ]}
-        placeholder="Enter Patient ID"
-        value={inputValue}
-        onChangeText={setInputValue}
-      />
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
+        <Text style={styles.label}>Enter Patient ID:</Text>
+        <TextInput
           style={[
-            styles.button,
+            styles.input,
             {
-              backgroundColor:
-                theme === "dark"
-                  ? palette.primary.main
-                  : palette.secondary.main,
+              borderColor:
+                theme === "light"
+                  ? palette.secondary.light
+                  : palette.neutral.white,
             },
           ]}
-          onPress={savePatientId}
-        >
-          <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
-            Save Patient ID
-          </Text>
-        </TouchableOpacity>
+          placeholder="Enter Patient ID"
+          value={inputValue}
+          onChangeText={setInputValue}
+        />
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              {
+                backgroundColor:
+                  theme === "dark"
+                    ? palette.primary.main
+                    : palette.secondary.main,
+              },
+            ]}
+            onPress={savePatientId}
+          >
+            <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
+              Save Patient ID
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {patientId && (
+          <Text style={styles.savedInfo}>Current Patient ID: {patientId}</Text>
+        )}
+        {loading ? (
+          <CustomLoader />
+        ) : (
+          <TouchableOpacity
+            style={styles.titleRow}
+            onPress={() => loadFhirData(patientId)}
+          >
+            <Icon
+              type={"fontawesome6"}
+              name={"download"}
+              size={24}
+              color={palette.primary.main}
+            />
+            <Text style={[styles.downloadTitle, { color: palette.primary.main }]}>
+              Download
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
-      {patientId && (
-        <Text style={styles.savedInfo}>Current Patient ID: {patientId}</Text>
-      )}
-      {loading ? (
-        <CustomLoader />
-      ) : (
-        <TouchableOpacity
-          style={styles.titleRow}
-          onPress={() => loadFhirData(patientId)}
-        >
-          <Icon
-            type={"fontawesome6"}
-            name={"download"}
-            size={24}
-            color={palette.primary.main}
-          />
-          <Text style={[styles.downloadTitle, { color: palette.primary.main }]}>
-            Download
-          </Text>
-        </TouchableOpacity>
-      )}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "transparent",
+  },
   container: {
     flex: 1,
     alignItems: "center",

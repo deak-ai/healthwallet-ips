@@ -8,6 +8,7 @@ import Toast from "react-native-toast-message";
 import { getPalette } from "@/constants/Colors";
 import Header from "@/components/reusable/header";
 import { WaltIdWalletApi } from "@/components/waltIdWalletApi";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface Credentials {
   username: string;
@@ -16,10 +17,6 @@ interface Credentials {
 
 export default function SettingsWallet() {
   const [credentials, setCredentials] = useState<Credentials>({
-    username: "",
-    password: "",
-  });
-  const [inputValue, setInputValue] = useState<Credentials>({
     username: "",
     password: "",
   });
@@ -39,28 +36,18 @@ export default function SettingsWallet() {
             username: savedUsername || "",
             password: savedPassword || "",
           });
-          setInputValue({
-            username: savedUsername || "",
-            password: savedPassword || "",
-          });
         } catch (error) {
-          console.error("Error loading patient ID:", error);
+          console.error("Error loading credentials:", error);
         }
       };
-      (async () => {
-        await loadCredentials();
-      })();
+      loadCredentials();
     }, [])
   );
 
   const saveCredentials = async () => {
     try {
-      await SecureStore.setItemAsync("username", inputValue.username);
-      await SecureStore.setItemAsync("password", inputValue.password);
-      setCredentials({
-        username: inputValue.username,
-        password: inputValue.password,
-      });
+      await SecureStore.setItemAsync("username", credentials.username);
+      await SecureStore.setItemAsync("password", credentials.password);
 
       Toast.show({
         type: "success",
@@ -69,7 +56,7 @@ export default function SettingsWallet() {
         position: "bottom",
       });
     } catch (error) {
-      console.error("Error saving patient ID:", error);
+      console.error("Error saving credentials:", error);
       Toast.show({
         type: "error",
         text1: "Error",
@@ -92,6 +79,8 @@ export default function SettingsWallet() {
 
     try {
       setLoading(true);
+      console.log('Attempting to connect with username:', credentials.username);
+      
       const walletApi = new WaltIdWalletApi(
         "https://wallet.healthwallet.li",
         credentials.username,
@@ -111,27 +100,23 @@ export default function SettingsWallet() {
         throw new Error("No token received");
       }
     } catch (error) {
-      // Don't log sensitive information in production
-      // console.error("Login failed:", error instanceof Error ? error.message : "Unknown error");
+      console.error("Login error details:", {
+        error: error instanceof Error ? error.message : "Unknown error",
+        stack: error instanceof Error ? error.stack : undefined
+      });
       
-      // Provide user-friendly error messages based on the error
       let errorMessage = "Failed to login. Please check your credentials.";
       if (error instanceof Error) {
         if ((error as any).status === 401) {
-          errorMessage = "Invalid username or password "
-        } else if ((error as any).status === 404) {
-          errorMessage = "User not found";
-        } else if (error.message.includes("Network request failed")) {
-          errorMessage = "Cannot connect to server. Please check your internet connection.";
+          errorMessage = "Invalid username or password";
+        } else if (error.message.includes("undefined")) {
+          errorMessage = "Invalid credentials format. Please check your username and password.";
         }
-        console.log("Error to user:", errorMessage);
-        console.log("Error message: "+error.message)
-        console.log("Error object", JSON.stringify(error));
       }
-
+      
       Toast.show({
         type: "error",
-        text1: "Error",
+        text1: "Failed to connect",
         text2: errorMessage,
         position: "bottom",
       });
@@ -140,92 +125,94 @@ export default function SettingsWallet() {
     }
   };
 
-  const onChangeField = (value: string, name: string) => {
-    setInputValue((prev) => ({ ...prev, [name]: value }));
+  const onChangeField = (value: string, name: keyof Credentials) => {
+    setCredentials(prev => ({ ...prev, [name]: value }));
   };
 
   return (
-    <View style={styles.container}>
-      <Header title="Wallet" />
-      <Text style={styles.label}>Enter Wallet credentials:</Text>
-      <TextInput
-        style={[
-          styles.input,
-          {
-            borderColor:
-              theme === "light"
-                ? palette.secondary.light
-                : palette.neutral.white,
-          },
-        ]}
-        placeholder="Username"
-        value={inputValue.username}
-        onChangeText={(value) => {
-          onChangeField(value, "username");
-        }}
-      />
-
-      <TextInput
-        style={[
-          styles.input,
-          {
-            borderColor:
-              theme === "light"
-                ? palette.secondary.light
-                : palette.neutral.white,
-          },
-        ]}
-        placeholder="Password"
-        value={inputValue.password}
-        onChangeText={(value) => {
-          onChangeField(value, "password");
-        }}
-        secureTextEntry={true}
-      />
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Header title="Wallet" />
+        <Text style={styles.label}>Enter Wallet credentials:</Text>
+        <TextInput
           style={[
-            styles.button,
+            styles.input,
             {
-              backgroundColor: theme === "dark" ? palette.primary.main : palette.secondary.main,
-            }
-          ]}
-          onPress={saveCredentials}
-        >
-          <Text style={[styles.buttonText, { color: palette.neutral.white }]}>Save</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.button,
-            {
-              backgroundColor: !disabledTestConnection
-                ? theme === "dark" ? palette.primary.main : palette.secondary.main
-                : palette.neutral.lightGrey,
-              opacity: disabledTestConnection ? 0.5 : 1,
+              borderColor:
+                theme === "light"
+                  ? palette.secondary.light
+                  : palette.neutral.white,
             },
           ]}
-          onPress={testConnection}
-          disabled={disabledTestConnection}
-        >
-          <Text 
+          placeholder="Username"
+          value={credentials.username}
+          onChangeText={(value) => onChangeField(value, "username")}
+        />
+
+        <TextInput
+          style={[
+            styles.input,
+            {
+              borderColor:
+                theme === "light"
+                  ? palette.secondary.light
+                  : palette.neutral.white,
+            },
+          ]}
+          placeholder="Password"
+          value={credentials.password}
+          onChangeText={(value) => onChangeField(value, "password")}
+          secureTextEntry={true}
+        />
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
             style={[
-              styles.buttonText, 
-              { 
-                color: !disabledTestConnection ? palette.neutral.white : palette.neutral.black 
+              styles.button,
+              {
+                backgroundColor: theme === "dark" ? palette.primary.main : palette.secondary.main,
               }
             ]}
+            onPress={saveCredentials}
           >
-            Test connection
-          </Text>
-        </TouchableOpacity>
+            <Text style={[styles.buttonText, { color: palette.neutral.white }]}>Save</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              {
+                backgroundColor: !disabledTestConnection
+                  ? theme === "dark" ? palette.primary.main : palette.secondary.main
+                  : palette.neutral.lightGrey,
+                opacity: disabledTestConnection ? 0.5 : 1,
+              },
+            ]}
+            onPress={testConnection}
+            disabled={disabledTestConnection}
+          >
+            <Text 
+              style={[
+                styles.buttonText, 
+                { 
+                  color: !disabledTestConnection ? palette.neutral.white : palette.neutral.black 
+                }
+              ]}
+            >
+              Test connection
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {loading && <CustomLoader />}
       </View>
-      {loading && <CustomLoader />}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "transparent",
+  },
   container: {
     flex: 1,
     alignItems: "center",
