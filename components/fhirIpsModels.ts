@@ -1,8 +1,26 @@
-
 export interface IpsData {
     sectionResource: FhirResource;
     sections: any[];
-    resources: FhirResource[];
+    resources: FhirResourceWrapper[];
+    getPatientResource(): FhirResourceWrapper;
+}
+
+export class IpsDataImpl implements IpsData {
+    constructor(
+        public sectionResource: FhirResource,
+        public sections: any[],
+        public resources: FhirResourceWrapper[]
+    ) {}
+
+    getPatientResource(): FhirResourceWrapper {
+        const patientResource = this.resources.find(
+            w => w.resource.resourceType === 'Patient'
+        );
+        if (!patientResource) {
+            throw new Error('Patient resource not found in IPS data');
+        }
+        return patientResource;
+    }
 }
 
 export interface FhirResourceWrapper {

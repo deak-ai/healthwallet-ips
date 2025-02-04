@@ -1,5 +1,5 @@
 import { JSONParser } from '@streamparser/json';
-import {IpsData, FhirResource} from "@/components/fhirIpsModels";
+import {IpsData, FhirResource, FhirResourceWrapper, IpsDataImpl} from "@/components/fhirIpsModels";
 
 export interface StreamProcessor {
     streamData(source: string): Promise<IpsData>;
@@ -14,7 +14,7 @@ export abstract class AbstractStreamProcessor implements StreamProcessor {
             try {
                 const reader = await this.getReader(source);
                 const jsonParser = new JSONParser();
-                let ipsData: IpsData = { sectionResource: {} as FhirResource, sections: [], resources: [] };
+                let ipsData = new IpsDataImpl({} as FhirResource, [], []);
 
                 jsonParser.onValue = (parsedElementInfo) => {
                     if (parsedElementInfo.key === 'resource'
@@ -25,8 +25,20 @@ export abstract class AbstractStreamProcessor implements StreamProcessor {
                             ipsData.sectionResource = resource as FhirResource;
                             ipsData.sections = resource.section;
                         } else {
-                            // need to add the parent as it as the fullUrl next to the resource
-                            ipsData.resources.push(parsedElementInfo.parent as FhirResource);
+                            // Type guard to ensure parent has the required FhirResourceWrapper structure
+                            const parent = parsedElementInfo.parent;
+                            if (parent && typeof parent === 'object' && 
+                                'fullUrl' in parent && 
+                                'resource' in parent &&
+                                typeof parent.fullUrl === 'string' &&
+                                typeof parent.resource === 'object' &&
+                                parent.resource !== null) {
+                                const wrapper: FhirResourceWrapper = {
+                                    fullUrl: parent.fullUrl,
+                                    resource: parent.resource as FhirResource
+                                };
+                                ipsData.resources.push(wrapper);
+                            }
                         }
                     }
                 }

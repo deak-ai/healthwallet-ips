@@ -3,63 +3,60 @@
  * https://docs.expo.io/guides/color-schemes/
  */
 
-import { Text as DefaultText, View as DefaultView, TextInput as DefaultTextInput} from 'react-native';
+import {
+  Text as DefaultText,
+  View as DefaultView,
+  TextInput as DefaultTextInput,
+} from "react-native";
 
-import Colors from '@/constants/Colors';
-import { useColorScheme } from './useColorScheme';
+import  { getPalette } from "@/constants/Colors";
+import { useColorScheme } from "./useColorScheme";
 
 type ThemeProps = {
   lightColor?: string;
   darkColor?: string;
 };
 
-export type TextProps = ThemeProps & DefaultText['props'];
-export type ViewProps = ThemeProps & DefaultView['props'];
-export type TextInputProps = ThemeProps & DefaultTextInput['props'];
-
-export function useThemeColor(
-  props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
-) {
-  const theme = useColorScheme() ?? 'light';
-  const colorFromProps = props[theme];
-
-  if (colorFromProps) {
-    return colorFromProps;
-  } else {
-    return Colors[theme][colorName];
-  }
-}
+export type TextProps = ThemeProps & DefaultText["props"];
+export type ViewProps = ThemeProps & DefaultView["props"];
+export type TextInputProps = ThemeProps & DefaultTextInput["props"];
 
 export function Text(props: TextProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const theme = useColorScheme() ?? "light";
+  const palette = getPalette(theme === "dark");
+  const color = palette.text;
 
   return <DefaultText style={[{ color }, style]} {...otherProps} />;
 }
 
 export function View(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
+  const theme = useColorScheme() ?? 'light';
+  const palette=getPalette(theme==="dark")
 
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  return <DefaultView style={[{ backgroundColor:palette.background }, style]} {...otherProps} />;
 }
 
 export function TextInput(props: TextInputProps) {
-  const { style, lightColor, darkColor, placeholderTextColor, ...otherProps } = props;
-  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
-  const borderColor = useThemeColor({ light: lightColor, dark: darkColor }, 'border');
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-  const finalPlaceholderTextColor = placeholderTextColor ??
-      useThemeColor({ light: lightColor, dark: darkColor }, 'placeholder');
+  const { style, lightColor, darkColor, placeholderTextColor, ...otherProps } =
+    props;
+    const theme = useColorScheme() ?? 'light';
+    const palette=getPalette(theme==="dark")
+
+  const backgroundColor = palette.background
+  const borderColor = palette.secondary.light
+
+  const color = palette.text;
+  const finalPlaceholderTextColor =
+    placeholderTextColor ??
+    palette.neutral.grey;
 
   return (
-      <DefaultTextInput
-          style={[{ backgroundColor, borderColor, color }, style]}
-          placeholderTextColor={finalPlaceholderTextColor}
-          {...otherProps}
-      />
+    <DefaultTextInput
+      style={[{ backgroundColor, borderColor, color }, style]}
+      placeholderTextColor={finalPlaceholderTextColor}
+      {...otherProps}
+    />
   );
 }
-
-

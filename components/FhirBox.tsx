@@ -1,7 +1,5 @@
 import React from 'react';
 import { StyleSheet, Pressable, Text, View } from 'react-native';
-import { useThemeColor } from '@/components/Themed';
-import Colors from "@/constants/Colors";
 
 interface FhirBoxProps {
     name: string;
@@ -9,9 +7,9 @@ interface FhirBoxProps {
 }
 
 const FhirBox: React.FC<FhirBoxProps> = ({ name, onPress }) => {
-    const backgroundColor = useThemeColor({ light: Colors.light.background, dark: Colors.dark.background }, 'background');
-    const borderColor = useThemeColor({ light: Colors.light.border, dark: Colors.dark.border }, 'border');
-    const textColor = useThemeColor({ light: Colors.light.text, dark: Colors.dark.text }, 'text');
+    const backgroundColor = "red";
+    const borderColor = "red";
+    const textColor = "red";
 
     return (
         <Pressable onPress={onPress} style={({ pressed }) => [styles.container, { backgroundColor, borderColor }, pressed && styles.pressed]}>

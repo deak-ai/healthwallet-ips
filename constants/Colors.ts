@@ -1,31 +1,73 @@
-// constants/Colors.ts
+export interface ColorShades {
+  main: string;
+  light: string;
+  dark?: string;
+  lighter?: string;
+}
 
-const tintColorLight = '#2f95dc';
-const tintColorDark = '#fff';
+export interface NeutralColors {
+  black: string;
+  white: string;
+  grey: string;
+  red: string;
+  lightGrey:string
+}
 
-const lightColors = {
-  text: '#000',  // Black text in light mode
-  background: '#fff',  // White background in light mode
-  tint: tintColorLight,
-  tabIconDefault: '#ccc',
-  tabIconSelected: tintColorLight,
-  border: '#ccc',  // Light border
-  icon: '#000',  // Black icon in light mode
-  placeholder: '#888',  // Light input placeholder
+export interface ColorPalette {
+  primary: ColorShades;
+  secondary: ColorShades;
+  neutral: NeutralColors;
+  background: string;
+  text: string;
+}
+
+export const lightPalette: ColorPalette = {
+  primary: {
+    main: "#5A81FA",
+    light: "#CDDEFF",
+    lighter: "#2E6FF31A",
+    dark: "#2B318A",
+  },
+  secondary: {
+    main: "#2C3D8F",
+    light: "#CEE5FF",
+    dark: "#2E6FF3",
+    lighter: "#2E6FF314",
+  },
+  neutral: {
+    black: "#000000",
+    white: "#ffffff",
+    grey: "#1D1D1F",
+    red: "#CD3F3E",
+    lightGrey:"#cccccc"
+  },
+  background: "#ffffff",
+  text: "#000000",
 };
 
-const darkColors = {
-  text: '#fff',  // White text in dark mode
-  background: '#000',  // Black background in dark mode
-  tint: tintColorDark,
-  tabIconDefault: '#ccc',
-  tabIconSelected: tintColorDark,
-  border: '#fff',  // White border
-  icon: '#fff',  // White icon in dark mode
-  placeholder: '#aaa',  // Dark input placeholder
+export const darkPalette: ColorPalette = {
+  primary: {
+    main: "#5A81FA",
+    light: "#CDDEFF",
+    lighter:"#0955EE4F",
+    dark: "#2B318A",
+  },
+  secondary: {
+    main: "#2C3D8F",
+    dark: "#2E6FF3",
+    light: "#CEE5FF",
+    lighter: "#2E6FF314",
+  },
+  neutral: {
+    black: "#000000",
+    white: "#ffffff",
+    grey: "#1D1D1F",
+    red: "#CD3F3E",
+    lightGrey:"#cccccc"
+  },
+  background: "#121212",
+  text: "#ffffff",
 };
 
-export default {
-  light: lightColors,
-  dark: darkColors,
-};
+export const getPalette = (isDarkMode: boolean): ColorPalette =>
+  isDarkMode ? darkPalette : lightPalette;

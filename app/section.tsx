@@ -1,82 +1,139 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, FlatList } from 'react-native';
-import { Text, View } from '@/components/Themed';
-import { useRoute } from '@react-navigation/native';
-import FhirBox from '@/components/FhirBox';
-import { useIpsData } from '@/components/IpsDataContext';
-import {filterResourceWrappers, getProcessor} from '@/components/ipsResourceProcessor';
-import {FlattenedResource} from "@/components/fhirIpsModels";
-import { useRouter } from 'expo-router';
-import yaml from 'js-yaml';
+import React from "react";
+import { StatusBar } from "expo-status-bar";
+import {
+  Platform,
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  useColorScheme,
+  TouchableOpacity,
+} from "react-native";
+import { useRoute } from "@react-navigation/native";
+import { useIpsData } from "@/components/IpsDataContext";
+import {
+  filterResourceWrappers,
+  getProcessor,
+} from "@/components/ipsResourceProcessor";
+import SectionCard from "@/components/card";
+import { getPalette } from "@/constants/Colors";
+import CustomLoader from "@/components/reusable/loader";
+import Toast from "react-native-toast-message";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Header from "@/components/reusable/header";
+import { useResourceSelection } from "@/hooks/useResourceSelection";
+import { useWalletShare } from "@/hooks/useWalletShare";
 
 export default function SectionScreen() {
   const route = useRoute();
-  const router = useRouter();
-  const { title } = route.params as { title: string };
-  const { code } = route.params as { code: string };
+  const { title, code, label } = route.params as {
+    title: string;
+    code: string;
+    label: string;
+  };
   const { ipsData } = useIpsData();
+  const theme = useColorScheme() ?? "light";
+  const palette = getPalette(theme === "dark");
 
-  const resources = ipsData ? getProcessor(code)
-      .process(ipsData) : [];
+  const { selectedIds, handleSelect } = useResourceSelection(ipsData, code);
+  const { loading, shareToWallet } = useWalletShare();
 
-  const renderItem = ({ item }: { item: FlattenedResource }) => (
-      <FhirBox name={item.name} onPress={() => handleTilePress(item)} />
-  );
-
-  const handleTilePress = (item: FlattenedResource) => {
-    if (ipsData) {
-      //let detail = ipsData.resources.filter(r => r.fullUrl === item.uri);
-      router.push({
-        pathname: '/modal',
-        params: {
-          fhirData: yaml.dump(item),
-          title: item.name
-        }
+  const handleShare = async () => {
+    if (!ipsData || selectedIds.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please select at least one item to share",
+        position: "bottom",
       });
+      return;
     }
+    await shareToWallet(ipsData, code, label, selectedIds);
   };
 
+  const resources = ipsData ? getProcessor(code).process(ipsData) : [];
+
   return (
-      <View style={styles.container}>
-        <Text style={styles.title}>{title}</Text>
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <View style={styles.listContainer}>
-          <FlatList
-              data={resources}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => index.toString()}
-              contentContainerStyle={styles.flatList}
-          />
+    <View style={[styles.container, { backgroundColor: palette.background }]}>
+      <Header title={title} />
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <View style={styles.sectionContainer}>
+          {resources.map((item: any, index) => (
+            <SectionCard
+              key={index}
+              resource={item}
+              selected={selectedIds.includes(item.uri)}
+              onSelect={() => handleSelect(item.uri)}
+              label={label}
+            />
+          ))}
         </View>
-        <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-      </View>
+      </ScrollView>
+
+      {loading ? (
+        <CustomLoader />
+      ) : (
+        <View style={styles.fixedButtonContainer}>
+          <TouchableOpacity
+            style={[
+              styles.shareButton,
+              { backgroundColor: palette.secondary.light },
+            ]}
+            onPress={handleShare}
+          >
+            <AntDesign name="sharealt" size={30} color={palette.primary.dark} />
+          </TouchableOpacity>
+        </View>
+      )}
+      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
     paddingTop: 20,
+  },
+  backButton: {
+    marginRight: 16,
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-  listContainer: {
+    fontWeight: "bold",
     flex: 1,
-    width: '100%',
-    alignItems: 'stretch',
   },
-  flatList: {
-    padding: 20,
-    width: '100%',
+  scrollViewContainer: {
+    flexGrow: 1,
+    paddingTop: 20,
+  },
+  sectionContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    paddingHorizontal: 10,
+  },
+  fixedButtonContainer: {
+    position: "absolute",
+    bottom: 20,
+    left: "50%",
+    transform: [{ translateX: -100 }],
+    width: 200,
+    alignItems: "center",
+  },
+  shareButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 80,
+    height: 80,
+    borderRadius: 50,
   },
 });
