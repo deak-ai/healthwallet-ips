@@ -80,6 +80,16 @@ export default function SettingsWallet() {
   };
 
   const testConnection = async () => {
+    if (!credentials.username || !credentials.password) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please enter both username and password",
+        position: "bottom",
+      });
+      return;
+    }
+
     try {
       setLoading(true);
       const walletApi = new WaltIdWalletApi(
@@ -87,34 +97,39 @@ export default function SettingsWallet() {
         credentials.username,
         credentials.password
       );
-      await walletApi
-        .login()
-        .then((data) => {
-          if (data.token) {
-            Toast.show({
-              type: "success",
-              text1: "Success",
-              text2: "Login Successful",
-              position: "bottom",
-            });
-          } else {
-            Toast.show({
-              type: "error",
-              text1: "Error",
-              text2: "Failed to login.",
-              position: "bottom",
-            });
-          }
-        })
-        .catch((error) => {
-          console.error("Error login:", error);
+
+      const data = await walletApi.login();
+      
+      if (data.token) {
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Login Successful",
+          position: "bottom",
         });
+      } else {
+        throw new Error("No token received");
+      }
     } catch (error) {
-      console.error("Error login:", error);
+      // Don't log sensitive information in production
+      // console.error("Login failed:", error instanceof Error ? error.message : "Unknown error");
+      
+      // Provide user-friendly error messages based on the error
+      let errorMessage = "Failed to login. Please check your credentials.";
+      if (error instanceof Error) {
+        if ((error as any).status === 401) {
+          errorMessage = "Invalid username or password";
+        } else if ((error as any).status === 404) {
+          errorMessage = "User not found";
+        } else if (error.message.includes("Network request failed")) {
+          errorMessage = "Cannot connect to server. Please check your internet connection.";
+        }
+      }
+
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "Failed to login.",
+        text2: errorMessage,
         position: "bottom",
       });
     } finally {

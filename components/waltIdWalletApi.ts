@@ -99,7 +99,7 @@ export class WaltIdWalletApi {
       );
       return JSON.parse(jsonPayload);
     } catch (error) {
-      console.error('Error decoding JWT token:', error);
+      // console.error('Error decoding JWT token:', error);
       return {};
     }
   }
@@ -129,21 +129,34 @@ export class WaltIdWalletApi {
       ...options.headers,
     };
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+      });
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: 'Unknown error' }));
-      throw new Error(`API Error: ${error.message}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+        const errorMessage = errorData.message || 'Request failed';
+        const error = new Error(errorMessage);
+        // Add status code to help identify the type of error
+        (error as any).status = response.status;
+        throw error;
+      }
+
+      if (response.status === 204) {
+        return true;
+      }
+
+      return response.json();
+    } catch (error) {
+      // If it's already our error with status, rethrow it
+      if (error instanceof Error && (error as any).status) {
+        throw error;
+      }
+      // Otherwise wrap the error with more context
+      throw new Error(`Network request failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
-
-    if (response.status === 204) {
-      return true;
-    }
-
-    return response.json();
   }
 
   async login(): Promise<LoginResponse> {

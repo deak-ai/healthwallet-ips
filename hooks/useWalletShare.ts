@@ -22,11 +22,21 @@ export const useWalletShare = () => {
       const savedUsername = await SecureStore.getItemAsync('username');
       const savedPassword = await SecureStore.getItemAsync('password');
 
+      if (!savedUsername || !savedPassword) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Please configure wallet credentials first',
+          position: 'bottom',
+        });
+        return false;
+      }
+
       const issuerApi = new WaltIdIssuerApi('https://issuer.healthwallet.li');
       const walletApi = new WaltIdWalletApi(
         'https://wallet.healthwallet.li',
-        savedUsername || '',
-        savedPassword || ''
+        savedUsername,
+        savedPassword
       );
 
       const selectedResourceWrappers = resourceWrappers.filter(
@@ -37,6 +47,8 @@ export const useWalletShare = () => {
         issuerApi,
         walletApi
       );
+
+      console.log('Issuing credential');
 
       await smartHealthCardIssuer.issueAndAddToWallet(
         'Self-issued ' + label,
@@ -53,7 +65,7 @@ export const useWalletShare = () => {
 
       return true;
     } catch (error) {
-      console.error('Error sharing data:', error);
+      // console.error('Error sharing data:', error);
       Toast.show({
         type: 'error',
         text1: 'Error',
