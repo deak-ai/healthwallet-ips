@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
-import { View } from '@/components/Themed';
+import { View, Text } from '@/components/Themed';
 import { useIpsData } from '@/components/IpsDataContext';
 import { getFlattenedIpsSections } from '@/components/ipsResourceProcessor';
 import { IpsSectionCode } from '@/components/fhirIpsModels';

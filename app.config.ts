@@ -53,7 +53,17 @@ const config: ExpoConfig = {
     "infoPlist": {
       "NSCameraUsageDescription": "This app requires camera access to enable video functionality within the WebView.",
       "NSMicrophoneUsageDescription": "This app requires microphone access to enable audio functionality within the WebView.",
-      "NSPhotoLibraryUsageDescription": "This app requires photo library access to save and share images."
+      "NSPhotoLibraryUsageDescription": "This app requires photo library access to save and share images.",
+      "NSAppTransportSecurity": {
+        "NSAllowsArbitraryLoads": false,
+        "NSExceptionDomains": {
+          "healthwallet.li": {
+            "NSIncludesSubdomains": true,
+            "NSExceptionAllowsInsecureHTTPLoads": false,
+            "NSExceptionMinimumTLSVersion": "TLSv1.2"
+          }
+        }
+      }
     }
   },
   "android": {
@@ -67,7 +77,10 @@ const config: ExpoConfig = {
       "RECORD_AUDIO",
       "MODIFY_AUDIO_SETTINGS",
       "READ_EXTERNAL_STORAGE",
-      "WRITE_EXTERNAL_STORAGE"
+      "WRITE_EXTERNAL_STORAGE",
+      "INTERNET",
+      "ACCESS_NETWORK_STATE",
+      "ACCESS_WIFI_STATE"
     ]
   },
   "web": {
@@ -88,7 +101,7 @@ const config: ExpoConfig = {
     },
     "eas": {
       "projectId": "1dcd6b1c-e929-456d-8ff0-5666c29af928"
-    }
+    },
   },
   "owner": "deak-ai"
 };

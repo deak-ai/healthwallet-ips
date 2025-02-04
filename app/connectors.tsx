@@ -13,7 +13,7 @@ import { getPalette } from "@/constants/Colors";
 import BottomSheet from "@/components/reusable/bottomSheet";
 import Header from "@/components/reusable/header";
 
-export default function Connectores() {
+export default function ConnectorsScreen() {
   const [patientId, setPatientId] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
   const theme = useColorScheme() ?? "light";
@@ -176,7 +176,9 @@ export default function Connectores() {
             styles.button,
             {
               backgroundColor:
-                theme === "dark" ? palette.primary.main : palette.secondary.main,
+                theme === "dark"
+                  ? palette.primary.main
+                  : palette.secondary.main,
             },
           ]}
           onPress={savePatientId}

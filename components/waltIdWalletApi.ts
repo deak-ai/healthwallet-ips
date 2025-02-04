@@ -130,6 +130,7 @@ export class WaltIdWalletApi {
     };
 
     try {
+      console.log(`Attempting to connect to: ${url}`);
       const response = await fetch(url, {
         ...options,
         headers,
@@ -137,9 +138,14 @@ export class WaltIdWalletApi {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
-        const errorMessage = errorData.message || 'Request failed';
+        const errorMessage = `Request failed: ${errorData.message || 'Unknown error'} (Status: ${response.status})`;
+        console.error(`API Error: ${errorMessage}`, {
+          url,
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries()),
+        });
         const error = new Error(errorMessage);
-        // Add status code to help identify the type of error
         (error as any).status = response.status;
         throw error;
       }
@@ -150,12 +156,28 @@ export class WaltIdWalletApi {
 
       return response.json();
     } catch (error) {
+      // If it's a network error, provide more detailed information
+      if (error instanceof TypeError && error.message === 'Network request failed') {
+        console.error('Network Error Details:', {
+          url,
+          error: error.message,
+          stack: error.stack,
+        });
+        throw new Error(`Network connection failed. Please check your internet connection and try again. Details: ${error.message}`);
+      }
+      
       // If it's already our error with status, rethrow it
       if (error instanceof Error && (error as any).status) {
         throw error;
       }
+
       // Otherwise wrap the error with more context
-      throw new Error(`Network request failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('API Call Failed:', {
+        url,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+      });
+      throw new Error(`Request failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 

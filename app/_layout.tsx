@@ -18,6 +18,7 @@ import { ClickedTabProvider } from "@/components/clickedTabContext";
 import CustomLoader from "@/components/reusable/loader";
 import { FhirUrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
 import * as SecureStore from "expo-secure-store";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -71,9 +72,11 @@ export default function RootLayout() {
 
 const RootProviders = ({ children }: { children: React.ReactNode }) => {
   return (
-    <IpsDataProvider>
-      <ClickedTabProvider>{children}</ClickedTabProvider>
-    </IpsDataProvider>
+    <SafeAreaProvider>
+      <IpsDataProvider>
+        <ClickedTabProvider>{children}</ClickedTabProvider>
+      </IpsDataProvider>
+    </SafeAreaProvider>
   );
 };
 
