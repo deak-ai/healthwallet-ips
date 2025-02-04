@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getProcessor } from '@/components/ipsResourceProcessor';
 import { IpsData } from '@/components/fhirIpsModels';
 
 export const useResourceSelection = (ipsData: IpsData | null, code: string) => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectAllState, setSelectAllState] = useState(false);
+
+  // Reset state when code changes
+  useEffect(() => {
+    setSelectedIds([]);
+    setSelectAllState(false);
+  }, [code]);
 
   const handleSelect = (uri: string) => {
     setSelectedIds((prevSelectedIds) => {
