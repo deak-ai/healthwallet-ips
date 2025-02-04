@@ -118,12 +118,15 @@ export default function SettingsWallet() {
       let errorMessage = "Failed to login. Please check your credentials.";
       if (error instanceof Error) {
         if ((error as any).status === 401) {
-          errorMessage = "Invalid username or password";
+          errorMessage = "Invalid username or password "
         } else if ((error as any).status === 404) {
           errorMessage = "User not found";
         } else if (error.message.includes("Network request failed")) {
           errorMessage = "Cannot connect to server. Please check your internet connection.";
         }
+        console.log("Error to user:", errorMessage);
+        console.log("Error message: "+error.message)
+        console.log("Error object", JSON.stringify(error));
       }
 
       Toast.show({
