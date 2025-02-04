@@ -72,6 +72,8 @@ export interface UseOfferRequestParams {
   requireUserInput?: boolean;
 }
 
+import { streamingFetch } from './fetchHelper';
+
 export class WaltIdWalletApi {
   private baseUrl: string;
   private email: string;
@@ -125,36 +127,16 @@ export class WaltIdWalletApi {
 
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
-      ...(this.authToken ? { 'Authorization': `Bearer ${this.authToken}` } : {}),
+      ...(this.authToken ? { Authorization: `Bearer ${this.authToken}` } : {}),
       ...options.headers,
     };
 
     try {
       console.log(`Attempting to connect to: ${url}`);
-      const response = await fetch(url, {
+      return await streamingFetch(url, {
         ...options,
         headers,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
-        const errorMessage = `Request failed: ${errorData.message || 'Unknown error'} (Status: ${response.status})`;
-        console.error(`API Error: ${errorMessage}`, {
-          url,
-          status: response.status,
-          statusText: response.statusText,
-          headers: Object.fromEntries(response.headers.entries()),
-        });
-        const error = new Error(errorMessage);
-        (error as any).status = response.status;
-        throw error;
-      }
-
-      if (response.status === 204) {
-        return true;
-      }
-
-      return response.json();
     } catch (error) {
       // If it's a network error, provide more detailed information
       if (error instanceof TypeError && error.message === 'Network request failed') {
@@ -165,19 +147,14 @@ export class WaltIdWalletApi {
         });
         throw new Error(`Network connection failed. Please check your internet connection and try again. Details: ${error.message}`);
       }
-      
-      // If it's already our error with status, rethrow it
-      if (error instanceof Error && (error as any).status) {
-        throw error;
-      }
 
-      // Otherwise wrap the error with more context
+      // Log error details for debugging
       console.error('API Call Failed:', {
         url,
         error: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
       });
-      throw new Error(`Request failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw error;
     }
   }
 

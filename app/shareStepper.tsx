@@ -26,6 +26,7 @@ import * as SecureStore from "expo-secure-store";
 import { IpsData } from "@/components/fhirIpsModels";
 import { useResourceSelection } from "@/hooks/useResourceSelection";
 import { useWalletShare } from "@/hooks/useWalletShare";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Stepper = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -113,110 +114,112 @@ const Stepper = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={[
-            styles.backButton,
-            { backgroundColor: palette.secondary.light },
-          ]}
-          onPress={() => navigation.goBack()}
-        >
-          <Icon
-            type="ionicon"
-            name="chevron-back-circle-outline"
-            size={32}
-            color={
-              theme === "dark" ? palette.neutral.white : palette.neutral.black
-            }
-          />
-        </TouchableOpacity>
-        <Text style={[styles.title, { color: palette.text }]}>
-          {titles[currentStep]}
-        </Text>
-        <TouchableOpacity
-          style={[
-            styles.selectAllButton,
-            { backgroundColor: palette.secondary.main },
-          ]}
-          onPress={handleSelectAll}
-        >
-          <Text
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
             style={[
-              styles.selectAllButtonText,
-              { color: palette.neutral.white },
+              styles.backButton,
+              { backgroundColor: palette.secondary.light },
             ]}
+            onPress={() => navigation.goBack()}
           >
-            {selectAllState ? "Deselect All" : "Select All"}
+            <Icon
+              type="ionicon"
+              name="chevron-back-circle-outline"
+              size={32}
+              color={
+                theme === "dark" ? palette.neutral.white : palette.neutral.black
+              }
+            />
+          </TouchableOpacity>
+          <Text style={[styles.title, { color: palette.text }]}>
+            {titles[currentStep]}
           </Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.contentContainer}>
-        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-          <View style={styles.sectionContainer}>
-            {ipsData &&
-              getProcessor(currentCode)
-                .process(ipsData)
-                .map((item: any, index: number) => (
-                  <SectionCard
-                    key={index}
-                    resource={item}
-                    selected={selectedIds.includes(item.uri)}
-                    onSelect={() => handleSelect(item.uri)}
-                    label={localSelectedElement[currentStep].label}
-                  />
-                ))}
-          </View>
-        </ScrollView>
-      </View>
-
-      <View style={styles.buttonsContainerFixed}>
-        <TouchableOpacity
-          style={[
-            styles.button,
-            {
-              backgroundColor: currentStep === 0
-                ? palette.neutral.lightGrey
-                : palette.primary.dark,
-            },
-          ]}
-          onPress={handlePrevious}
-          disabled={currentStep === 0}
-        >
-          <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
-            Back
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: palette.primary.dark }]}
-          onPress={handleNext}
-        >
-          <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
-            {currentStep === stepNumber - 1 ? "Share" : "Next"}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.stepIndicatorContainer}>
-        {Array.from({ length: stepNumber }).map((_, index) => (
-          <View
-            key={index}
+          <TouchableOpacity
             style={[
-              styles.stepIndicator,
+              styles.selectAllButton,
+              { backgroundColor: palette.secondary.main },
+            ]}
+            onPress={handleSelectAll}
+          >
+            <Text
+              style={[
+                styles.selectAllButtonText,
+                { color: palette.neutral.white },
+              ]}
+            >
+              {selectAllState ? "Deselect All" : "Select All"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.contentContainer}>
+          <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+            <View style={styles.sectionContainer}>
+              {ipsData &&
+                getProcessor(currentCode)
+                  .process(ipsData)
+                  .map((item: any, index: number) => (
+                    <SectionCard
+                      key={index}
+                      resource={item}
+                      selected={selectedIds.includes(item.uri)}
+                      onSelect={() => handleSelect(item.uri)}
+                      label={localSelectedElement[currentStep].label}
+                    />
+                  ))}
+            </View>
+          </ScrollView>
+        </View>
+
+        <View style={styles.buttonsContainerFixed}>
+          <TouchableOpacity
+            style={[
+              styles.button,
               {
-                backgroundColor:
-                  index === currentStep
-                    ? palette.primary.dark
-                    : palette.primary.light,
+                backgroundColor: currentStep === 0
+                  ? palette.neutral.lightGrey
+                  : palette.primary.dark,
               },
             ]}
-          />
-        ))}
+            onPress={handlePrevious}
+            disabled={currentStep === 0}
+          >
+            <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
+              Back
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: palette.primary.dark }]}
+            onPress={handleNext}
+          >
+            <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
+              {currentStep === stepNumber - 1 ? "Share" : "Next"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.stepIndicatorContainer}>
+          {Array.from({ length: stepNumber }).map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.stepIndicator,
+                {
+                  backgroundColor:
+                    index === currentStep
+                      ? palette.primary.dark
+                      : palette.primary.light,
+                },
+              ]}
+            />
+          ))}
+        </View>
+        {loading && <CustomLoader />}
       </View>
-      {loading && <CustomLoader />}
-    </View>
+    </SafeAreaView>
   );
 };
 

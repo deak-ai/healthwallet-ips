@@ -101,6 +101,8 @@ export interface OfferRequest {
   credentialOffer: string;
 }
 
+import { streamingFetch } from './fetchHelper';
+
 export class WaltIdIssuerApi {
   private baseUrl: string;
 
@@ -109,23 +111,22 @@ export class WaltIdIssuerApi {
   }
 
   private async fetchWithError(url: string, options: RequestInit = {}): Promise<any> {
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options.headers || {}),
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    try {
+      return await streamingFetch(url, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(options.headers || {}),
+        },
+      });
+    } catch (error) {
+      console.error('API Call Failed:', {
+        url,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+      });
+      throw error;
     }
-
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
-      return response.json();
-    }
-    return response.text();
   }
 
   /**
