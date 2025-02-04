@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-
-import { Text, View, TouchableOpacity } from "react-native";
+import React from "react";
+import { Text, View, TouchableOpacity, useColorScheme } from "react-native";
+import { getPalette } from "@/constants/Colors";
 
 interface CustomSwitchProps {
   selectionMode: number;
@@ -17,6 +17,8 @@ const CustomSwitch = ({
   onSelectSwitch,
   selectionColor,
 }: CustomSwitchProps) => {
+  const theme = useColorScheme() ?? "light";
+  const palette = getPalette(theme === "dark");
 
   const updatedSwitchData = (val: number) => {
     onSelectSwitch(val);
@@ -28,7 +30,7 @@ const CustomSwitch = ({
         style={{
           height: 44,
           width: 215,
-          backgroundColor: "white",
+          backgroundColor: palette.background,
           borderRadius: 25,
           borderWidth: 1,
           borderColor: selectionColor,
@@ -42,8 +44,7 @@ const CustomSwitch = ({
           onPress={() => updatedSwitchData(1)}
           style={{
             flex: 1,
-
-            backgroundColor: selectionMode == 1 ? selectionColor : "white",
+            backgroundColor: selectionMode == 1 ? selectionColor : palette.background,
             borderRadius: 25,
             justifyContent: "center",
             alignItems: "center",
@@ -51,7 +52,7 @@ const CustomSwitch = ({
         >
           <Text
             style={{
-              color: selectionMode == 1 ? "white" : selectionColor,
+              color: selectionMode == 1 ? palette.neutral.white : selectionColor,
             }}
           >
             {option1}
@@ -62,8 +63,7 @@ const CustomSwitch = ({
           onPress={() => updatedSwitchData(2)}
           style={{
             flex: 1,
-
-            backgroundColor: selectionMode == 2 ? selectionColor : "white",
+            backgroundColor: selectionMode == 2 ? selectionColor : palette.background,
             borderRadius: 25,
             justifyContent: "center",
             alignItems: "center",
@@ -71,7 +71,7 @@ const CustomSwitch = ({
         >
           <Text
             style={{
-              color: selectionMode == 2 ? "white" : selectionColor,
+              color: selectionMode == 2 ? palette.neutral.white : selectionColor,
             }}
           >
             {option2}

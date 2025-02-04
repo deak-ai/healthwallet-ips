@@ -167,24 +167,37 @@ export default function SettingsWallet() {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: palette.secondary.light }]}
+          style={[
+            styles.button,
+            {
+              backgroundColor: theme === "dark" ? palette.primary.main : palette.secondary.main,
+            }
+          ]}
           onPress={saveCredentials}
         >
-          <Text style={styles.buttonText}>Save</Text>
+          <Text style={[styles.buttonText, { color: palette.neutral.white }]}>Save</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.button,
             {
               backgroundColor: !disabledTestConnection
-                ? palette.secondary.light
+                ? theme === "dark" ? palette.primary.main : palette.secondary.main
                 : palette.neutral.lightGrey,
               opacity: disabledTestConnection ? 0.5 : 1,
             },
           ]}
           onPress={testConnection}
+          disabled={disabledTestConnection}
         >
-          <Text style={styles.buttonText} disabled={disabledTestConnection}>
+          <Text 
+            style={[
+              styles.buttonText, 
+              { 
+                color: !disabledTestConnection ? palette.neutral.white : palette.neutral.black 
+              }
+            ]}
+          >
             Test connection
           </Text>
         </TouchableOpacity>

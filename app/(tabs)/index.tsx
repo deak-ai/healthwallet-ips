@@ -61,14 +61,14 @@ const TabSettingsScreen = () => {
         {
           title: "Connectors",
           icon: (
-            <AntDesign name="user" size={24} color={palette.primary.dark} />
+            <AntDesign name="user" size={24} color={palette.text} />
           ),
           route: "/connectors",
         },
         {
           title: "Wallet",
           icon: (
-            <AntDesign name="wallet" size={24} color={palette.primary.dark} />
+            <AntDesign name="wallet" size={24} color={palette.text} />
           ),
           route: "/settingsWallet",
         },
@@ -77,25 +77,24 @@ const TabSettingsScreen = () => {
   ];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: palette.background }]}>
       {menuItems.map((section, index) => (
         <View key={index} style={styles.sectionContainer}>
-          <Text style={[styles.sectionTitle,{color:palette.text}]}>{section.section}</Text>
+          <Text style={[styles.sectionTitle, { color: palette.text }]}>{section.section}</Text>
           {section.items.map((item, idx) => (
             <TouchableOpacity
               key={idx}
               style={[
                 styles.menuItem,
-                ,
                 {
                   shadowColor: palette.neutral.black,
-                  backgroundColor: palette.neutral.white,
+                  backgroundColor: theme === "dark" ? palette.neutral.grey : palette.neutral.white,
                 },
               ]}
               onPress={() => router.push(item.route as Href<string | object>)}
             >
               <View style={styles.iconContainer}>{item.icon}</View>
-              <Text style={[styles.menuText, { color: palette.primary.dark }]}>
+              <Text style={[styles.menuText, { color: palette.text }]}>
                 {item.title}
               </Text>
             </TouchableOpacity>

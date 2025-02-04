@@ -172,10 +172,18 @@ export default function Connectores() {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: palette.secondary.light }]}
+          style={[
+            styles.button,
+            {
+              backgroundColor:
+                theme === "dark" ? palette.primary.main : palette.secondary.main,
+            },
+          ]}
           onPress={savePatientId}
         >
-          <Text style={styles.buttonText}>Save Patient ID</Text>
+          <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
+            Save Patient ID
+          </Text>
         </TouchableOpacity>
       </View>
       {patientId && (
