@@ -27,21 +27,9 @@ export default function ConnectorsScreen() {
   const { loadFhirData, isConfigured, patientId, savePatientId, isLoading } = useConfiguration();
   const { setIpsData, ipsData } = useIpsData();
 
-  // console.log('ConnectorsScreen render:', {
-  //   patientId, 
-  //   isConfigured, 
-  //   hasIpsData: Boolean(ipsData && ipsData.resources.length > 0),
-  //   isLoading
-  // });
-
   useEffect(() => {
     const loadPatientId = async () => {
-      try {
-        const savedPatientId = await SecureStore.getItemAsync("patientId");
-        setInputValue(savedPatientId || "");
-      } catch (error) {
-        console.error("Error loading patient ID:", error);
-      }
+      setInputValue(patientId || "");
     };
     loadPatientId();
   }, []);
@@ -53,8 +41,6 @@ export default function ConnectorsScreen() {
   }, [isConfigured]);
 
   const handleSavePatientId = async () => {
-    //if (!inputValue) return;
-    //console.log('handleSavePatientId:', inputValue);
     try {
       await savePatientId(inputValue);
     } catch (error) {
