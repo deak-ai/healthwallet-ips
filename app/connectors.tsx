@@ -28,11 +28,8 @@ export default function ConnectorsScreen() {
   const { setIpsData, ipsData } = useIpsData();
 
   useEffect(() => {
-    const loadPatientId = async () => {
-      setInputValue(patientId || "");
-    };
-    loadPatientId();
-  }, []);
+    setInputValue(patientId || "");
+  }, [patientId]);
 
   useEffect(() => {
     if (!isConfigured && refRBSheet?.current?.open) {

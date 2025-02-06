@@ -7,7 +7,7 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import "react-native-reanimated";
 
@@ -93,52 +93,29 @@ const RootLayoutNav = () => {
   const colorScheme = useColorScheme();
   const { isConfigured, isLoading } = useConfiguration();
   const router = useRouter();
+  const didInitialNavigate = useRef(false);
 
   useEffect(() => {
-    if (!isLoading) {
+    // Only do initial navigation once
+    if (!didInitialNavigate.current && !isLoading) {
+      didInitialNavigate.current = true;
       if (isConfigured) {
         router.replace("/(tabs)/ips");
       } else {
         router.push("/connectors");
       }
     }
-  }, [isConfigured, isLoading]);
+  }, [isLoading, isConfigured]);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="connectors"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="modal"
-          options={{
-            presentation: "modal",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="section"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="shareStepper"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="settingsWallet"
-          options={{
-            headerShown: false,
-          }}
-        />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="connectors" />
+        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        <Stack.Screen name="section" />
+        <Stack.Screen name="shareStepper" />
+        <Stack.Screen name="settingsWallet" />
       </Stack>
       <CustomToast />
     </ThemeProvider>

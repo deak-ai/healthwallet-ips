@@ -31,16 +31,24 @@ const CustomLoader = () => {
 
   return (
     <View style={styles.overlay} pointerEvents="auto">
-    <View style={[styles.background, { backgroundColor: palette.neutral.lightGrey, opacity: 0.7}]} />
+      <View 
+        style={[
+          styles.background, 
+          { 
+            backgroundColor: theme === "dark" ? "#000000" : "#FFFFFF",
+            opacity: theme === "dark" ? 0.85 : 0.7,
+          }
+        ]} 
+      />
       <View style={styles.container}>
-      <View style={[styles.circle, { backgroundColor: palette.secondary.light }]}>
-        <Animated.Image
-          source={require("../../assets/images/loader.png")}
-          style={[styles.image, { transform: [{ rotate }] }]}
-        />
+        <View style={[styles.circle, { backgroundColor: palette.secondary.light }]}>
+          <Animated.Image
+            source={require("../../assets/images/loader.png")}
+            style={[styles.image, { transform: [{ rotate }] }]}
+          />
+        </View>
       </View>
     </View>
-  </View>
   );
 };
 

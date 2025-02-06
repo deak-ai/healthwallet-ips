@@ -72,7 +72,12 @@ export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(true);
       await SecureStore.setItemAsync("patientId", newPatientId);
       setPatientId(newPatientId);
-      await loadFhirData(newPatientId);
+      if (newPatientId) {
+        await loadFhirData(newPatientId);
+      } else {
+        // Clear IPS data when patient ID is empty
+        setIpsData(null);
+      }
     } catch (error) {
       console.error("Error saving patient ID:", error);
       Toast.show({
@@ -97,11 +102,9 @@ export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         setIsLoading(true);
         const savedPatientId = await SecureStore.getItemAsync("patientId");
-        if (savedPatientId) {
-          setPatientId(savedPatientId);
-          if (!ipsData || ipsData.resources.length === 0) {
-            await loadFhirData(savedPatientId);
-          }
+        setPatientId(savedPatientId);
+        if (savedPatientId && (!ipsData || ipsData.resources.length === 0)) {
+          await loadFhirData(savedPatientId);
         }
       } catch (error) {
         console.error('Error initializing configuration:', error);
