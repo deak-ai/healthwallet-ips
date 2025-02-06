@@ -13,11 +13,12 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { IpsDataProvider } from "@/components/IpsDataContext";
-import { ConfigurationProvider, ConfigurationContext } from "@/components/ConfigurationContext";
+import { ConfigurationProvider, ConfigurationContext, useConfiguration } from "@/components/ConfigurationContext";
 import CustomToast from "@/components/reusable/customToast";
 import { ClickedTabProvider } from "@/components/clickedTabContext";
 import CustomLoader from "@/components/reusable/loader";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -90,11 +91,29 @@ const RootProviders = ({ children }: { children: React.ReactNode }) => {
 
 const RootLayoutNav = () => {
   const colorScheme = useColorScheme();
+  const { isConfigured, isLoading } = useConfiguration();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (isConfigured) {
+        router.replace("/(tabs)/ips");
+      } else {
+        router.push("/connectors");
+      }
+    }
+  }, [isConfigured, isLoading]);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="connectors"
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="modal"
           options={{
@@ -114,13 +133,7 @@ const RootLayoutNav = () => {
             headerShown: false,
           }}
         />
-         <Stack.Screen
-          name="connectors"
-          options={{
-            headerShown: false,
-          }}
-        />
-         <Stack.Screen
+        <Stack.Screen
           name="settingsWallet"
           options={{
             headerShown: false,
