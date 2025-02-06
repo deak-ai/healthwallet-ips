@@ -7,18 +7,17 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { IpsDataProvider } from "@/components/IpsDataContext";
-import { ConfigurationProvider } from "@/components/ConfigurationContext";
+import { ConfigurationProvider, ConfigurationContext } from "@/components/ConfigurationContext";
 import CustomToast from "@/components/reusable/customToast";
 import { ClickedTabProvider } from "@/components/clickedTabContext";
 import CustomLoader from "@/components/reusable/loader";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useConfiguration } from "@/hooks/useConfiguration";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -41,26 +40,29 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
-  const [appReady, setAppReady] = useState(false);
+  const context = useContext(ConfigurationContext);
+  const isLoading = context?.isLoading ?? false;
 
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
   useEffect(() => {
-    if (loaded && appReady) {
+    if (loaded && !isLoading) {
       SplashScreen.hideAsync().catch(() => {
         // Ignore error here since the app is already visible
       });
     }
-  }, [loaded, appReady]);
+  }, [loaded, isLoading]);
 
-  if (!loaded || !appReady) {
+  if (!loaded || isLoading) {
     return (
       <RootProviders>
         <IpsDataProvider>
           <ConfigurationProvider>
-            <CustomSplashScreen setAppReady={setAppReady} />
+            <View style={styles.splashContainer}>
+              <CustomLoader />
+            </View>
           </ConfigurationProvider>
         </IpsDataProvider>
       </RootProviders>
@@ -83,41 +85,6 @@ const RootProviders = ({ children }: { children: React.ReactNode }) => {
     <SafeAreaProvider>
       <ClickedTabProvider>{children}</ClickedTabProvider>
     </SafeAreaProvider>
-  );
-};
-
-const CustomSplashScreen = ({
-  setAppReady,
-  children,
-}: {
-  setAppReady?: (ready: boolean) => void;
-  children?: React.ReactNode;
-}) => {
-  const { checkConfiguration } = useConfiguration();
-
-  useEffect(() => {
-    const prepareApp = async () => {
-      try {
-        await checkConfiguration();
-        if (setAppReady) {
-          setAppReady(true);
-        }
-      } catch (e) {
-        console.warn(e);
-        if (setAppReady) {
-          setAppReady(true); // Still set app as ready even if configuration fails
-        }
-      }
-    };
-
-    prepareApp();
-  }, [setAppReady]);
-
-  return (
-    <View style={styles.splashContainer}>
-      <CustomLoader />
-      {children}
-    </View>
   );
 };
 

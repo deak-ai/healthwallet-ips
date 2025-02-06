@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
   SafeAreaView,
 } from "react-native";
 import { getPalette } from "@/constants/Colors";
-import { useConfiguration } from "@/hooks/useConfiguration";
 import { useIpsData } from "@/components/IpsDataContext";
 import { useClickedTab } from "@/components/clickedTabContext";
 import Header from "@/components/reusable/header";
@@ -17,6 +16,7 @@ import { Icon } from "@/components/MultiSourceIcon";
 import CustomLoader from "@/components/reusable/loader";
 import BottomSheet from "@/components/reusable/bottomSheet";
 import * as SecureStore from "expo-secure-store";
+import { useConfiguration } from "@/components/ConfigurationContext";
 
 export default function ConnectorsScreen() {
   const [inputValue, setInputValue] = useState<string>("");
@@ -27,12 +27,12 @@ export default function ConnectorsScreen() {
   const { loadFhirData, isConfigured, patientId, savePatientId, isLoading } = useConfiguration();
   const { setIpsData, ipsData } = useIpsData();
 
-  console.log('ConnectorsScreen render:', {
-    patientId, 
-    isConfigured, 
-    hasIpsData: Boolean(ipsData && ipsData.resources.length > 0),
-    isLoading
-  });
+  // console.log('ConnectorsScreen render:', {
+  //   patientId, 
+  //   isConfigured, 
+  //   hasIpsData: Boolean(ipsData && ipsData.resources.length > 0),
+  //   isLoading
+  // });
 
   useEffect(() => {
     const loadPatientId = async () => {
@@ -54,7 +54,7 @@ export default function ConnectorsScreen() {
 
   const handleSavePatientId = async () => {
     //if (!inputValue) return;
-    console.log('handleSavePatientId:', inputValue);
+    //console.log('handleSavePatientId:', inputValue);
     try {
       await savePatientId(inputValue);
     } catch (error) {

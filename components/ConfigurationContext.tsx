@@ -4,7 +4,7 @@ import { useIpsData } from '@/components/IpsDataContext';
 import { FhirUrlStreamProcessor } from '@/components/fhirStreamProcessorUrl';
 import Toast from 'react-native-toast-message';
 
-interface ConfigurationContextType {
+export interface ConfigurationContextType {
   isConfigured: boolean;
   patientId: string | null;
   isLoading: boolean;
@@ -13,7 +13,7 @@ interface ConfigurationContextType {
   checkConfiguration: () => Promise<boolean>;
 }
 
-const ConfigurationContext = createContext<ConfigurationContextType | null>(null);
+export const ConfigurationContext = createContext<ConfigurationContextType | null>(null);
 
 export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [patientId, setPatientId] = useState<string | null>(null);

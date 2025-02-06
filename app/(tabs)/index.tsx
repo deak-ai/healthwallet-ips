@@ -11,7 +11,8 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { getPalette } from "@/constants/Colors";
 import { useIpsData } from "@/components/IpsDataContext";
 import { useClickedTab } from "@/components/clickedTabContext";
-import { useConfiguration } from "@/hooks/useConfiguration";
+import { useContext } from "react";
+import { ConfigurationContext } from "@/components/ConfigurationContext";
 
 const TabSettingsScreen = () => {
   const router = useRouter();
@@ -19,7 +20,7 @@ const TabSettingsScreen = () => {
   const palette = getPalette(theme === "dark");
   const { ipsData } = useIpsData();
   const { clickedTab } = useClickedTab();
-  const { isConfigured } = useConfiguration();
+  const { isConfigured, patientId } = useContext(ConfigurationContext) ?? {};
   const navigation = useNavigation();
 
   useEffect(() => {
