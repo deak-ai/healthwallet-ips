@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -9,50 +9,24 @@ import {
 import { Href, useNavigation, useRouter } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { getPalette } from "@/constants/Colors";
-import * as SecureStore from "expo-secure-store";
 import { useIpsData } from "@/components/IpsDataContext";
-import BottomSheet from "@/components/reusable/bottomSheet";
 import { useClickedTab } from "@/components/clickedTabContext";
+import { useConfiguration } from "@/hooks/useConfiguration";
 
 const TabSettingsScreen = () => {
   const router = useRouter();
   const theme = useColorScheme();
   const palette = getPalette(theme === "dark");
   const { ipsData } = useIpsData();
-  const navigation = useNavigation();
-  const refRBSheet = useRef<any>(null);
   const { clickedTab } = useClickedTab();
+  const { isConfigured } = useConfiguration();
+  const navigation = useNavigation();
 
   useEffect(() => {
-    if (
-      !ipsData ||
-      ipsData.resources.length === 0 ||
-      ipsData.sections.length === 0
-    ) {
-      refRBSheet?.current.open();
+    if (!isConfigured) {
+      navigation.navigate('connectors' as never);
     }
-  }, [clickedTab, ipsData,refRBSheet]);
-
-  useEffect(() => {
-    const loadPatientId = async () => {
-      try {
-        const savedPatientId = await SecureStore.getItemAsync("patientId");
-
-        //Condition to navigate directly to home page
-        if (
-          savedPatientId &&
-          ipsData &&
-          ipsData.sections.length !== 0 &&
-          ipsData.resources.length !== 0
-        ) {
-          navigation.navigate("ips" as never);
-        }
-      } catch (error) {
-        console.error("Error loading patient ID:", error);
-      }
-    };
-    loadPatientId();
-  }, []);
+  }, [isConfigured, navigation]);
 
   const menuItems = [
     {
@@ -63,14 +37,14 @@ const TabSettingsScreen = () => {
           icon: (
             <AntDesign name="user" size={24} color={palette.text} />
           ),
-          route: "/connectors",
+          route: "connectors",
         },
         {
           title: "Wallet",
           icon: (
             <AntDesign name="wallet" size={24} color={palette.text} />
           ),
-          route: "/settingsWallet",
+          route: "settingsWallet",
         },
       ],
     },
@@ -91,7 +65,7 @@ const TabSettingsScreen = () => {
                   backgroundColor: theme === "dark" ? palette.neutral.grey : palette.neutral.white,
                 },
               ]}
-              onPress={() => router.push(item.route as Href<string | object>)}
+              onPress={() => navigation.navigate(item.route as never)}
             >
               <View style={styles.iconContainer}>{item.icon}</View>
               <Text style={[styles.menuText, { color: palette.text }]}>
@@ -101,11 +75,6 @@ const TabSettingsScreen = () => {
           ))}
         </View>
       ))}
-      <BottomSheet
-        ref={refRBSheet}
-        title="ID Required"
-        description="A valid Patient ID is required to continue."
-      />
     </View>
   );
 };
@@ -114,35 +83,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 40,
   },
   sectionContainer: {
-    marginBottom: 24,
+    marginTop: 24,
   },
   sectionTitle: {
-    fontSize: 24,
-    fontWeight: "600",
-    marginBottom: 20,
-    marginTop: 5,
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 16,
   },
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-    marginBottom: 8,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   iconContainer: {
-    marginRight: 16,
+    marginRight: 12,
   },
   menuText: {
     fontSize: 16,
-    fontWeight: "500",
   },
 });
 

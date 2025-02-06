@@ -12,13 +12,13 @@ import { View, StyleSheet } from "react-native";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/components/useColorScheme";
-import { IpsDataProvider, useIpsData } from "@/components/IpsDataContext";
+import { IpsDataProvider } from "@/components/IpsDataContext";
+import { ConfigurationProvider } from "@/components/ConfigurationContext";
 import CustomToast from "@/components/reusable/customToast";
 import { ClickedTabProvider } from "@/components/clickedTabContext";
 import CustomLoader from "@/components/reusable/loader";
-import { FhirUrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
-import * as SecureStore from "expo-secure-store";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useConfiguration } from "@/hooks/useConfiguration";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -58,14 +58,22 @@ export default function RootLayout() {
   if (!loaded || !appReady) {
     return (
       <RootProviders>
-        <CustomSplashScreen setAppReady={setAppReady} />
+        <IpsDataProvider>
+          <ConfigurationProvider>
+            <CustomSplashScreen setAppReady={setAppReady} />
+          </ConfigurationProvider>
+        </IpsDataProvider>
       </RootProviders>
     );
   }
 
   return (
     <RootProviders>
-      <RootLayoutNav />
+      <IpsDataProvider>
+        <ConfigurationProvider>
+          <RootLayoutNav />
+        </ConfigurationProvider>
+      </IpsDataProvider>
     </RootProviders>
   );
 }
@@ -73,40 +81,32 @@ export default function RootLayout() {
 const RootProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <SafeAreaProvider>
-      <IpsDataProvider>
-        <ClickedTabProvider>{children}</ClickedTabProvider>
-      </IpsDataProvider>
+      <ClickedTabProvider>{children}</ClickedTabProvider>
     </SafeAreaProvider>
   );
 };
 
 const CustomSplashScreen = ({
   setAppReady,
+  children,
 }: {
-  setAppReady: (ready: boolean) => void;
+  setAppReady?: (ready: boolean) => void;
+  children?: React.ReactNode;
 }) => {
-  const { setIpsData } = useIpsData();
-  const loadFhirData = async (id: string | null) => {
-    try {
-      if (id) {
-        const url = `https://fhir-static.healthwallet.li/fhir-examples/ips-fhir/${id}-ips.json`;
-        const ipsData = await new FhirUrlStreamProcessor().streamData(url);
-
-        setIpsData(ipsData);
-      }
-    } catch (error) {
-      console.error("Error fetching FHIR data:", error);
-    }
-  };
+  const { checkConfiguration } = useConfiguration();
 
   useEffect(() => {
     const prepareApp = async () => {
       try {
-        const savedPatientId = await SecureStore.getItemAsync("patientId");
-        await loadFhirData(savedPatientId);
-        setAppReady(true);
+        await checkConfiguration();
+        if (setAppReady) {
+          setAppReady(true);
+        }
       } catch (e) {
         console.warn(e);
+        if (setAppReady) {
+          setAppReady(true); // Still set app as ready even if configuration fails
+        }
       }
     };
 
@@ -116,6 +116,7 @@ const CustomSplashScreen = ({
   return (
     <View style={styles.splashContainer}>
       <CustomLoader />
+      {children}
     </View>
   );
 };

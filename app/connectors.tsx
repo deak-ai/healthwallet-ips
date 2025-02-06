@@ -1,37 +1,43 @@
-import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, useColorScheme, TouchableOpacity } from "react-native";
-import { Text, View, TextInput } from "@/components/Themed";
-import * as SecureStore from "expo-secure-store";
-import { Icon } from "@/components/MultiSourceIcon";
-import { useFocusEffect } from "expo-router";
-import { useIpsData } from "@/components/IpsDataContext";
-import { FhirUrlStreamProcessor } from "@/components/fhirStreamProcessorUrl";
-import CustomLoader from "@/components/reusable/loader";
-import Toast from "react-native-toast-message";
-import { useClickedTab } from "@/components/clickedTabContext";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  useColorScheme,
+  SafeAreaView,
+} from "react-native";
 import { getPalette } from "@/constants/Colors";
-import BottomSheet from "@/components/reusable/bottomSheet";
+import { useConfiguration } from "@/hooks/useConfiguration";
+import { useIpsData } from "@/components/IpsDataContext";
+import { useClickedTab } from "@/components/clickedTabContext";
 import Header from "@/components/reusable/header";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Icon } from "@/components/MultiSourceIcon";
+import CustomLoader from "@/components/reusable/loader";
+import BottomSheet from "@/components/reusable/bottomSheet";
+import * as SecureStore from "expo-secure-store";
 
 export default function ConnectorsScreen() {
-  const [patientId, setPatientId] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
   const theme = useColorScheme() ?? "light";
   const refRBSheet = useRef<any>(null);
-  const [loading, setLoading] = useState(false);
   const { clickedTab } = useClickedTab();
   const palette = getPalette(theme === "dark");
-
+  const { loadFhirData, isConfigured, patientId, savePatientId, isLoading } = useConfiguration();
   const { setIpsData, ipsData } = useIpsData();
 
-  //Load the patient ID from SecureStore when the component mounts
+  console.log('ConnectorsScreen render:', {
+    patientId, 
+    isConfigured, 
+    hasIpsData: Boolean(ipsData && ipsData.resources.length > 0),
+    isLoading
+  });
+
   useEffect(() => {
     const loadPatientId = async () => {
       try {
         const savedPatientId = await SecureStore.getItemAsync("patientId");
-
-        setPatientId(savedPatientId);
         setInputValue(savedPatientId || "");
       } catch (error) {
         console.error("Error loading patient ID:", error);
@@ -41,107 +47,18 @@ export default function ConnectorsScreen() {
   }, []);
 
   useEffect(() => {
-    if (
-      !ipsData ||
-      ipsData.resources.length === 0 ||
-      ipsData.sections.length === 0
-    ) {
-      refRBSheet?.current.open();
+    if (!isConfigured && refRBSheet?.current?.open) {
+      refRBSheet.current.open();
     }
-  }, [patientId, clickedTab, ipsData]);
+  }, [isConfigured]);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const loadPatientId = async () => {
-        try {
-          const savedPatientId = await SecureStore.getItemAsync("patientId");
-          setPatientId(savedPatientId);
-        } catch (error) {
-          console.error("Error loading patient ID:", error);
-        }
-      };
-      (async () => {
-        await loadPatientId();
-      })();
-    }, [])
-  );
-  // Save the patient ID to SecureStore
-  const savePatientId = async () => {
+  const handleSavePatientId = async () => {
+    //if (!inputValue) return;
+    console.log('handleSavePatientId:', inputValue);
     try {
-      await SecureStore.setItemAsync("patientId", inputValue);
-      setPatientId(inputValue);
-
-      await loadFhirData(inputValue);
+      await savePatientId(inputValue);
     } catch (error) {
       console.error("Error saving patient ID:", error);
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to save Patient ID securely",
-        position: "bottom",
-      });
-    }
-  };
-
-  const loadFhirData = async (id: string | null) => {
-    try {
-      setLoading(true);
-      if (id) {
-        //const url = `http://localhost:8800/fhir-examples/ips-fhir/${patientId}-ips.json`;
-        const url = `https://fhir-static.healthwallet.li/fhir-examples/ips-fhir/${id}-ips.json`;
-        //const url = `https://fhir.healthwallet.li/fhir/Patient/${patientId}/$summary?_format=json`;
-        const ipsData = await new FhirUrlStreamProcessor().streamData(url);
-        console.log(
-          "FHIR data retrieved ",
-          ipsData.sections.length,
-          ipsData.resources.length
-        );
-        setIpsData(ipsData); // Set the data in context
-        if (
-          ipsData &&
-          ipsData.sections.length !== 0 &&
-          ipsData.resources.length !== 0
-        ) {
-          Toast.show({
-            type: "success",
-            text1: "Success",
-            text2: "Patient data loaded successfully",
-            position: "bottom",
-          });
-        } else {
-          Toast.show({
-            type: "error",
-            text1: "Error",
-            text2: "Failed to load FHIR data.",
-            position: "bottom",
-          });
-        }
-
-        // router.push({
-        //   pathname: "/modal",
-        //   params: {
-        //     fhirData: yaml.dump(ipsData?.resources?.[0]), // Use the first resource for demo purposes
-        //     title: `Patient ${patientId} Data`,
-        //   },
-        // });
-      } else {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Patient ID not found, please check settings.",
-          position: "bottom",
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching FHIR data:", error);
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to load FHIR data.",
-        position: "bottom",
-      });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -150,24 +67,17 @@ export default function ConnectorsScreen() {
       <View style={styles.container}>
         <Header title={"Connectors"} />
 
-        <BottomSheet
-          ref={refRBSheet}
-          title="ID Required"
-          description="A valid Patient ID is required to continue."
-        />
-
-        <Text style={styles.label}>Enter Patient ID:</Text>
+        <Text style={[styles.label, { color: palette.text }]}>Enter Patient ID:</Text>
         <TextInput
           style={[
             styles.input,
             {
-              borderColor:
-                theme === "light"
-                  ? palette.secondary.light
-                  : palette.neutral.white,
+              borderColor: theme === "light" ? palette.secondary.light : palette.neutral.white,
+              color: palette.text
             },
           ]}
           placeholder="Enter Patient ID"
+          placeholderTextColor={palette.text}
           value={inputValue}
           onChangeText={setInputValue}
         />
@@ -177,23 +87,25 @@ export default function ConnectorsScreen() {
             style={[
               styles.button,
               {
-                backgroundColor:
-                  theme === "dark"
-                    ? palette.primary.main
-                    : palette.secondary.main,
+                backgroundColor: theme === "dark" ? palette.primary.main : palette.secondary.main,
               },
             ]}
-            onPress={savePatientId}
+            onPress={handleSavePatientId}
+            disabled={isLoading}
           >
             <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
               Save Patient ID
             </Text>
           </TouchableOpacity>
         </View>
+
         {patientId && (
-          <Text style={styles.savedInfo}>Current Patient ID: {patientId}</Text>
+          <Text style={[styles.savedInfo, { color: palette.text }]}>
+            Current Patient ID: {patientId}
+          </Text>
         )}
-        {loading ? (
+
+        {isLoading ? (
           <CustomLoader />
         ) : (
           <TouchableOpacity
@@ -211,6 +123,14 @@ export default function ConnectorsScreen() {
             </Text>
           </TouchableOpacity>
         )}
+
+        {!isConfigured && (
+          <BottomSheet
+            ref={refRBSheet}
+            title="ID Required"
+            description="A valid Patient ID is required to continue."
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -219,13 +139,10 @@ export default function ConnectorsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "transparent",
   },
   container: {
     flex: 1,
-    alignItems: "center",
-    padding: 10,
-    paddingHorizontal: 20,
+    padding: 20,
     backgroundColor: "transparent",
     gap: 18,
   },
@@ -237,8 +154,7 @@ const styles = StyleSheet.create({
   input: {
     height: 60,
     borderWidth: 1,
-    width: "90%",
-    paddingHorizontal: 10,
+    padding: 10,
     marginBottom: 5,
     borderRadius: 6,
   },
@@ -246,7 +162,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
     fontStyle: "italic",
-    fontWeight: 800,
+    fontWeight: "800",
   },
   sheetContent: {
     flex: 1,
@@ -264,11 +180,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 10,
   },
-  infoDescription: { fontWeight: 700 },
+  infoDescription: { 
+    fontWeight: "700" 
+  },
   downloadTitle: {
     alignItems: "center",
     justifyContent: "center",
-    fontWeight: 700,
+    fontWeight: "700",
+    marginLeft: 10
   },
   buttonContainer: {
     justifyContent: "center",

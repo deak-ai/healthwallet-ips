@@ -1,0 +1,1 @@
+export { useConfiguration } from '@/components/ConfigurationContext';
