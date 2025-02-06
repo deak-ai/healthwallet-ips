@@ -7,16 +7,25 @@ import { useColorScheme } from "react-native";
 
 interface HeaderProps {
   title: string;
+  onBack?: () => void;  
 }
 
-const Header: React.FC<HeaderProps> = ({ title }) => {
+const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
   const navigation = useNavigation();
   const theme = useColorScheme() ?? "light";
   const palette = getPalette(theme === "dark");
 
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigation.goBack();
+    }
+  };
+
   return (
     <View style={styles.header}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+      <TouchableOpacity onPress={handleBack} style={styles.backButton}>
         <Icon
           type="ionicon"
           name="chevron-back-circle-outline"

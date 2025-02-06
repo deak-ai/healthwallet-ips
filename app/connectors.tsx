@@ -17,6 +17,8 @@ import CustomLoader from "@/components/reusable/loader";
 import BottomSheet from "@/components/reusable/bottomSheet";
 import * as SecureStore from "expo-secure-store";
 import { useConfiguration } from "@/components/ConfigurationContext";
+import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
 export default function ConnectorsScreen() {
   const [inputValue, setInputValue] = useState<string>("");
@@ -25,16 +27,18 @@ export default function ConnectorsScreen() {
   const { clickedTab } = useClickedTab();
   const palette = getPalette(theme === "dark");
   const { loadFhirData, isConfigured, patientId, savePatientId, isLoading } = useConfiguration();
+  const navigation = useNavigation();
+  const router = useRouter();
 
   useEffect(() => {
     setInputValue(patientId || "");
   }, [patientId]);
 
   useEffect(() => {
-    if (!isConfigured && refRBSheet?.current?.open) {
+    if (!patientId && refRBSheet?.current?.open) {
       refRBSheet.current.open();
     }
-  }, [isConfigured]);
+  }, [patientId]);
 
   const handleSavePatientId = async () => {
     try {
@@ -44,10 +48,24 @@ export default function ConnectorsScreen() {
     }
   };
 
+  const handleBack = () => {
+    // Get the previous route name from navigation state
+    const state = navigation.getState();
+    const previousRoute = state?.routes[state.routes.length - 2]?.name;
+    
+    // If coming from ips tab and not configured, prevent navigation
+    if (previousRoute === '(tabs)' && !isConfigured) {
+      return;
+    }
+    
+    // Otherwise, allow normal back navigation
+    navigation.goBack();
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Header title={"Connectors"} />
+        <Header title={"Connectors"} onBack={handleBack} />
 
         <Text style={[styles.label, { color: palette.text }]}>Enter Patient ID:</Text>
         <TextInput
