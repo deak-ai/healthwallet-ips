@@ -35,26 +35,29 @@ export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(true);
       const url = `https://fhir-static.healthwallet.li/fhir-examples/ips-fhir/${id}-ips.json`;
       const ipsData = await new FhirUrlStreamProcessor().streamData(url);
-      setIpsData(ipsData);
 
       if (ipsData && ipsData.sections.length !== 0 && ipsData.resources.length !== 0) {
+        setIpsData(ipsData);
         Toast.show({
           type: "success",
           text1: "Success",
           text2: "Patient data loaded successfully",
           position: "bottom",
         });
+        return ipsData;
       } else {
+        setIpsData(null);
         Toast.show({
           type: "error",
           text1: "Error",
           text2: "Failed to load FHIR data.",
           position: "bottom",
         });
+        return null;
       }
-      return ipsData;
     } catch (error) {
       console.error("Error fetching FHIR data:", error);
+      setIpsData(null);
       Toast.show({
         type: "error",
         text1: "Error",
@@ -70,12 +73,17 @@ export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
   const savePatientId = async (newPatientId: string) => {
     try {
       setIsLoading(true);
-      await SecureStore.setItemAsync("patientId", newPatientId);
-      setPatientId(newPatientId);
       if (newPatientId) {
-        await loadFhirData(newPatientId);
+        await SecureStore.setItemAsync("patientId", newPatientId);
+        setPatientId(newPatientId);
+        const data = await loadFhirData(newPatientId);
+        if (!data) {
+          setIpsData(null); // Ensure IPS data is cleared on failure
+        }
       } else {
-        // Clear IPS data when patient ID is empty
+        // Clear everything when empty ID
+        await SecureStore.deleteItemAsync("patientId");
+        setPatientId(null);
         setIpsData(null);
       }
     } catch (error) {

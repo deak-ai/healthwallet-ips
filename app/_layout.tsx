@@ -27,7 +27,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "(tabs)",
+  initialRouteName: "connectors",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -89,15 +89,25 @@ function AppContent() {
   const didInitialNavigate = useRef(false);
 
   useEffect(() => {
+    // Only navigate once after initial loading
     if (!didInitialNavigate.current && !isLoading) {
       didInitialNavigate.current = true;
       if (isConfigured) {
-        router.replace("/(tabs)/ips");
+        router.push("/(tabs)/ips");
       } else {
         router.push("/connectors");
       }
     }
   }, [isLoading, isConfigured]);
+
+  // Handle configuration changes after initial navigation
+  useEffect(() => {
+    if (!isLoading && didInitialNavigate.current) {
+      if (!isConfigured) {
+        router.push("/connectors");
+      }
+    }
+  }, [isConfigured, isLoading]);
 
   if (isLoading) {
     return (

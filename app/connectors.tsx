@@ -25,7 +25,6 @@ export default function ConnectorsScreen() {
   const { clickedTab } = useClickedTab();
   const palette = getPalette(theme === "dark");
   const { loadFhirData, isConfigured, patientId, savePatientId, isLoading } = useConfiguration();
-  const { setIpsData, ipsData } = useIpsData();
 
   useEffect(() => {
     setInputValue(patientId || "");
