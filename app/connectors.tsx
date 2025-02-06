@@ -89,7 +89,7 @@ export default function ConnectorsScreen() {
         )}
 
         {isLoading ? (
-          <CustomLoader />
+          <CustomLoader variant="overlay" />
         ) : (
           <TouchableOpacity
             style={styles.titleRow}

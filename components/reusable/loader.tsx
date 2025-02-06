@@ -8,7 +8,11 @@ import {
   useColorScheme,
 } from "react-native";
 
-const CustomLoader = () => {
+interface CustomLoaderProps {
+  variant?: 'initial' | 'overlay';
+}
+
+const CustomLoader = ({ variant = 'overlay' }: CustomLoaderProps) => {
   const rotation = useRef(new Animated.Value(0)).current;
   const theme = useColorScheme() ?? "light";
   const palette = getPalette(theme === "dark");
@@ -36,7 +40,7 @@ const CustomLoader = () => {
           styles.background, 
           { 
             backgroundColor: theme === "dark" ? "#000000" : "#FFFFFF",
-            opacity: theme === "dark" ? 0.85 : 0.7,
+            opacity: variant === 'initial' ? 1 : theme === "dark" ? 0.85 : 0.7,
           }
         ]} 
       />

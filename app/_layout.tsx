@@ -41,31 +41,24 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
-  const context = useContext(ConfigurationContext);
-  const isLoading = context?.isLoading ?? false;
-
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
   useEffect(() => {
-    if (loaded && !isLoading) {
+    if (loaded) {
       SplashScreen.hideAsync().catch(() => {
         // Ignore error here since the app is already visible
       });
     }
-  }, [loaded, isLoading]);
+  }, [loaded]);
 
-  if (!loaded || isLoading) {
+  if (!loaded) {
     return (
       <RootProviders>
-        <IpsDataProvider>
-          <ConfigurationProvider>
-            <View style={styles.splashContainer}>
-              <CustomLoader />
-            </View>
-          </ConfigurationProvider>
-        </IpsDataProvider>
+        <View style={styles.splashContainer}>
+          <CustomLoader variant="initial" />
+        </View>
       </RootProviders>
     );
   }
@@ -74,7 +67,7 @@ export default function RootLayout() {
     <RootProviders>
       <IpsDataProvider>
         <ConfigurationProvider>
-          <RootLayoutNav />
+          <AppContent />
         </ConfigurationProvider>
       </IpsDataProvider>
     </RootProviders>
@@ -89,14 +82,13 @@ const RootProviders = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const RootLayoutNav = () => {
-  const colorScheme = useColorScheme();
+function AppContent() {
   const { isConfigured, isLoading } = useConfiguration();
+  const colorScheme = useColorScheme();
   const router = useRouter();
   const didInitialNavigate = useRef(false);
 
   useEffect(() => {
-    // Only do initial navigation once
     if (!didInitialNavigate.current && !isLoading) {
       didInitialNavigate.current = true;
       if (isConfigured) {
@@ -106,6 +98,14 @@ const RootLayoutNav = () => {
       }
     }
   }, [isLoading, isConfigured]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.splashContainer}>
+        <CustomLoader variant="initial" />
+      </View>
+    );
+  }
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -120,7 +120,7 @@ const RootLayoutNav = () => {
       <CustomToast />
     </ThemeProvider>
   );
-};
+}
 
 const styles = StyleSheet.create({
   splashContainer: {

@@ -17,7 +17,7 @@ export const ConfigurationContext = createContext<ConfigurationContextType | nul
 
 export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [patientId, setPatientId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); 
   const { setIpsData, ipsData } = useIpsData();
 
   const isConfigured = Boolean(
