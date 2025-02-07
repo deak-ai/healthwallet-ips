@@ -43,6 +43,7 @@ export const ConnectorConfigurationProvider: React.FC<{ children: React.ReactNod
           text1: "Success",
           text2: "Patient data loaded successfully",
           position: "bottom",
+          visibilityTime: 1000,
         });
         return ipsData;
       } else {
@@ -52,6 +53,8 @@ export const ConnectorConfigurationProvider: React.FC<{ children: React.ReactNod
           text1: "Error",
           text2: "Failed to load FHIR data.",
           position: "bottom",
+          autoHide: false,
+          onPress: () => Toast.hide()
         });
         return null;
       }
@@ -63,6 +66,8 @@ export const ConnectorConfigurationProvider: React.FC<{ children: React.ReactNod
         text1: "Error",
         text2: "Failed to load FHIR data.",
         position: "bottom",
+        autoHide: false,
+        onPress: () => Toast.hide()
       });
       return null;
     } finally {
@@ -87,14 +92,7 @@ export const ConnectorConfigurationProvider: React.FC<{ children: React.ReactNod
         setIpsData(null);
       }
     } catch (error) {
-      console.error("Error saving patient ID:", error);
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to save patient ID.",
-        position: "bottom",
-      });
-      throw error;
+      console.log("Error saving patient ID:", error);
     } finally {
       setIsLoading(false);
     }

@@ -35,11 +35,7 @@ export default function ConnectorsScreen() {
   }, [isConnectorConfigured, isLoading]);
 
   const handleSavePatientId = async () => {
-    try {
       await savePatientId(inputValue);
-    } catch (error) {
-      console.error("Error saving patient ID:", error);
-    }
   };
 
   const handleBack = () => {

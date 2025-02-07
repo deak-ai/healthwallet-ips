@@ -45,18 +45,7 @@ export default function SettingsWallet() {
   }, [isWalletConfigured, isLoading]);
 
   const handleSave = async () => {
-    try {
       await saveWalletCredentials(usernameValue, passwordValue);
-
-    } catch (error) {
-      console.error("Error saving wallet credentials:", error);
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to save credentials. Please try again.",
-        position: "bottom",
-      });
-    }
   };
 
   const handleTest = async () => {
@@ -111,14 +100,10 @@ export default function SettingsWallet() {
 
 
   const handleUsernameChange = (text: string) => {
-    console.log('Username change attempted:', text);
-    console.log('Current username state:', usernameValue);
     setUsernameValue(text);
   };
 
   const handlePasswordChange = (text: string) => {
-    console.log('Password change attempted:', text ? '[hidden]' : '');
-    console.log('Current password state:', passwordValue ? '[hidden]' : '');
     setPasswordValue(text);
   };
 
@@ -174,21 +159,7 @@ export default function SettingsWallet() {
         />
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: theme === "dark" ? palette.primary.main : palette.secondary.main,
-                opacity: disabledTestConnection ? 0.5 : 1,
-              },
-            ]}
-            onPress={handleTest}
-            disabled={disabledTestConnection || isLoading}
-          >
-            <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
-              Test Connection
-            </Text>
-          </TouchableOpacity>
+          
 
           <TouchableOpacity
             style={[
@@ -212,7 +183,7 @@ export default function SettingsWallet() {
         <BottomSheet
           ref={refRBSheet}
           title="Wallet Configuration Required"
-          description="Please configure your wallet credentials to continue."
+          description="Please configure valid wallet credentials."
         />
       </View>
     </SafeAreaView>

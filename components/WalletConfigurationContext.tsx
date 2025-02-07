@@ -40,12 +40,26 @@ export const WalletConfigurationProvider: React.FC<{ children: React.ReactNode }
 
       const data = await walletApi.login();
       const isValid = Boolean(data.token);
-      console.log("Setting isWalletConfigured to:", isValid);
       setIsWalletConfigured(isValid);
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Wallet credentials are valid",
+        position: "bottom",
+        visibilityTime: 1000,
+      });
       return isValid;
     } catch (error) {
-      console.error("Error testing wallet connection:", error);
+      console.log("Error testing wallet connection:", error);
       setIsWalletConfigured(false);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Wallet login failed, check credentials",
+        position: "bottom",
+        autoHide: false,
+        onPress: () => Toast.hide()
+      });
       return false;
     } finally {
       setIsLoading(false);
@@ -56,50 +70,23 @@ export const WalletConfigurationProvider: React.FC<{ children: React.ReactNode }
     try {
       setIsLoading(true);
       if (newUsername && newPassword) {
-        // Test connection before saving
-        const walletApi = new WaltIdWalletApi(
-          "https://wallet.healthwallet.li",
-          newUsername,
-          newPassword
-        );
 
-
-
-        // Save credentials only if connection test passes
+        const isValid = await testWalletConnection(newUsername, newPassword);
+        // we still save any values, but handle invalid later
         await SecureStore.setItemAsync("username", newUsername);
         await SecureStore.setItemAsync("password", newPassword);
         setUsername(newUsername);
         setPassword(newPassword);
-        const data = await walletApi.login();
-        if (!data.token) {
+        if (!isValid) {
           throw new Error("Invalid credentials");
         }
-        setIsWalletConfigured(true);
 
-        Toast.show({
-          type: "success",
-          text1: "Success",
-          text2: "Wallet credentials saved successfully",
-          position: "bottom",
-        });
       } else {
-        // Clear credentials
-        // await SecureStore.deleteItemAsync("username");
-        // await SecureStore.deleteItemAsync("password");
-        // setUsername(null);
-        // setPassword(null);
         setIsWalletConfigured(false);
       }
     } catch (error) {
-      console.error("Error saving wallet credentials:", error);
+      console.log("Error validating wallet credentials:", error);
       setIsWalletConfigured(false);
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to save wallet credentials. Please check your connection.",
-        position: "bottom",
-      });
-      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -119,7 +106,7 @@ export const WalletConfigurationProvider: React.FC<{ children: React.ReactNode }
       }
       return false;
     } catch (error) {
-      console.error("Error checking configuration:", error);
+      console.log("Error checking configuration:", error);
       return false;
     } finally {
       setIsLoading(false);

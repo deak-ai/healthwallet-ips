@@ -59,7 +59,7 @@ const BottomSheet = forwardRef<any, BottomSheetProps>(({ title, description }, r
               {title}
             </Text>
           </View>
-          <Text style={{ fontWeight: "700" }}>{description}</Text>
+          <Text style={{ fontWeight: "700", color: theme === "dark" ? palette.neutral.white : palette.neutral.black }}>{description}</Text>
         </View>
       </RBSheet>
     );
