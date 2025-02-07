@@ -1,9 +1,9 @@
-import {AllergyIntoleranceSectionProcessor, getProcessor, getFlattenedIpsSections, filterResourceWrappers}
+import { filterResourceWrappers}
     from '../ipsResourceProcessor';
 import {FhirUrlStreamProcessor} from "@/components/fhirStreamProcessorUrl";
 import {IpsData, IpsSectionCode} from "@/components/fhirIpsModels";
 import {WaltIdIssuerApi} from "@/components/waltIdIssuerApi";
-import {WaltIdWalletApi, OfferRequest, CredentialRequest, UseOfferRequestParams} from "@/components/waltIdWalletApi";
+import {WaltIdWalletApi} from "@/components/waltIdWalletApi";
 import yaml from 'js-yaml';
 import { WaltIdSmartHealthCardIssuer } from '../waltIdSmartHealthCardIssuer';
 
@@ -28,15 +28,18 @@ test('Should correctly issue SmartHealthCard credential', async () => {
         const patientResourceWrapper = getPatientResource(ipsData);
         expect(patientResourceWrapper.resource.resourceType).toBe('Patient');
 
+        // Add patient resource as the first item in the array
+        console.log('Before unshift:', resourceWrappers.map(w => w.resource.resourceType));
+        resourceWrappers.unshift(patientResourceWrapper);
+        console.log('After unshift:', resourceWrappers.map(w => w.resource.resourceType));
+
         const issuerApi = new WaltIdIssuerApi('https://issuer.healthwallet.li');
         const walletApi = new WaltIdWalletApi('https://wallet.healthwallet.li', 'user@email.com', 'password');
 
         const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(issuerApi, walletApi);
 
-        const vc = await smartHealthCardIssuer.issueAndAddToWallet('Self-issued '+ipsSection.label, patientResourceWrapper, resourceWrappers);
+        const vc = await smartHealthCardIssuer.issueAndAddToWallet('Self-issued '+ipsSection.label, resourceWrappers);
 
        expect(vc[0].id).toBeDefined(); 
        
 }, 30000);
-
-

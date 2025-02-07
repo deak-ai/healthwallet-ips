@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { IpsData } from '@/components/fhirIpsModels';
-import { WaltIdIssuerApi } from '@/components/waltIdIssuerApi';
-import { WaltIdWalletApi } from '@/components/waltIdWalletApi';
-import { WaltIdSmartHealthCardIssuer } from '@/components/waltIdSmartHealthCardIssuer';
 import { filterResourceWrappers } from '@/components/ipsResourceProcessor';
-import * as SecureStore from 'expo-secure-store';
+import { useWalletConfiguration } from '@/components/WalletConfigurationContext';
+import { getProcessor } from '@/components/ipsResourceProcessor';
 import Toast from 'react-native-toast-message';
 
 export const useWalletShare = () => {
   const [loading, setLoading] = useState(false);
+  const { smartHealthCardIssuer } = useWalletConfiguration();
 
   const shareToWallet = async (
     ipsData: IpsData,
@@ -17,12 +16,7 @@ export const useWalletShare = () => {
     selectedUris: string[]
   ) => {
     try {
-      setLoading(true);
-      const resourceWrappers = filterResourceWrappers(ipsData, code);
-      const savedUsername = await SecureStore.getItemAsync('username');
-      const savedPassword = await SecureStore.getItemAsync('password');
-
-      if (!savedUsername || !savedPassword) {
+      if (!smartHealthCardIssuer) {
         Toast.show({
           type: 'error',
           text1: 'Error',
@@ -32,44 +26,46 @@ export const useWalletShare = () => {
         return false;
       }
 
-      const issuerApi = new WaltIdIssuerApi('https://issuer.healthwallet.li');
-      const walletApi = new WaltIdWalletApi(
-        'https://wallet.healthwallet.li',
-        savedUsername,
-        savedPassword
-      );
+      setLoading(true);
+      const resourceWrappers = filterResourceWrappers(ipsData, code);
 
-      const selectedResourceWrappers = resourceWrappers.filter(
-        wrapper => selectedUris.includes(wrapper.fullUrl)
-      );
+      const selectedResources = resourceWrappers
+        .filter(wrapper => selectedUris.includes(wrapper.fullUrl))
+        .map(wrapper => ({
+          wrapper,
+          name: getProcessor(code).flatten(wrapper).name
+        }));
 
-      const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(
-        issuerApi,
-        walletApi
-      );
+      // iterate over resourceWrappers and issue individually to wallet
+      for (const { wrapper, name } of selectedResources) {
+        console.log('Issuing credential for resource:', wrapper.resource.resourceType);
+        const credential = await smartHealthCardIssuer.issueAndAddToWallet(
+          `${label}: ${name}`,
+          [wrapper]
+        );
+      }
 
-      console.log('Issuing credential');
+      // the below issues a single credential with all resources of a single type
+      // const credential = await smartHealthCardIssuer.issueAndAddToWallet(
+      //   label,
+      //   selectedResourceWrappers
+      // );
 
-      await smartHealthCardIssuer.issueAndAddToWallet(
-        'Self-issued ' + label,
-        ipsData.getPatientResource(),
-        selectedResourceWrappers
-      );
-
+      //console.log('Credential issued:', credential);
       Toast.show({
         type: 'success',
         text1: 'Success',
-        text2: 'Data shared successfully',
+        text2: 'Credential issued successfully',
         position: 'bottom',
       });
 
       return true;
     } catch (error) {
-      // console.error('Error sharing data:', error);
+      console.error('Error sharing to wallet:', error);
       Toast.show({
         type: 'error',
         text1: 'Error',
-        text2: 'Failed to share data',
+        text2: 'Failed to issue credential',
         position: 'bottom',
       });
       return false;
@@ -80,6 +76,6 @@ export const useWalletShare = () => {
 
   return {
     loading,
-    shareToWallet
+    shareToWallet,
   };
 };

@@ -34,7 +34,6 @@ export class WaltIdSmartHealthCardIssuer {
      */
     private async createCredentialRequest(
         issuerName: string,
-        patientResourceWrapper: FhirResourceWrapper,
         resourceWrappers: FhirResourceWrapper[]
     ): Promise<IssuanceRequest> {
         const onboardingResponse = await this.ensureOnboarded();
@@ -43,7 +42,6 @@ export class WaltIdSmartHealthCardIssuer {
             resourceType: "Bundle",
             type: "collection",
             entry: [
-                 patientResourceWrapper ,
                 ...resourceWrappers
             ]
         };
@@ -98,12 +96,11 @@ export class WaltIdSmartHealthCardIssuer {
      */
     async issueAndAddToWallet(
         issuerName: string,
-        patientResourceWrapper: FhirResourceWrapper,
         resourceWrappers: FhirResourceWrapper[]
     ): Promise<VerifiableCredential[]> {
 
         console.log('Issuing credential')
-        const credentialRequest = await this.createCredentialRequest(issuerName, patientResourceWrapper, resourceWrappers);
+        const credentialRequest = await this.createCredentialRequest(issuerName, resourceWrappers);
         const issuanceResponse = await this.issuerApi.issueCredential(credentialRequest);
         
         // console log the issuanceResponse.url

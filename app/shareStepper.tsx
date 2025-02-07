@@ -163,7 +163,7 @@ const Stepper = () => {
                   .map((item: any, index: number) => (
                     <SectionCard
                       key={index}
-                      resource={item}
+                      flattenedResource={item}
                       selected={selectedIds.includes(item.uri)}
                       onSelect={() => handleSelect(item.uri)}
                       label={localSelectedElement[currentStep].label}

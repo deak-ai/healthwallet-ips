@@ -11,6 +11,7 @@ import {
 // Strategy Pattern Interface
 export interface IpsSectionProcessor {
     process(ipsData: IpsData): FlattenedResource[];
+    flatten(wrapper: FhirResourceWrapper): FlattenedResource;
 }
 
 export function filterResourceWrappers(ipsData: IpsData, sectionCode: string): FhirResourceWrapper[] {
@@ -25,7 +26,11 @@ export function filterResourceWrappers(ipsData: IpsData, sectionCode: string): F
 export class AllergyIntoleranceSectionProcessor implements IpsSectionProcessor {
     process(ipsData: IpsData): FlattenedResource[] {
         return filterResourceWrappers(ipsData, IpsSectionCode.Allergies.code)
-             .map(wrapper => this.flattenAllergyIntolerance(wrapper));
+             .map(wrapper => this.flatten(wrapper));
+    }
+
+    flatten(wrapper: FhirResourceWrapper): FlattenedResource {
+        return this.flattenAllergyIntolerance(wrapper)
     }
 
     // Flatten the allergy intolerance resource into key-value pairs
@@ -134,7 +139,11 @@ function formatDosageInstructions(dosageInstructions?: DosageInstruction[]): str
 class MedicationSectionProcessor implements IpsSectionProcessor {
     process(ipsData: IpsData): FlattenedResource[] {
         return filterResourceWrappers(ipsData, IpsSectionCode.Medications.code)
-            .map(wrapper => this.flattenMedicationRequest(wrapper));
+            .map(wrapper => this.flatten(wrapper));
+    }
+
+    flatten(wrapper: FhirResourceWrapper): FlattenedResource {
+        return this.flattenMedicationRequest(wrapper);
     }
 
     private flattenMedicationRequest(wrapper: FhirResourceWrapper): FlattenedResource {
@@ -158,7 +167,11 @@ class MedicationSectionProcessor implements IpsSectionProcessor {
 class ProblemSectionProcessor implements IpsSectionProcessor {
     process(ipsData: IpsData): FlattenedResource[] {
         return filterResourceWrappers(ipsData, IpsSectionCode.Problems.code)
-            .map(wrapper => this.flattenCondition(wrapper));
+            .map(wrapper => this.flatten(wrapper));
+    }
+
+    flatten(wrapper: FhirResourceWrapper): FlattenedResource {
+        return this.flattenCondition(wrapper);
     }
 
     private flattenCondition(wrapper: FhirResourceWrapper): FlattenedResource {
@@ -179,7 +192,11 @@ class ProblemSectionProcessor implements IpsSectionProcessor {
 class ProcedureSectionProcessor implements IpsSectionProcessor {
     process(ipsData: IpsData): FlattenedResource[] {
         return filterResourceWrappers(ipsData, IpsSectionCode.Procedures.code)
-            .map(wrapper => this.flattenProcedure(wrapper));
+            .map(wrapper => this.flatten(wrapper));
+    }
+
+    flatten(wrapper: FhirResourceWrapper): FlattenedResource {
+        return this.flattenProcedure(wrapper);
     }
 
     private flattenProcedure(wrapper: FhirResourceWrapper): FlattenedResource {
@@ -201,7 +218,11 @@ class ProcedureSectionProcessor implements IpsSectionProcessor {
 class ImmunizationSectionProcessor implements IpsSectionProcessor {
     process(ipsData: IpsData): FlattenedResource[] {
         return filterResourceWrappers(ipsData, IpsSectionCode.Immunizations.code)
-            .map(wrapper => this.flattenImmunization(wrapper));
+            .map(wrapper => this.flatten(wrapper));
+    }
+
+    flatten(wrapper: FhirResourceWrapper): FlattenedResource {
+        return this.flattenImmunization(wrapper);
     }
 
     private flattenImmunization(wrapper: FhirResourceWrapper): FlattenedResource {
@@ -221,7 +242,11 @@ class ImmunizationSectionProcessor implements IpsSectionProcessor {
 class ResultsSectionProcessor implements IpsSectionProcessor {
     process(ipsData: IpsData): FlattenedResource[] {
         return filterResourceWrappers(ipsData, IpsSectionCode.Results.code)
-            .map(wrapper => this.flattenResult(wrapper));
+            .map(wrapper => this.flatten(wrapper));
+    }
+
+    flatten(wrapper: FhirResourceWrapper): FlattenedResource {
+        return this.flattenResult(wrapper);
     }
 
     private flattenResult(wrapper: FhirResourceWrapper): FlattenedResource {
@@ -243,7 +268,11 @@ class ResultsSectionProcessor implements IpsSectionProcessor {
 class MedicalDevicesSectionProcessor implements IpsSectionProcessor {
     process(ipsData: IpsData): FlattenedResource[] {
         return filterResourceWrappers(ipsData, IpsSectionCode.Devices.code)
-            .map(wrapper => this.flattenDevice(wrapper));
+            .map(wrapper => this.flatten(wrapper));
+    }
+
+    flatten(wrapper: FhirResourceWrapper): FlattenedResource {
+        return this.flattenDevice(wrapper);
     }
 
     private flattenDevice(wrapper: FhirResourceWrapper): FlattenedResource {

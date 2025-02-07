@@ -9,14 +9,14 @@ import {
 import { getPalette } from "@/constants/Colors";
 
 type SectionCardProps = {
-  resource: any;
+  flattenedResource: any;
   selected: boolean;
   onSelect: () => void;
   label: string;
 };
 
 const SectionCard = ({
-  resource,
+  flattenedResource,
   selected,
   onSelect,
   label,
@@ -30,7 +30,7 @@ const SectionCard = ({
     recordedDate,
     dosageInstructions,
     status,
-  } = resource;
+  } = flattenedResource;
   const theme = useColorScheme() ?? "light";
   const palette = getPalette(theme === "dark");
   const labelColor =

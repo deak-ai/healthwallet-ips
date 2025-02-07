@@ -52,7 +52,7 @@ export default function SectionScreen() {
     await shareToWallet(ipsData, code, label, selectedIds);
   };
 
-  const resources = ipsData ? getProcessor(code).process(ipsData) : [];
+  const flattenedResources = ipsData ? getProcessor(code).process(ipsData) : [];
 
   const styles = StyleSheet.create({
     safeArea: {
@@ -113,10 +113,10 @@ export default function SectionScreen() {
         <Header title={title} />
         <ScrollView contentContainerStyle={styles.scrollViewContainer}>
           <View style={styles.sectionContainer}>
-            {resources.map((item: any, index) => (
+            {flattenedResources.map((item: any, index) => (
               <SectionCard
                 key={index}
-                resource={item}
+                flattenedResource={item}
                 selected={selectedIds.includes(item.uri)}
                 onSelect={() => handleSelect(item.uri)}
                 label={label}
