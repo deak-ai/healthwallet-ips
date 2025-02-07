@@ -9,36 +9,30 @@ import {
   SafeAreaView,
 } from "react-native";
 import { getPalette } from "@/constants/Colors";
-import { useIpsData } from "@/components/IpsDataContext";
-import { useClickedTab } from "@/components/clickedTabContext";
 import Header from "@/components/reusable/header";
 import { Icon } from "@/components/MultiSourceIcon";
 import CustomLoader from "@/components/reusable/loader";
 import BottomSheet from "@/components/reusable/bottomSheet";
-import * as SecureStore from "expo-secure-store";
-import { useConfiguration } from "@/components/ConfigurationContext";
+import { useConnectorConfiguration } from "@/components/ConnectorConfigurationContext";
 import { useNavigation } from "@react-navigation/native";
-import { useRouter } from "expo-router";
 
 export default function ConnectorsScreen() {
   const [inputValue, setInputValue] = useState<string>("");
   const theme = useColorScheme() ?? "light";
   const refRBSheet = useRef<any>(null);
-  const { clickedTab } = useClickedTab();
   const palette = getPalette(theme === "dark");
-  const { loadFhirData, isConfigured, patientId, savePatientId, isLoading } = useConfiguration();
+  const { loadFhirData, isConnectorConfigured, patientId, savePatientId, isLoading } = useConnectorConfiguration();
   const navigation = useNavigation();
-  const router = useRouter();
 
   useEffect(() => {
     setInputValue(patientId || "");
   }, [patientId]);
 
   useEffect(() => {
-    if (!patientId && refRBSheet?.current?.open) {
+    if (!isConnectorConfigured && !isLoading && refRBSheet?.current?.open) {
       refRBSheet.current.open();
     }
-  }, [patientId]);
+  }, [isConnectorConfigured, isLoading]);
 
   const handleSavePatientId = async () => {
     try {
@@ -54,7 +48,7 @@ export default function ConnectorsScreen() {
     const previousRoute = state?.routes[state.routes.length - 2]?.name;
     
     // If coming from ips tab and not configured, prevent navigation
-    if (previousRoute === '(tabs)' && !isConfigured) {
+    if (previousRoute === '(tabs)' && !isConnectorConfigured) {
       return;
     }
     
@@ -124,7 +118,7 @@ export default function ConnectorsScreen() {
           </TouchableOpacity>
         )}
 
-        {!isConfigured && (
+        {!isConnectorConfigured && (
           <BottomSheet
             ref={refRBSheet}
             title="ID Required"

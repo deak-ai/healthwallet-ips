@@ -1,74 +1,25 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState, useContext, useRef } from "react";
-import { View, StyleSheet } from "react-native";
-import "react-native-reanimated";
-
+import { useEffect, useRef } from "react";
 import { useColorScheme } from "@/components/useColorScheme";
 import { IpsDataProvider } from "@/components/IpsDataContext";
-import { ConfigurationProvider, ConfigurationContext, useConfiguration } from "@/components/ConfigurationContext";
+import { ConnectorConfigurationProvider, useConnectorConfiguration } from "@/components/ConnectorConfigurationContext";
+import { WalletConfigurationProvider, useWalletConfiguration } from "@/components/WalletConfigurationContext";
 import CustomToast from "@/components/reusable/customToast";
 import { ClickedTabProvider } from "@/components/clickedTabContext";
 import CustomLoader from "@/components/reusable/loader";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from "expo-router";
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "connectors",
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync().catch(() => {
-  /* reloading the app might trigger some race conditions, ignore them */
-});
+import { useRouter, Stack } from "expo-router";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    ...FontAwesome.font,
-  });
-
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync().catch(() => {
-        // Ignore error here since the app is already visible
-      });
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return (
-      <RootProviders>
-        <View style={styles.splashContainer}>
-          <CustomLoader variant="initial" />
-        </View>
-      </RootProviders>
-    );
-  }
-
   return (
     <RootProviders>
       <IpsDataProvider>
-        <ConfigurationProvider>
-          <AppContent />
-        </ConfigurationProvider>
+        <ConnectorConfigurationProvider>
+          <WalletConfigurationProvider>
+            <AppContent />
+          </WalletConfigurationProvider>
+        </ConnectorConfigurationProvider>
       </IpsDataProvider>
     </RootProviders>
   );
@@ -76,46 +27,36 @@ export default function RootLayout() {
 
 const RootProviders = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SafeAreaProvider>
-      <ClickedTabProvider>{children}</ClickedTabProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <ClickedTabProvider>{children}</ClickedTabProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 };
 
 function AppContent() {
-  const { isConfigured, isLoading } = useConfiguration();
+  const { isConnectorConfigured, isLoading: isConnectorLoading } = useConnectorConfiguration();
+  const { isWalletConfigured, isLoading: isWalletLoading } = useWalletConfiguration();
   const colorScheme = useColorScheme();
   const router = useRouter();
   const didInitialNavigate = useRef(false);
 
-  useEffect(() => {
-    // Only navigate once after initial loading
-    if (!didInitialNavigate.current && !isLoading) {
-      didInitialNavigate.current = true;
-      if (isConfigured) {
-        router.push("/(tabs)/ips");
-      } else {
-        router.push("/connectors");
-      }
-    }
-  }, [isLoading, isConfigured]);
+  const isLoading = isConnectorLoading || isWalletLoading;
 
-  // Handle configuration changes after initial navigation
-  useEffect(() => {
-    if (!isLoading && didInitialNavigate.current) {
-      if (!isConfigured) {
-        router.push("/connectors");
-      }
-    }
-  }, [isConfigured, isLoading]);
-
-  if (isLoading) {
-    return (
-      <View style={styles.splashContainer}>
-        <CustomLoader variant="initial" />
-      </View>
-    );
-  }
+  // useEffect(() => {
+  //   // Only navigate once after initial loading
+  //   if (!didInitialNavigate.current && !isLoading) {
+  //     didInitialNavigate.current = true;
+  //     if (!isConnectorConfigured) {
+  //       router.push("/connectors");
+  //     } else if (!isWalletConfigured) {
+  //       router.push("/settingsWallet");
+  //     } else {
+  //       router.push("/(tabs)/ips");
+  //     }
+  //   }
+  // }, [isLoading, isConnectorConfigured, isWalletConfigured]);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -131,11 +72,3 @@ function AppContent() {
     </ThemeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  splashContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

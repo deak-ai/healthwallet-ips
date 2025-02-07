@@ -4,8 +4,8 @@ import { useIpsData } from '@/components/IpsDataContext';
 import { FhirUrlStreamProcessor } from '@/components/fhirStreamProcessorUrl';
 import Toast from 'react-native-toast-message';
 
-export interface ConfigurationContextType {
-  isConfigured: boolean;
+export interface ConnectorConfigurationContextType {
+  isConnectorConfigured: boolean;
   patientId: string | null;
   isLoading: boolean;
   savePatientId: (newPatientId: string) => Promise<void>;
@@ -13,14 +13,14 @@ export interface ConfigurationContextType {
   checkConfiguration: () => Promise<boolean>;
 }
 
-export const ConfigurationContext = createContext<ConfigurationContextType | null>(null);
+export const ConnectorConfigurationContext = createContext<ConnectorConfigurationContextType | null>(null);
 
-export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ConnectorConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [patientId, setPatientId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true); 
   const { setIpsData, ipsData } = useIpsData();
 
-  const isConfigured = Boolean(
+  const isConnectorConfigured = Boolean(
     patientId && 
     ipsData && 
     ipsData.resources.length > 0 && 
@@ -101,54 +101,45 @@ export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const checkConfiguration = async () => {
-    return isConfigured;
+    try {
+      const savedPatientId = await SecureStore.getItemAsync("patientId");
+      if (savedPatientId) {
+        setPatientId(savedPatientId);
+        await loadFhirData(savedPatientId);
+      }
+      return Boolean(savedPatientId);
+    } catch (error) {
+      console.error("Error checking configuration:", error);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Initialize configuration once at app start
   useEffect(() => {
-    const initialize = async () => {
-      try {
-        setIsLoading(true);
-        const savedPatientId = await SecureStore.getItemAsync("patientId");
-        setPatientId(savedPatientId);
-        if (savedPatientId && (!ipsData || ipsData.resources.length === 0)) {
-          await loadFhirData(savedPatientId);
-        }
-      } catch (error) {
-        console.error('Error initializing configuration:', error);
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Failed to initialize configuration.",
-          position: "bottom",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    initialize();
+    checkConfiguration();
   }, []);
 
   return (
-    <ConfigurationContext.Provider 
+    <ConnectorConfigurationContext.Provider
       value={{
-        isConfigured,
+        isConnectorConfigured,
         patientId,
         isLoading,
         savePatientId,
         loadFhirData,
-        checkConfiguration
+        checkConfiguration,
       }}
     >
       {children}
-    </ConfigurationContext.Provider>
+    </ConnectorConfigurationContext.Provider>
   );
 };
 
-export const useConfiguration = () => {
-  const context = useContext(ConfigurationContext);
+export const useConnectorConfiguration = () => {
+  const context = useContext(ConnectorConfigurationContext);
   if (!context) {
-    throw new Error('useConfiguration must be used within a ConfigurationProvider');
+    throw new Error('useConnectorConfiguration must be used within a ConnectorConfigurationProvider');
   }
   return context;
 };

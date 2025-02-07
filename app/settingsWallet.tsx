@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { StyleSheet, useColorScheme, TouchableOpacity } from "react-native";
 import { Text, View, TextInput } from "@/components/Themed";
-import * as SecureStore from "expo-secure-store";
-import { useFocusEffect } from "expo-router";
+import { useNavigation } from "expo-router";
 import CustomLoader from "@/components/reusable/loader";
-import Toast from "react-native-toast-message";
+import { useWalletConfiguration } from "@/components/WalletConfigurationContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { getPalette } from "@/constants/Colors";
 import Header from "@/components/reusable/header";
-import { WaltIdWalletApi } from "@/components/waltIdWalletApi";
-import { SafeAreaView } from "react-native-safe-area-context";
+import BottomSheet from "@/components/reusable/bottomSheet";
+import Toast from "react-native-toast-message";
 
 interface Credentials {
   username: string;
@@ -16,58 +16,51 @@ interface Credentials {
 }
 
 export default function SettingsWallet() {
-  const [credentials, setCredentials] = useState<Credentials>({
-    username: "",
-    password: "",
-  });
+  const [usernameValue, setUsernameValue] = useState<string>("");
+  const [passwordValue, setPasswordValue] = useState<string>("");
   const theme = useColorScheme() ?? "light";
-  const [loading, setLoading] = useState(false);
+  const refRBSheet = useRef<any>(null);
   const palette = getPalette(theme === "dark");
+  const navigation = useNavigation();
+  const {
+    username,
+    password,
+    saveWalletCredentials,
+    testWalletConnection,
+    isWalletConfigured,
+    isLoading,
+  } = useWalletConfiguration();
 
-  const disabledTestConnection = !credentials.username || !credentials.password;
+  const disabledTestConnection = !usernameValue || !passwordValue;
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const loadCredentials = async () => {
-        try {
-          const savedUsername = await SecureStore.getItemAsync("username");
-          const savedPassword = await SecureStore.getItemAsync("password");
-          setCredentials({
-            username: savedUsername || "",
-            password: savedPassword || "",
-          });
-        } catch (error) {
-          console.error("Error loading credentials:", error);
-        }
-      };
-      loadCredentials();
-    }, [])
-  );
+  useEffect(() => {
+      setUsernameValue(username || "");
+      setPasswordValue(password || "");
+    }, [username, password]);
 
-  const saveCredentials = async () => {
+  useEffect(() => {
+    if (!isWalletConfigured && !isLoading && refRBSheet?.current?.open) {
+      refRBSheet.current?.open();
+    }
+  }, [isWalletConfigured, isLoading]);
+
+  const handleSave = async () => {
     try {
-      await SecureStore.setItemAsync("username", credentials.username);
-      await SecureStore.setItemAsync("password", credentials.password);
+      await saveWalletCredentials(usernameValue, passwordValue);
 
-      Toast.show({
-        type: "success",
-        text1: "Success",
-        text2: "Data saved successfully",
-        position: "bottom",
-      });
     } catch (error) {
-      console.error("Error saving credentials:", error);
+      console.error("Error saving wallet credentials:", error);
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "Failed to save data",
+        text2: "Failed to save credentials. Please try again.",
         position: "bottom",
       });
     }
   };
 
-  const testConnection = async () => {
-    if (!credentials.username || !credentials.password) {
+  const handleTest = async () => {
+    if (!usernameValue || !passwordValue) {
       Toast.show({
         type: "error",
         text1: "Error",
@@ -78,91 +71,106 @@ export default function SettingsWallet() {
     }
 
     try {
-      setLoading(true);
-      console.log('Attempting to connect with username:', credentials.username);
+      // First save the credentials so they're in context
+      await saveWalletCredentials(usernameValue, passwordValue);
+      // Then test the connection
+      const isValid = await testWalletConnection();
       
-      const walletApi = new WaltIdWalletApi(
-        "https://wallet.healthwallet.li",
-        credentials.username,
-        credentials.password
-      );
-
-      const data = await walletApi.login();
-      
-      if (data.token) {
+      if (!isValid) {
         Toast.show({
-          type: "success",
-          text1: "Success",
-          text2: "Login Successful",
+          type: "error",
+          text1: "Error",
+          text2: "Connection test failed. Please check your credentials.",
           position: "bottom",
         });
-      } else {
-        throw new Error("No token received");
       }
     } catch (error) {
-      console.error("Login error details:", {
-        error: error instanceof Error ? error.message : "Unknown error",
-        stack: error instanceof Error ? error.stack : undefined
-      });
-      
-      let errorMessage = "Failed to login. Please check your credentials.";
-      if (error instanceof Error) {
-        if ((error as any).status === 401) {
-          errorMessage = "Invalid username or password";
-        } else if (error.message.includes("undefined")) {
-          errorMessage = "Invalid credentials format. Please check your username and password.";
-        }
-      }
-      
+      console.error("Error testing wallet connection:", error);
       Toast.show({
         type: "error",
-        text1: "Failed to connect",
-        text2: errorMessage,
+        text1: "Error",
+        text2: "Failed to test connection. Please try again.",
         position: "bottom",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
-  const onChangeField = (value: string, name: keyof Credentials) => {
-    setCredentials(prev => ({ ...prev, [name]: value }));
+  const handleBack = () => {
+    // Get the previous route name from navigation state
+    const state = navigation.getState();
+    const previousRoute = state?.routes[state.routes.length - 2]?.name;
+    
+    // If coming from ips tab and not configured, prevent navigation
+    if (previousRoute === '(tabs)' && !isWalletConfigured) {
+      return;
+    }
+    
+    // Otherwise, allow normal back navigation
+    navigation.goBack();
+  };
+
+
+  const handleUsernameChange = (text: string) => {
+    console.log('Username change attempted:', text);
+    console.log('Current username state:', usernameValue);
+    setUsernameValue(text);
+  };
+
+  const handlePasswordChange = (text: string) => {
+    console.log('Password change attempted:', text ? '[hidden]' : '');
+    console.log('Current password state:', passwordValue ? '[hidden]' : '');
+    setPasswordValue(text);
+  };
+
+  // Debug focus handling
+  const handleInputFocus = (inputName: string) => {
+    console.log(`${inputName} input focused`);
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Header title="Wallet" />
-        <Text style={styles.label}>Enter Wallet credentials:</Text>
+        <Header title={"Wallet Settings"} onBack={handleBack} />
+
+        <Text style={[styles.label, { color: palette.text }]}>Username:</Text>
         <TextInput
           style={[
             styles.input,
             {
-              borderColor:
-                theme === "light"
-                  ? palette.secondary.light
-                  : palette.neutral.white,
+              borderColor: theme === "light" ? palette.secondary.light : palette.neutral.white,
+              color: palette.text,
+              backgroundColor: theme === "light" ? palette.neutral.white : palette.neutral.black,
             },
           ]}
-          placeholder="Username"
-          value={credentials.username}
-          onChangeText={(value) => onChangeField(value, "username")}
+          placeholder="Enter username"
+          placeholderTextColor={palette.text}
+          value={usernameValue}
+          onChangeText={handleUsernameChange}
+          onFocus={() => handleInputFocus('username')}
+          editable={true}
+          autoCapitalize="none"
+          autoCorrect={false}
         />
 
+        <Text style={[styles.label, { color: palette.text }]}>Password:</Text>
         <TextInput
           style={[
             styles.input,
             {
-              borderColor:
-                theme === "light"
-                  ? palette.secondary.light
-                  : palette.neutral.white,
+              borderColor: theme === "light" ? palette.secondary.light : palette.neutral.white,
+              color: palette.text,
+              backgroundColor: theme === "light" ? palette.neutral.white : palette.neutral.black,
             },
           ]}
-          placeholder="Password"
-          value={credentials.password}
-          onChangeText={(value) => onChangeField(value, "password")}
-          secureTextEntry={true}
+          placeholder="Enter password"
+          placeholderTextColor={palette.text}
+          value={passwordValue}
+          secureTextEntry
+          onChangeText={handlePasswordChange}
+          onFocus={() => handleInputFocus('password')}
+          editable={true}
+          autoCapitalize="none"
+          autoCorrect={false}
         />
 
         <View style={styles.buttonContainer}>
@@ -171,38 +179,41 @@ export default function SettingsWallet() {
               styles.button,
               {
                 backgroundColor: theme === "dark" ? palette.primary.main : palette.secondary.main,
-              }
+                opacity: disabledTestConnection ? 0.5 : 1,
+              },
             ]}
-            onPress={saveCredentials}
+            onPress={handleTest}
+            disabled={disabledTestConnection || isLoading}
           >
-            <Text style={[styles.buttonText, { color: palette.neutral.white }]}>Save</Text>
+            <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
+              Test Connection
+            </Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             style={[
               styles.button,
               {
-                backgroundColor: !disabledTestConnection
-                  ? theme === "dark" ? palette.primary.main : palette.secondary.main
-                  : palette.neutral.lightGrey,
+                backgroundColor: theme === "dark" ? palette.primary.main : palette.secondary.main,
                 opacity: disabledTestConnection ? 0.5 : 1,
               },
             ]}
-            onPress={testConnection}
-            disabled={disabledTestConnection}
+            onPress={handleSave}
+            disabled={disabledTestConnection || isLoading}
           >
-            <Text 
-              style={[
-                styles.buttonText, 
-                { 
-                  color: !disabledTestConnection ? palette.neutral.white : palette.neutral.black 
-                }
-              ]}
-            >
-              Test connection
+            <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
+              Save Credentials
             </Text>
           </TouchableOpacity>
         </View>
-        {loading && <CustomLoader />}
+
+        {isLoading && <CustomLoader variant="overlay" />}
+
+        <BottomSheet
+          ref={refRBSheet}
+          title="Wallet Configuration Required"
+          description="Please configure your wallet credentials to continue."
+        />
       </View>
     </SafeAreaView>
   );
@@ -215,43 +226,35 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: "center",
-    paddingHorizontal: 20,
+    padding: 20,
     backgroundColor: "transparent",
     gap: 18,
-    padding: 10,
   },
   label: {
-    fontSize: 24,
-    fontWeight: "700",
-    marginBottom: 10,
+    fontSize: 16,
+    fontWeight: "500",
   },
   input: {
-    height: 60,
+    height: 44,
     borderWidth: 1,
-    width: "90%",
-    paddingHorizontal: 10,
-    marginBottom: 5,
-    borderRadius: 6,
+    padding: 10,
+    borderRadius: 5,
+    paddingHorizontal: 12,
   },
   buttonContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "transparent",
-    padding: 12,
-    width: "100%",
-    gap: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
   },
   button: {
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    width: "80%",
+    flex: 1,
+    marginHorizontal: 5,
+    padding: 10,
+    borderRadius: 5,
     alignItems: "center",
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: "600",
-    paddingHorizontal: 10,
+    fontWeight: "500",
   },
 });

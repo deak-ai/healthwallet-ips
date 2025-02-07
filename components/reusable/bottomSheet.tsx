@@ -18,6 +18,7 @@ const BottomSheet = forwardRef<any, BottomSheetProps>(({ title, description }, r
       <RBSheet
         ref={ref}
         height={200}
+        closeOnPressMask={true}
         customStyles={{
           container: {
             justifyContent: "center",
@@ -27,6 +28,9 @@ const BottomSheet = forwardRef<any, BottomSheetProps>(({ title, description }, r
             backgroundColor:
               theme === "dark" ? palette.neutral.grey : palette.neutral.white,
           },
+          wrapper: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)"
+          }
         }}
       >
         <View

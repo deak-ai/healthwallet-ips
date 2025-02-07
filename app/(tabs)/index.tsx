@@ -9,25 +9,24 @@ import {
 import { Href, useNavigation, useRouter } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { getPalette } from "@/constants/Colors";
-import { useIpsData } from "@/components/IpsDataContext";
-import { useClickedTab } from "@/components/clickedTabContext";
-import { useContext } from "react";
-import { ConfigurationContext } from "@/components/ConfigurationContext";
+import { useConnectorConfiguration } from "@/components/ConnectorConfigurationContext";
+import { useWalletConfiguration } from "@/components/WalletConfigurationContext";
 
 const TabSettingsScreen = () => {
   const router = useRouter();
   const theme = useColorScheme();
   const palette = getPalette(theme === "dark");
-  const { ipsData } = useIpsData();
-  const { clickedTab } = useClickedTab();
-  const { isConfigured, patientId } = useContext(ConfigurationContext) ?? {};
+  const { isConnectorConfigured } = useConnectorConfiguration();
+  const { isWalletConfigured } = useWalletConfiguration();
   const navigation = useNavigation();
 
-  useEffect(() => {
-    if (!isConfigured) {
-      navigation.navigate('connectors' as never);
-    }
-  }, [isConfigured, navigation]);
+  // useEffect(() => {
+  //   if (!isConnectorConfigured) {
+  //     navigation.navigate('connectors' as never);
+  //   } else if (!isWalletConfigured) {
+  //     navigation.navigate('settingsWallet' as never);
+  //   }
+  // }, [isConnectorConfigured, isWalletConfigured, navigation]);
 
   const menuItems = [
     {

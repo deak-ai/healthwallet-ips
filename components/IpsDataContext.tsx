@@ -23,7 +23,7 @@ export const IpsDataProvider: React.FC<{ children: ReactNode }> = ({
 export const useIpsData = (): IpsDataContextType => {
   const context = useContext(IpsDataContext);
   if (!context) {
-    throw new Error("useFhirData must be used within a FhirDataProvider");
+    throw new Error("useIpsData must be used within a FhirDataProvider");
   }
   return context;
 };

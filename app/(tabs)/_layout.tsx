@@ -8,6 +8,8 @@ import * as SecureStore from "expo-secure-store";
 import { useClickedTab } from "@/components/clickedTabContext";
 import { useIpsData } from "@/components/IpsDataContext";
 import { getPalette } from "@/constants/Colors";
+import { useConnectorConfiguration } from "@/components/ConnectorConfigurationContext";
+import { useWalletConfiguration } from "@/components/WalletConfigurationContext";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -19,31 +21,30 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const navigation = useNavigation(); // Access navigation object
-  const isDarkMode=colorScheme==="dark"
+  const navigation = useNavigation();
+  const isDarkMode = colorScheme === "dark";
   const palette = getPalette(isDarkMode);
   const { clickedTab, setClickedTab } = useClickedTab();
   const { ipsData } = useIpsData();
+  const { isConnectorConfigured } = useConnectorConfiguration();
+  const { isWalletConfigured } = useWalletConfiguration();
 
   const handleTabPress = async (e: any, routeName: string) => {
-    // Call e.preventDefault() immediately to block navigation
-    e.preventDefault();
+    // e.preventDefault();
 
-    try {
-      setClickedTab(!clickedTab);
-      const patientId = await SecureStore.getItemAsync("patientId");
-      //be sure that we have patient id and a valid ips  data downloaded before move to other tabs
-      if (
-        patientId &&
-        ipsData &&
-        ipsData.sections.length !== 0 &&
-        ipsData.resources.length !== 0
-      ) {
-        navigation.navigate(routeName as never);
-      }
-    } catch (error) {
-      console.error("Error fetching patientId:", error);
-    }
+    // try {
+    //   setClickedTab(!clickedTab);
+    //   console.log("Configurations (wallet/connector):", isWalletConfigured, isConnectorConfigured)
+    //   // Check both configurations
+    //   if (!isConnectorConfigured || !isWalletConfigured) {
+    //     return;
+    //   }
+
+    //   // Only navigate if configured
+    //   navigation.navigate(routeName as never);
+    // } catch (error) {
+    //   console.error("Error in tab navigation:", error);
+    // }
   };
 
   return (
@@ -65,15 +66,6 @@ export default function TabLayout() {
           }
         }}
       >
-      {/* <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="ambulance" color={color} />
-          ),
-        }}
-      /> */}
       <Tabs.Screen
         name="ips"
         options={{
