@@ -26,7 +26,6 @@ export default function SettingsWallet() {
     username,
     password,
     saveWalletCredentials,
-    testWalletConnection,
     isWalletConfigured,
     isLoading,
   } = useWalletConfiguration();
@@ -48,41 +47,6 @@ export default function SettingsWallet() {
       await saveWalletCredentials(usernameValue, passwordValue);
   };
 
-  const handleTest = async () => {
-    if (!usernameValue || !passwordValue) {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Please enter both username and password",
-        position: "bottom",
-      });
-      return;
-    }
-
-    try {
-      // First save the credentials so they're in context
-      await saveWalletCredentials(usernameValue, passwordValue);
-      // Then test the connection
-      const isValid = await testWalletConnection();
-      
-      if (!isValid) {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Connection test failed. Please check your credentials.",
-          position: "bottom",
-        });
-      }
-    } catch (error) {
-      console.error("Error testing wallet connection:", error);
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to test connection. Please try again.",
-        position: "bottom",
-      });
-    }
-  };
 
   const handleBack = () => {
     // Get the previous route name from navigation state

@@ -25,26 +25,25 @@ export default function TabLayout() {
   const isDarkMode = colorScheme === "dark";
   const palette = getPalette(isDarkMode);
   const { clickedTab, setClickedTab } = useClickedTab();
-  const { ipsData } = useIpsData();
   const { isConnectorConfigured } = useConnectorConfiguration();
   const { isWalletConfigured } = useWalletConfiguration();
 
   const handleTabPress = async (e: any, routeName: string) => {
-    // e.preventDefault();
+    e.preventDefault();
 
-    // try {
-    //   setClickedTab(!clickedTab);
-    //   console.log("Configurations (wallet/connector):", isWalletConfigured, isConnectorConfigured)
-    //   // Check both configurations
-    //   if (!isConnectorConfigured || !isWalletConfigured) {
-    //     return;
-    //   }
+    try {
+      setClickedTab(!clickedTab);
+      // Check both configurations
+      if (!isConnectorConfigured || !isWalletConfigured) {
+        // Let the root layout handle the navigation
+        return;
+      }
 
-    //   // Only navigate if configured
-    //   navigation.navigate(routeName as never);
-    // } catch (error) {
-    //   console.error("Error in tab navigation:", error);
-    // }
+      // Only navigate if configured
+      navigation.navigate(routeName as never);
+    } catch (error) {
+      console.error("Error in tab navigation:", error);
+    }
   };
 
   return (

@@ -10,6 +10,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useRouter, Stack } from "expo-router";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { View, ActivityIndicator } from 'react-native';
 
 export default function RootLayout() {
   return (
@@ -44,19 +45,33 @@ function AppContent() {
 
   const isLoading = isConnectorLoading || isWalletLoading;
 
-  // useEffect(() => {
-  //   // Only navigate once after initial loading
-  //   if (!didInitialNavigate.current && !isLoading) {
-  //     didInitialNavigate.current = true;
-  //     if (!isConnectorConfigured) {
-  //       router.push("/connectors");
-  //     } else if (!isWalletConfigured) {
-  //       router.push("/settingsWallet");
-  //     } else {
-  //       router.push("/(tabs)/ips");
-  //     }
-  //   }
-  // }, [isLoading, isConnectorConfigured, isWalletConfigured]);
+  useEffect(() => {
+    if (!isLoading) {
+      // Handle both initial navigation and configuration changes
+      if (!isConnectorConfigured) {
+        console.log("Connector not configured, navigating to /connectors");
+        router.push("/connectors");
+      } else if (!isWalletConfigured) {
+        console.log("Wallet not configured, navigating to /settingsWallet");
+        router.push("/settingsWallet");
+      } else if (!didInitialNavigate.current) {
+        // Only navigate to IPS on initial load
+        console.log("All good, going to home screen with IPS")
+        router.push("/(tabs)/ips");
+        didInitialNavigate.current = true;
+      }
+    }
+  }, [isLoading, isConnectorConfigured, isWalletConfigured]);
+
+  if (isLoading && !didInitialNavigate.current) {
+    // return (
+    //   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colorScheme === "dark" ? "#000" : "#fff" }}>
+    //     <ActivityIndicator size="large" color={colorScheme === "dark" ? "#fff" : "#000"} />
+    //   </View>
+    // );
+
+    return (<CustomLoader variant="overlay" />)
+  }
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
