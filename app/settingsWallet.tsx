@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { StyleSheet, useColorScheme, TouchableOpacity } from "react-native";
+import { StyleSheet, useColorScheme, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Text, View, TextInput } from "@/components/Themed";
 import { useNavigation } from "expo-router";
 import CustomLoader from "@/components/reusable/loader";
@@ -9,6 +9,10 @@ import { getPalette } from "@/constants/Colors";
 import Header from "@/components/reusable/header";
 import BottomSheet from "@/components/reusable/bottomSheet";
 import Toast from "react-native-toast-message";
+import { useIpsData } from "@/components/IpsDataContext";
+import ProgressBar from "@/components/reusable/ProgressBar";
+import { HealthDataSyncManager, SyncProgress } from "@/components/HealthDataSync";
+import { AntDesign } from '@expo/vector-icons';
 
 interface Credentials {
   username: string;
@@ -18,6 +22,9 @@ interface Credentials {
 export default function SettingsWallet() {
   const [usernameValue, setUsernameValue] = useState<string>("");
   const [passwordValue, setPasswordValue] = useState<string>("");
+  const [syncProgress, setSyncProgress] = useState<SyncProgress | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncManager, setSyncManager] = useState<HealthDataSyncManager | null>(null);
   const theme = useColorScheme() ?? "light";
   const refRBSheet = useRef<any>(null);
   const palette = getPalette(theme === "dark");
@@ -29,8 +36,9 @@ export default function SettingsWallet() {
     isWalletConfigured,
     isLoading,
   } = useWalletConfiguration();
+  const { ipsData } = useIpsData();
 
-  const disabledTestConnection = !usernameValue || !passwordValue;
+  const disabledSaveCredentials = !usernameValue || !passwordValue;
 
   useEffect(() => {
       setUsernameValue(username || "");
@@ -49,6 +57,17 @@ export default function SettingsWallet() {
 
 
   const handleBack = () => {
+    if (isSyncing) {
+      Toast.show({
+        type: 'error',
+        text1: 'Sync in Progress',
+        text2: 'Please abort the sync before navigating back',
+        position: 'bottom',
+        visibilityTime: 1000,
+      });
+      return;
+    }
+    
     // Get the previous route name from navigation state
     const state = navigation.getState();
     const previousRoute = state?.routes[state.routes.length - 2]?.name;
@@ -74,6 +93,57 @@ export default function SettingsWallet() {
   // Debug focus handling
   const handleInputFocus = (inputName: string) => {
     console.log(`${inputName} input focused`);
+  };
+
+  const handleSync = async () => {
+    if (!ipsData || isSyncing) return;
+    
+    setIsSyncing(true);
+    setSyncProgress(null);
+    
+    const newSyncManager = new HealthDataSyncManager((progress) => {
+      setSyncProgress(progress);
+    });
+    setSyncManager(newSyncManager);
+
+    try {
+      await newSyncManager.startSync(ipsData);
+      Toast.show({
+        type: 'success',
+        text1: 'Sync Complete',
+        text2: 'Health data has been successfully synchronized',
+        position: 'bottom',
+        visibilityTime: 1000,
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message === 'Sync aborted') {
+        Toast.show({
+          type: 'success',
+          text1: 'Sync Aborted',
+          text2: 'Health data sync was cancelled',
+          position: 'bottom',
+          visibilityTime: 1000,
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Sync Failed',
+          text2: 'Failed to synchronize health data',
+          position: 'bottom',
+          visibilityTime: 1000,
+        });
+      }
+    } finally {
+      setIsSyncing(false);
+      setSyncProgress(null);
+      setSyncManager(null);
+    }
+  };
+
+  const handleAbort = () => {
+    if (syncManager) {
+      syncManager.abort();
+    }
   };
 
   return (
@@ -123,24 +193,74 @@ export default function SettingsWallet() {
         />
 
         <View style={styles.buttonContainer}>
-          
-
           <TouchableOpacity
             style={[
               styles.button,
               {
                 backgroundColor: theme === "dark" ? palette.primary.main : palette.secondary.main,
-                opacity: disabledTestConnection ? 0.5 : 1,
               },
             ]}
             onPress={handleSave}
-            disabled={disabledTestConnection || isLoading}
+            disabled={disabledSaveCredentials || isLoading}
+            activeOpacity={0.8}
           >
             <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
               Save Credentials
             </Text>
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity
+          style={[
+            styles.button,
+            styles.syncButtonContent,
+            {
+              backgroundColor: theme === "dark" ? palette.primary.main : palette.secondary.main,
+              marginTop: 16,
+              marginHorizontal: 16,
+            },
+          ]}
+          onPress={isSyncing ? handleAbort : handleSync}
+          disabled={!isWalletConfigured || !ipsData}
+          activeOpacity={0.8}
+        >
+          {isSyncing ? (
+            <>
+              <AntDesign 
+                name="close" 
+                size={20} 
+                color={palette.neutral.white}
+                style={styles.syncIcon}
+              />
+              <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
+                Abort Sync
+              </Text>
+            </>
+          ) : (
+            <>
+              <AntDesign 
+                name="sync" 
+                size={20} 
+                color={palette.neutral.white}
+                style={styles.syncIcon}
+              />
+              <Text style={[styles.buttonText, { color: palette.neutral.white }]}>
+                Health Data Sync
+              </Text>
+            </>
+          )}
+        </TouchableOpacity>
+
+        {syncProgress && (
+          <View style={styles.progressWrapper}>
+            <View style={styles.progressContainer}>
+              <Text style={[styles.progressText, { color: palette.text }]}>
+                Syncing {syncProgress.current} of {syncProgress.total} resources
+              </Text>
+              <ProgressBar progress={syncProgress.progress} />
+            </View>
+          </View>
+        )}
 
         {isLoading && <CustomLoader variant="overlay" />}
 
@@ -177,19 +297,43 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    width: '100%',
+    paddingHorizontal: 16,
     marginTop: 20,
   },
   button: {
-    flex: 1,
-    marginHorizontal: 5,
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
+    height: 48,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
     fontSize: 16,
     fontWeight: "500",
+  },
+  syncButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  syncIcon: {
+    marginRight: 8,
+  },
+  progressWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'transparent',
+    paddingBottom: 16,
+  },
+  progressContainer: {
+    width: '100%',
+    paddingHorizontal: 16,
+  },
+  progressText: {
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: 4,
   },
 });
