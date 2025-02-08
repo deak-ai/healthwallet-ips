@@ -75,14 +75,14 @@ function AppContent() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="connectors" />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        <Stack.Screen name="section" />
-        <Stack.Screen name="shareStepper" />
-        <Stack.Screen name="settingsWallet" />
-      </Stack>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="connectors" />
+          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          <Stack.Screen name="section" />
+          <Stack.Screen name="shareStepper" />
+          <Stack.Screen name="settingsWallet" />
+        </Stack>
       <CustomToast />
     </ThemeProvider>
   );

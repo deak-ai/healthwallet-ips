@@ -1,6 +1,6 @@
 import React from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Tabs, useNavigation } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useColorScheme } from "@/components/useColorScheme";
@@ -21,7 +21,7 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const navigation = useNavigation();
+  const router = useRouter();
   const isDarkMode = colorScheme === "dark";
   const palette = getPalette(isDarkMode);
   const { clickedTab, setClickedTab } = useClickedTab();
@@ -40,7 +40,20 @@ export default function TabLayout() {
       }
 
       // Only navigate if configured
-      navigation.navigate(routeName as never);
+      switch (routeName) {
+        case "ips":
+          router.push("/(tabs)/ips");
+          break;
+        case "wallet":
+          router.push("/(tabs)/wallet");
+          break;
+        case "agent":
+          router.push("/(tabs)/agent");
+          break;
+        case "index":
+          router.push("/");
+          break;
+      }
     } catch (error) {
       console.error("Error in tab navigation:", error);
     }
