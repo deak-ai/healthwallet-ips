@@ -16,6 +16,7 @@ export interface Jwk {
 export interface CredentialDataV1 {
   "@context": string[];
   id: string;
+  resourceId?: string;
   type: string[];
   issuer: Issuer;
   issuanceDate?: string;

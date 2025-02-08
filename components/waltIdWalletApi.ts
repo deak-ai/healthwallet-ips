@@ -46,6 +46,7 @@ export interface CredentialsQuery {
   showPending?: boolean;
   showDeleted?: boolean;
   sortDescending?: boolean;
+  category?: string[];
 }
 
 export interface VerifiableCredential {
@@ -72,6 +73,10 @@ export interface UseOfferRequestParams {
   requireUserInput?: boolean;
 }
 
+export interface Category {
+  name: string;
+}
+
 import { streamingFetch } from './fetchHelper';
 
 export class WaltIdWalletApi {
@@ -87,7 +92,7 @@ export class WaltIdWalletApi {
     this.password = password;
   }
 
-  private decodeJwtToken(token: string): { exp?: number } {
+  decodeJwtToken(token: string): { exp?: number } {
     try {
       const base64Payload = token.split('.')[1];
       // Make the base64 string URL safe
@@ -132,7 +137,7 @@ export class WaltIdWalletApi {
     };
 
     try {
-      console.log(`Attempting to connect to: ${url}`);
+      //console.log(`Attempting to connect to: ${url}`);
       return await streamingFetch(url, {
         ...options,
         headers,
@@ -227,6 +232,7 @@ export class WaltIdWalletApi {
       ...(query.showPending !== undefined && { showPending: String(query.showPending) }),
       ...(query.showDeleted !== undefined && { showDeleted: String(query.showDeleted) }),
       ...(query.sortDescending !== undefined && { sortDescending: String(query.sortDescending) }),
+      ...(query.category && { category: query.category.join(',') }),
     });
 
     return this.fetchWithError(
@@ -304,6 +310,56 @@ export class WaltIdWalletApi {
       {
         method: 'POST',
         body: JSON.stringify({ presentationFilter: filterData }),
+      }
+    );
+  }
+
+  async addCategory(walletId: string, category: string): Promise<void> {
+    await this.fetchWithError(
+      `${this.baseUrl}/wallet-api/wallet/${walletId}/categories/${category}/add`,
+      {
+        method: 'POST',
+      }
+    );
+  }
+
+  async attachCategories(walletId: string, credentialId: string, categories: string[]): Promise<void> {
+    await this.fetchWithError(
+      `${this.baseUrl}/wallet-api/wallet/${walletId}/credentials/${credentialId}/category`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(categories),
+      }
+    );
+  }
+
+  async detachCategories(walletId: string, credentialId: string, categories: string[]): Promise<void> {
+    await this.fetchWithError(
+      `${this.baseUrl}/wallet-api/wallet/${walletId}/credentials/${credentialId}/category`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(categories),
+      }
+    );
+  }
+
+  async getCategories(walletId: string): Promise<Category[]> {
+    return this.fetchWithError(
+      `${this.baseUrl}/wallet-api/wallet/${walletId}/categories`
+    );
+  }
+
+  async deleteCategory(walletId: string, category: string): Promise<void> {
+    await this.fetchWithError(
+      `${this.baseUrl}/wallet-api/wallet/${walletId}/categories/${category}`,
+      {
+        method: 'DELETE',
       }
     );
   }

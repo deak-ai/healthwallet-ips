@@ -7,7 +7,7 @@ import Toast from 'react-native-toast-message';
 
 export const useWalletShare = () => {
   const [loading, setLoading] = useState(false);
-  const { smartHealthCardIssuer } = useWalletConfiguration();
+  const { smartHealthCardIssuer, walletApi } = useWalletConfiguration();
 
   const shareToWallet = async (
     ipsData: IpsData,
@@ -16,7 +16,7 @@ export const useWalletShare = () => {
     selectedUris: string[]
   ) => {
     try {
-      if (!smartHealthCardIssuer) {
+      if (!smartHealthCardIssuer || !walletApi) {
         Toast.show({
           type: 'error',
           text1: 'Error',
@@ -36,13 +36,27 @@ export const useWalletShare = () => {
           name: getProcessor(code).flatten(wrapper).name
         }));
 
+
+       // get the wallet id
+       const wallets = await walletApi.getWallets();
+       const walletId = wallets.wallets[0].id;
+
       // iterate over resourceWrappers and issue individually to wallet
       for (const { wrapper, name } of selectedResources) {
         console.log('Issuing credential for resource:', wrapper.resource.resourceType);
-        const credential = await smartHealthCardIssuer.issueAndAddToWallet(
+        const credentials = await smartHealthCardIssuer.issueAndAddToWallet(
           `${label}: ${name}`,
           [wrapper]
         );
+        // make sure to tag the new credential, slightly abusing categories in waltId to 
+        // also tag with resource fullUrl
+        try {
+          await walletApi.addCategory(walletId, wrapper.fullUrl)
+          await walletApi.attachCategories(walletId, credentials[0].id,[wrapper.fullUrl,'SmartHealthCard',label])
+        } catch (error) {
+          console.log("Failed to attach category to credential:", error);
+        }
+    
       }
 
       // the below issues a single credential with all resources of a single type

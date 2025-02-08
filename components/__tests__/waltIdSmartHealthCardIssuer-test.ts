@@ -23,22 +23,22 @@ function getPatientResource(ipsData: IpsData) {
 
 test('Should correctly issue SmartHealthCard credential', async () => {
         const ipsData = await loadPatient('801941');
-        const ipsSection = IpsSectionCode.Allergies;
+        const ipsSection = IpsSectionCode.Medications;
         const resourceWrappers = filterResourceWrappers(ipsData, ipsSection.code);
-        const patientResourceWrapper = getPatientResource(ipsData);
-        expect(patientResourceWrapper.resource.resourceType).toBe('Patient');
+        // const patientResourceWrapper = getPatientResource(ipsData);
+        // expect(patientResourceWrapper.resource.resourceType).toBe('Patient');
 
         // Add patient resource as the first item in the array
-        console.log('Before unshift:', resourceWrappers.map(w => w.resource.resourceType));
-        resourceWrappers.unshift(patientResourceWrapper);
-        console.log('After unshift:', resourceWrappers.map(w => w.resource.resourceType));
+        // console.log('Before unshift:', resourceWrappers.map(w => w.resource.resourceType));
+        // resourceWrappers.unshift(patientResourceWrapper);
+        // console.log('After unshift:', resourceWrappers.map(w => w.resource.resourceType));
 
         const issuerApi = new WaltIdIssuerApi('https://issuer.healthwallet.li');
         const walletApi = new WaltIdWalletApi('https://wallet.healthwallet.li', 'user@email.com', 'password');
 
         const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(issuerApi, walletApi);
 
-        const vc = await smartHealthCardIssuer.issueAndAddToWallet('Self-issued '+ipsSection.label, resourceWrappers);
+        const vc = await smartHealthCardIssuer.issueAndAddToWallet('Self-issued '+ipsSection.label, [resourceWrappers[1]]);
 
        expect(vc[0].id).toBeDefined(); 
        

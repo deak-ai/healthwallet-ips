@@ -25,6 +25,7 @@ export class IpsDataImpl implements IpsData {
 
 export interface FhirResourceWrapper {
     fullUrl: string;
+    vcId?: string; // a link to the id of a verifiable credential
     resource: FhirResource; // The actual FHIR resource, which will be processed specifically
 }
 

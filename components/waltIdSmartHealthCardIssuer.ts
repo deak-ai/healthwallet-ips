@@ -54,6 +54,7 @@ export class WaltIdSmartHealthCardIssuer {
                     'https://www.w3.org/2018/credentials/v1'
                 ],
                 id: '[INSERT VC UUID]',
+                resourceId: resourceWrappers[0].fullUrl,
                 type: ['VerifiableCredential', 'SmartHealthCard'],
                 issuer: {
                     id: '[INSERT ISSUER DID]',

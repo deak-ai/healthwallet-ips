@@ -4,6 +4,7 @@ import Toast from 'react-native-toast-message';
 import { WaltIdWalletApi } from '@/components/waltIdWalletApi';
 import { WaltIdIssuerApi } from '@/components/waltIdIssuerApi';
 import { WaltIdSmartHealthCardIssuer } from '@/components/waltIdSmartHealthCardIssuer';
+import { IpsSectionCode } from './fhirIpsModels';
 
 export interface WalletConfigurationContextType {
   isWalletConfigured: boolean;
@@ -41,6 +42,35 @@ export const WalletConfigurationProvider: React.FC<{ children: React.ReactNode }
     return walletApiRef.current;
   };
 
+  const ensureWalletCategoriesPresent = async (walletApi: WaltIdWalletApi) => {
+    
+    // Get wallet ID
+    const walletList = await walletApi.getWallets();
+    const walletId = walletList.wallets[0]?.id;
+    if (!walletId) {
+      throw new Error("No wallet available");
+    }
+    // Get current categories
+    const existingCategories = await walletApi.getCategories(walletId);
+    const existingCategoryNames = existingCategories.map(c => c.name);
+
+    // Get required categories from IpsSectionCode
+    const requiredCategories = [
+      ...Object.values(IpsSectionCode).map(section => section.label),
+      'SmartHealthCard' // Hardcoded special category
+    ];
+
+    // Find missing categories
+    const missingCategories = requiredCategories.filter(
+      category => !existingCategoryNames.includes(category)
+    );
+
+    // Add missing categories
+    for (const category of missingCategories) {
+      await walletApi.addCategory(walletId, category);
+    }
+  };
+
   const testWalletConnection = async (overrideUsername?: string, overridePassword?: string) => {
     const testUsername = overrideUsername || username;
     const testPassword = overridePassword || password;
@@ -55,6 +85,13 @@ export const WalletConfigurationProvider: React.FC<{ children: React.ReactNode }
       const walletApi = initializeWalletApi(testUsername, testPassword);
       const data = await walletApi.login();
       const isValid = Boolean(data.token);
+      if (!isValid) {
+        throw new Error("Invalid credentials, no token received from login");
+      }
+      
+      // Ensure all required categories are present
+      await ensureWalletCategoriesPresent(walletApi);
+      
       setIsWalletConfigured(isValid);
       Toast.show({
         type: "success",

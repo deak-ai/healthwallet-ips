@@ -44,6 +44,9 @@ export default function TabLayout() {
         case "ips":
           router.push("/(tabs)/ips");
           break;
+        case "scanner":
+          router.push("/(tabs)/scanner");
+          break;
         case "wallet":
           router.push("/(tabs)/wallet");
           break;
@@ -86,6 +89,16 @@ export default function TabLayout() {
         }}
         listeners={{
           tabPress: (e) => handleTabPress(e, "ips"),
+        }}
+      />
+      <Tabs.Screen
+        name="scanner"
+        options={{
+          title: "Scanner",
+          tabBarIcon: ({ color }) => <TabBarIcon name="qrcode" color={color} />,
+        }}
+        listeners={{
+          tabPress: (e) => handleTabPress(e, "scanner"),
         }}
       />
       <Tabs.Screen
