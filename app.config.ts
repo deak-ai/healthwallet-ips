@@ -42,6 +42,7 @@ const config: ExpoConfig = {
   "icon": "./assets/images/icon.png",
   "scheme": "myapp",
   "userInterfaceStyle": "automatic",
+  "newArchEnabled": true,
   "splash": {
     "image": "./assets/images/splash.png",
     "resizeMode": "contain",
@@ -90,7 +91,8 @@ const config: ExpoConfig = {
   },
   "plugins": [
     "expo-router",
-    "expo-secure-store"
+    "expo-secure-store",
+    "expo-font"
   ],
   "experiments": {
     "typedRoutes": true
