@@ -42,6 +42,11 @@ export const useWalletPresentation = () => {
         .map(resource => resource.credentialId)
         .filter((id): id is string => id !== undefined && id !== null);
 
+      // Add patient credential if available
+      if (ipsData.patientCredential) {
+        selectedCredentials.push(ipsData.patientCredential);
+      }
+
       // Get wallet ID
       const wallets = await walletApi.getWallets();
       const walletId = wallets.wallets[0].id;

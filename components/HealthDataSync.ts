@@ -16,6 +16,10 @@ export type ShareToWalletFunction = (
   onProgress?: () => void
 ) => Promise<boolean>;
 
+export type SharePatientFunction = (
+  ipsData: IpsData
+) => Promise<boolean>;
+
 export type QueryCredentialFunction = (
   category: string,
 ) => Promise<VerifiableCredential[] | null>;
@@ -24,15 +28,18 @@ export class HealthDataSyncManager {
   private onProgressUpdate: (progress: SyncProgress) => void;
   private abortController: AbortController | null = null;
   private shareToWallet: ShareToWalletFunction | null = null;
+  private sharePatient: SharePatientFunction | null = null;
   private queryCredentialsByCategory: QueryCredentialFunction | null = null;
 
   constructor(
     onProgressUpdate: (progress: SyncProgress) => void,
     shareToWallet?: ShareToWalletFunction,
+    sharePatient?: SharePatientFunction,
     queryCredentialsByCategory?: QueryCredentialFunction
   ) {
     this.onProgressUpdate = onProgressUpdate;
     this.shareToWallet = shareToWallet || null;
+    this.sharePatient = sharePatient || null;
     this.queryCredentialsByCategory = queryCredentialsByCategory || null;
   }
 
@@ -53,6 +60,10 @@ export class HealthDataSyncManager {
       throw new Error('ShareToWallet function is required for syncing');
     }
 
+    if (!this.sharePatient) {
+      throw new Error('SharePatient function is required for syncing');
+    }
+
     if (!this.queryCredentialsByCategory) {
       throw new Error('QueryCredentialFunction function is required for syncing');
     }
@@ -62,8 +73,22 @@ export class HealthDataSyncManager {
     }
 
     this.abortController = new AbortController();
-    const totalResources = this.getTotalResources(ipsData);
     let processedResources = 0;
+    const totalResources = Object.values(ipsData.flattenedResources)
+      .reduce((acc, resources) => acc + resources.length, 0);
+
+    // First check and handle patient credential
+    const patientCredentials = await this.queryCredentialsByCategory('Patient');
+    if (patientCredentials && patientCredentials.length > 0) {
+      // Update patient credential ID in IpsData
+      ipsData.patientCredential = patientCredentials[0].id;
+    } else {
+      // Issue new patient credential
+      const success = await this.sharePatient(ipsData);
+      if (!success) {
+        console.error('Failed to issue patient credential');
+      }
+    }
 
     try {
       // Keep the original loop commented for reference
@@ -76,7 +101,7 @@ export class HealthDataSyncManager {
         IpsSectionCode.Medications,
         IpsSectionCode.Problems,
         IpsSectionCode.Immunizations,
-        // IpsSectionCode.Procedures,
+        IpsSectionCode.Procedures,
         // IpsSectionCode.Results,
         // IpsSectionCode.Devices
       ];

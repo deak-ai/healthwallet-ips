@@ -38,7 +38,7 @@ export default function SettingsWallet() {
     isLoading,
   } = useWalletConfiguration();
   const { ipsData } = useIpsData();
-  const { shareToWallet, queryCredentialsByCategory } = useWalletShare();
+  const { shareToWallet, queryCredentialsByCategory, sharePatient } = useWalletShare();
 
   const disabledSaveCredentials = !usernameValue || !passwordValue;
 
@@ -108,6 +108,7 @@ export default function SettingsWallet() {
         setSyncProgress(progress);
       },
       shareToWallet,
+      sharePatient,
       queryCredentialsByCategory
     );
     setSyncManager(newSyncManager);

@@ -96,6 +96,7 @@ export class WaltIdSmartHealthCardIssuer {
      * @returns Promise<VerifiableCredential[]>
      */
     async issueAndAddToWallet(
+        walletId: string,
         issuerName: string,
         resourceWrappers: FhirResourceWrapper[]
     ): Promise<VerifiableCredential[]> {
@@ -110,8 +111,8 @@ export class WaltIdSmartHealthCardIssuer {
         console.log('Importing credential into wallet')
 
         // get the wallet id
-        const wallets = await this.walletApi.getWallets();
-        const walletId = wallets.wallets[0].id;
+        // const wallets = await this.walletApi.getWallets();
+        // const walletId = wallets.wallets[0].id;
     
         // Get DID for the wallet
         const dids = await this.walletApi.getDids(walletId);

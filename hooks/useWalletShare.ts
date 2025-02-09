@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IpsData } from '@/components/fhirIpsModels';
+import { FhirResourceWrapper, IpsData } from '@/components/fhirIpsModels';
 import { filterResourceWrappers } from '@/components/ipsResourceProcessor';
 import { useWalletConfiguration } from '@/components/WalletConfigurationContext';
 import Toast from 'react-native-toast-message';
@@ -46,6 +46,43 @@ export const useWalletShare = () => {
     }
   }
 
+  const sharePatient = async(
+    ipsData: IpsData,
+  ): Promise<boolean> => {
+    try {
+      if (!smartHealthCardIssuer || !walletApi) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Please configure wallet credentials first',
+          position: 'bottom',
+        });
+        return false;
+      }
+      const wallets = await walletApi.getWallets();
+      const walletId = wallets.wallets[0].id;
+      const patientResource = ipsData.getPatientResource();
+      const name = patientResource.resource.name?.[0]?.given?.join(' ') + ' ' + patientResource.resource.name?.[0]?.family || 'Unknown';
+      const credentials = await smartHealthCardIssuer.issueAndAddToWallet(
+        walletId,
+        `Patient: ${name}`,
+        [patientResource]
+      );
+      try {
+        await walletApi.attachCategories(walletId, credentials[0].id,['SmartHealthCard','Patient'])
+      } catch (error) {
+        console.log("Failed to attach category to credential:", error);
+      }
+      ipsData.patientCredential = credentials[0].id;
+
+      console.log("Successfully issued patient credential:", credentials[0]);
+      return true
+    } catch (error) {
+      console.log("Failed to issue patient credential:", error);
+      return false
+    }
+  }
+
   const shareToWallet = async (
     ipsData: IpsData,
     code: string,
@@ -86,6 +123,7 @@ export const useWalletShare = () => {
         
         console.log('Issuing credential for resource:', wrapper.resource.resourceType);
         const credentials = await smartHealthCardIssuer.issueAndAddToWallet(
+          walletId,
           `${label}: ${flattenedResource.name}`,
           [wrapper]
         );
@@ -139,6 +177,7 @@ export const useWalletShare = () => {
   return {
     loading,
     shareToWallet,
-    queryCredentialsByCategory
+    queryCredentialsByCategory,
+    sharePatient
   };
 };

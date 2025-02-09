@@ -3,6 +3,7 @@ export interface IpsData {
     sections: any[];
     resources: FhirResourceWrapper[];
     flattenedResources: Record<string, FlattenedResource[]>;
+    patientCredential?: string | null;
     getPatientResource(): FhirResourceWrapper;
 }
 
@@ -11,16 +12,19 @@ export class IpsDataImpl implements IpsData {
     public sections: any[];
     public resources: FhirResourceWrapper[];
     public flattenedResources: Record<string, FlattenedResource[]>;
+    public patientCredential?: string | null;
 
     constructor(
         sectionResource: FhirResource,
         sections: any[],
-        resources: FhirResourceWrapper[]
+        resources: FhirResourceWrapper[],
+        patientCredential?: string | null
     ) {
         this.sectionResource = sectionResource;
         this.sections = sections;
         this.resources = resources;
         this.flattenedResources = {};
+        this.patientCredential = patientCredential;
     }
 
     getPatientResource(): FhirResourceWrapper {

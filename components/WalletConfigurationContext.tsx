@@ -57,7 +57,7 @@ export const WalletConfigurationProvider: React.FC<{ children: React.ReactNode }
     // Get required categories from IpsSectionCode
     const requiredCategories = [
       ...Object.values(IpsSectionCode).map(section => section.label),
-      'SmartHealthCard' // Hardcoded special category
+      'Patient','SmartHealthCard' // Hardcoded special categories
     ];
 
     // Find missing categories
