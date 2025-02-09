@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { useResourceSelection } from "@/hooks/useResourceSelection";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useWalletPresentation } from "@/hooks/useWalletPresentation";
 
 const PresentationStepper = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -24,6 +25,7 @@ const PresentationStepper = () => {
     selectedElement: string;
     openId4VpUrl: string;
   }>();
+  const { loading, presentFromWallet } = useWalletPresentation();
 
   const parsedSelectedElement = JSON.parse(selectedElement);
   const stepNumber = parsedSelectedElement.length;
@@ -65,11 +67,10 @@ const PresentationStepper = () => {
       try {
         if (!ipsData) return;
 
-        // TODO: Handle openid4vp presentation with localSelectedElement and openId4VpUrl
-        console.log('Selected resources:', localSelectedElement);
-        console.log('OpenID4VP URL:', openId4VpUrl);
-
-        router.push('/ips');
+        const success = await presentFromWallet(localSelectedElement);
+        if (success) {
+          router.push('/ips');
+        }
       } catch (error) {
         console.error("Error preparing presentation:", error);
       }
