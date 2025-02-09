@@ -43,13 +43,11 @@ const PresentationStepper = () => {
   const currentCode = parsedSelectedElement[currentStep].code;
   const { selectedIds, handleSelect, selectAllState, handleSelectAll } = useResourceSelection(ipsData, currentCode);
 
-  // Reset state when component mounts or when selectedElement changes
   useEffect(() => {
     setCurrentStep(0);
     setLocalSelectedElement(parsedSelectedElement);
   }, [selectedElement]);
 
-  // Update localSelectedElement when selection changes
   useEffect(() => {
     setLocalSelectedElement(prev =>
       prev.map(item =>
@@ -89,19 +87,14 @@ const PresentationStepper = () => {
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity
-            style={[
-              styles.backButton,
-              { backgroundColor: palette.secondary.light },
-            ]}
+            style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
             <Icon
               type="ionicon"
               name="chevron-back-circle-outline"
               size={32}
-              color={
-                theme === "dark" ? palette.neutral.white : palette.neutral.black
-              }
+              color={theme === "dark" ? palette.neutral.white : palette.neutral.black}
             />
           </TouchableOpacity>
           <Text style={[styles.title, { color: palette.text }]}>
@@ -181,8 +174,8 @@ const PresentationStepper = () => {
                 {
                   backgroundColor:
                     index === currentStep
-                      ? palette.primary.main
-                      : palette.neutral.lightGrey,
+                      ? palette.primary.dark
+                      : palette.primary.light,
                 },
               ]}
             />
@@ -200,64 +193,70 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
+    paddingHorizontal: 20,
+    paddingTop: 20,
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 20,
   },
   backButton: {
-    padding: 5,
-    borderRadius: 20,
+    marginRight: 16,
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     flex: 1,
     textAlign: "center",
-    marginHorizontal: 10,
   },
   selectAllButton: {
-    padding: 8,
-    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
   },
   selectAllButtonText: {
-    fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "bold",
   },
   contentContainer: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   scrollViewContainer: {
     flexGrow: 1,
+    paddingTop: 20,
   },
   sectionContainer: {
-    marginBottom: 20,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    paddingHorizontal: 10,
   },
   buttonsContainerFixed: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 10,
+    width: "100%",
+    position: "absolute",
+    bottom: 20,
+    paddingHorizontal: 20,
   },
   button: {
-    flex: 1,
-    marginHorizontal: 5,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "bold",
   },
   stepIndicatorContainer: {
     flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center",
     marginTop: 10,
   },
   stepIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 4,
+    width: 15,
+    height: 15,
+    borderRadius: 7.5,
+    marginHorizontal: 5,
   },
 });
 

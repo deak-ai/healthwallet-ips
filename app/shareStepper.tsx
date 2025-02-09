@@ -110,19 +110,14 @@ const Stepper = () => {
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity
-            style={[
-              styles.backButton,
-              { backgroundColor: palette.secondary.light },
-            ]}
+            style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
             <Icon
               type="ionicon"
               name="chevron-back-circle-outline"
               size={32}
-              color={
-                theme === "dark" ? palette.neutral.white : palette.neutral.black
-              }
+              color={theme === "dark" ? palette.neutral.white : palette.neutral.black}
             />
           </TouchableOpacity>
           <Text style={[styles.title, { color: palette.text }]}>

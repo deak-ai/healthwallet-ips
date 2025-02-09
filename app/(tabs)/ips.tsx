@@ -136,6 +136,23 @@ export default function TabIpsScreen() {
     }
   };
 
+  const handlePresentation = () => {
+    if (selectedElement.length === 0) {
+      refRBSheet?.current.open();
+      return;
+    }
+
+    if (mode === 'openid4vp' && openId4VpUrl) {
+      router.push({
+        pathname: "/presentationStepper",
+        params: {
+          selectedElement: JSON.stringify(selectedElement),
+          openId4VpUrl
+        },
+      });
+    }
+  };
+
   const handleContinue = () => {
     if (selectedElement.length === 0) {
       refRBSheet?.current.open();
@@ -183,32 +200,30 @@ export default function TabIpsScreen() {
 
   return (
     <View style={styles.container}>
-      {!mode && (
-        <>
-          <BottomSheet
-            ref={refRBSheet}
-            title={
-              disabledShareMode
-                ? "Wallet credentials Required"
-                : "Resources Required"
-            }
-            description={
-              disabledShareMode
-                ? "A valid wallet credentials are required to continue."
-                : "Please select which resources to share"
-            }
-          />
+      <BottomSheet
+        ref={refRBSheet}
+        title={
+          disabledShareMode
+            ? "Wallet credentials Required"
+            : "Selction Required"
+        }
+        description={
+          disabledShareMode
+            ? "A valid wallet credentials are required to continue."
+            : "Please select at least one section to continue."
+        }
+      />
 
-          <View style={styles.switchContainer}>
-            <CustomSwitch
-              selectionMode={shareMode ? 1 : 2}
-              option1={"Share"}
-              option2={"Browse"}
-              onSelectSwitch={handleShareMode}
-              selectionColor={palette.primary.main}
-            />
-          </View>
-        </>
+      {!mode && (
+        <View style={styles.switchContainer}>
+          <CustomSwitch
+            selectionMode={shareMode ? 1 : 2}
+            option1={"Share"}
+            option2={"Browse"}
+            onSelectSwitch={handleShareMode}
+            selectionColor={palette.primary.main}
+          />
+        </View>
       )}
 
       <ScrollView contentContainerStyle={styles.tilesContainer}>
@@ -222,46 +237,29 @@ export default function TabIpsScreen() {
         ))}
       </ScrollView>
 
-      {mode === 'openid4vp' ? (
-        <View style={styles.continueContainer}>
-          <TouchableOpacity
-            style={[styles.continueButton, { backgroundColor: palette.primary.dark }]}
-            onPress={handleContinue}
-          >
-            <Text style={[styles.continueButtonText, { color: palette.neutral.white }]}>
-              Continue
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View style={styles.shareContainer}>
-          {shareMode && (
-            <TouchableOpacity
-              style={[
-                styles.shareButton,
-                {
-                  backgroundColor: isDarkMode
-                    ? palette.secondary.main
-                    : palette.secondary.lighter,
-                  opacity: isDarkMode && selectedElement.length === 0 ? 0.5 : 1,
-                },
-              ]}
-              onPress={handleShare}
-            >
-              <AntDesign
-                name="sharealt"
-                size={30}
-                color={
-                  selectedElement.length !== 0
-                    ? isDarkMode
-                      ? palette.primary.light
-                      : palette.primary.dark
-                    : palette.primary.light
-                }
-              />
-            </TouchableOpacity>
-          )}
-        </View>
+      {(shareMode || mode === 'openid4vp') && (
+        <TouchableOpacity
+          style={[
+            styles.shareButton,
+            {
+              backgroundColor: isDarkMode
+                ? palette.secondary.main
+                : palette.secondary.lighter,
+              opacity: selectedElement.length === 0 ? (isDarkMode ? 0.5 : 0.8) : 1,
+            },
+          ]}
+          onPress={mode === 'openid4vp' ? handlePresentation : handleShare}
+        >
+          <AntDesign
+            name="sharealt"
+            size={30}
+            color={
+              selectedElement.length !== 0 || isDarkMode
+                ? palette.primary.dark
+                : palette.primary.main
+            }
+          />
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -275,36 +273,26 @@ const styles = StyleSheet.create({
   tilesContainer: {
     padding: 16,
   },
-  shareContainer: {
+  shareButton: {
     position: "absolute",
     bottom: 45,
-    right: 45,
-  },
-  shareButton: {
+    alignSelf: "center",
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   switchContainer: {
     marginTop: 20,
     alignItems: "center",
-  },
-  continueContainer: {
-    position: 'absolute',
-    bottom: 45,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-  continueButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-  },
-  continueButtonText: {
-    fontSize: 16,
-    fontWeight: '500',
   },
 });

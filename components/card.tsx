@@ -75,7 +75,7 @@ const SectionCard = ({
                     </View>
                     <View style={styles.detailRow}>
                       <Text style={[styles.label, { color: labelColor }]}>
-                        Clinical Status:
+                        Status:
                       </Text>
                       <Text style={[styles.value, { color: labelColor }]}>
                         {clinicalStatus || "-"}
