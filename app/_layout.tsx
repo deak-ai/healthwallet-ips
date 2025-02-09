@@ -81,6 +81,7 @@ function AppContent() {
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           <Stack.Screen name="section" />
           <Stack.Screen name="shareStepper" />
+          <Stack.Screen name="presentationStepper" />
           <Stack.Screen name="settingsWallet" />
         </Stack>
       <CustomToast />

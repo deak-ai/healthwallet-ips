@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import { Text, View, StyleSheet, Button, TouchableOpacity, Dimensions } from "react-native";
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import type { BarcodeScanningResult } from 'expo-camera';
+import { useRouter } from 'expo-router';
 
 type BarcodeOverlayProps = {
   bounds: {
@@ -71,6 +72,7 @@ export default function Scanner() {
   const [isProcessingBarcode, setIsProcessingBarcode] = useState(false);
   const [lastScannedBarcode, setLastScannedBarcode] = useState<BarcodeScanningResult | null>(null);
   const [permission, requestPermission] = useCameraPermissions();
+  const router = useRouter();
 
   const isValidOpenId4VpUrl = (url: string): boolean => {
     try {
@@ -92,11 +94,19 @@ export default function Scanner() {
   const handleBarcodePress = useCallback(() => {
     if (lastScannedBarcode && isValidOpenId4VpUrl(lastScannedBarcode.data)) {
       setIsProcessingBarcode(true);
-      console.log(`Processing OpenID4VP URL: ${lastScannedBarcode.data}`);
-      alert(`Valid OpenID4VP URL detected: ${lastScannedBarcode.data}`);
+      
+      // Navigate to IPS screen with openId4vp URL
+      router.push({
+        pathname: "/(tabs)/ips",
+        params: {
+          openId4VpUrl: lastScannedBarcode.data,
+          mode: 'openid4vp'
+        }
+      });
+      
       setIsProcessingBarcode(false);
     }
-  }, [lastScannedBarcode]);
+  }, [lastScannedBarcode, router]);
 
   if (!permission) {
     return (

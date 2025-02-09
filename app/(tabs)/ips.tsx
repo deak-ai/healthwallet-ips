@@ -3,11 +3,12 @@ import {
   ScrollView,
   useColorScheme,
   TouchableOpacity,
+  Text,
 } from "react-native";
 import { View } from "@/components/Themed";
 import { IPS_TILES, IpsSectionTile, Tile } from "@/components/IpsSectionTile";
 import { useIpsData } from "@/components/IpsDataContext";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import fhirpath from "fhirpath";
 import { getProcessor } from "@/components/ipsResourceProcessor";
 import { AntDesign } from "@expo/vector-icons";
@@ -48,12 +49,14 @@ Patient Story: 81338-6
 export default function TabIpsScreen() {
   const { ipsData } = useIpsData();
   const router = useRouter();
+  const { mode, openId4VpUrl } = useLocalSearchParams<{ mode?: string; openId4VpUrl?: string }>();
   const theme = useColorScheme() ?? "light";
   const isDarkMode = theme === "dark";
   const palette = getPalette(isDarkMode);
   const refRBSheet = useRef<any>(null);
   const [shareMode, setShareMode] = useState(false);
   const [disabledShareMode, setDisabledShareMode] = useState(false);
+  
   // Extract codes from ipsData.sections
   const sectionCodes =
     ipsData?.sections?.map((section: any) => section.code.coding[0].code) || [];
@@ -84,7 +87,7 @@ export default function TabIpsScreen() {
   };
 
   const handleTilePress = (tile: Tile) => {
-    if (shareMode) {
+    if (shareMode || mode === 'openid4vp') {
       setSelectedElement((prevSelectedElements) => {
         const existingElement = prevSelectedElements.find(
           (element) => element.code === tile.code
@@ -96,7 +99,7 @@ export default function TabIpsScreen() {
             (element) => element.code !== tile.code
           );
         } else {
-          // Add the new object with code and sectionCodes
+          // Add the new object with code and label
           return [
             ...prevSelectedElements,
             { code: tile.code, label: tile.label, resourceUris: [] },
@@ -105,9 +108,6 @@ export default function TabIpsScreen() {
       });
     } else {
       if (ipsData) {
-        let names = getProcessor(tile.code)
-          .process(ipsData)
-          .map((fr) => fr.name as string);
         router.push({
           pathname: "/section",
           params: {
@@ -118,18 +118,6 @@ export default function TabIpsScreen() {
         });
       }
     }
-
-    /*
-        if (ipsData) {
-      router.push({
-        pathname: '/modal',
-        params: {
-          fhirData: yaml.dump(getProcessor(tile.code).process(ipsData)),
-          title: patientName + " " + tile.label
-        }
-      });
-    }
-     */
   };
 
   const handleShare = async() => {
@@ -148,6 +136,23 @@ export default function TabIpsScreen() {
     }
   };
 
+  const handleContinue = () => {
+    if (selectedElement.length === 0) {
+      refRBSheet?.current.open();
+      return;
+    }
+
+    if (mode === 'openid4vp' && openId4VpUrl) {
+      router.push({
+        pathname: "/presentationStepper",
+        params: {
+          selectedElement: JSON.stringify(selectedElement),
+          openId4VpUrl
+        },
+      });
+    }
+  };
+
   const handleShareMode = async () => {
     const hasWalletCredentials = await checkWalletCredentials();
     if (!hasWalletCredentials) {
@@ -162,7 +167,7 @@ export default function TabIpsScreen() {
   useEffect(() => {
     const loadWalletCredentials = async () => {
       try {
-        const hasWalletCredentials =await checkWalletCredentials();
+        const hasWalletCredentials = await checkWalletCredentials();
         if (!hasWalletCredentials) {
           setDisabledShareMode(true);
           setShareMode(false);
@@ -178,29 +183,33 @@ export default function TabIpsScreen() {
 
   return (
     <View style={styles.container}>
-      <BottomSheet
-        ref={refRBSheet}
-        title={
-          disabledShareMode
-            ? "Wallet credentials Required"
-            : "Resources Required"
-        }
-        description={
-          disabledShareMode
-            ? "A valid wallet credentials are required to continue."
-            : "Please select which resources to share"
-        }
-      />
+      {!mode && (
+        <>
+          <BottomSheet
+            ref={refRBSheet}
+            title={
+              disabledShareMode
+                ? "Wallet credentials Required"
+                : "Resources Required"
+            }
+            description={
+              disabledShareMode
+                ? "A valid wallet credentials are required to continue."
+                : "Please select which resources to share"
+            }
+          />
 
-      <View style={styles.switchContainer}>
-        <CustomSwitch
-          selectionMode={shareMode ? 1 : 2}
-          option1={"Share"}
-          option2={"Browse"}
-          onSelectSwitch={handleShareMode}
-          selectionColor={palette.primary.main}
-        />
-      </View>
+          <View style={styles.switchContainer}>
+            <CustomSwitch
+              selectionMode={shareMode ? 1 : 2}
+              option1={"Share"}
+              option2={"Browse"}
+              onSelectSwitch={handleShareMode}
+              selectionColor={palette.primary.main}
+            />
+          </View>
+        </>
+      )}
 
       <ScrollView contentContainerStyle={styles.tilesContainer}>
         {filteredTiles.map((tile) => (
@@ -208,42 +217,52 @@ export default function TabIpsScreen() {
             key={tile.id}
             tile={tile}
             onPress={() => handleTilePress(tile)}
-            selected={
-              selectedElement.findIndex(
-                (element) => element.code === tile.code
-              ) !== -1
-            }
+            selected={selectedElement.some((element) => element.code === tile.code)}
           />
         ))}
       </ScrollView>
-      <View style={styles.shareContainer}>
-        {shareMode && (
+
+      {mode === 'openid4vp' ? (
+        <View style={styles.continueContainer}>
           <TouchableOpacity
-            style={[
-              styles.shareButton,
-              {
-                backgroundColor: isDarkMode
-                  ? palette.secondary.main
-                  : palette.secondary.lighter,
-                opacity: isDarkMode && selectedElement.length === 0 ? 0.5 : 1,
-              },
-            ]}
-            onPress={handleShare}
+            style={[styles.continueButton, { backgroundColor: palette.primary.dark }]}
+            onPress={handleContinue}
           >
-            <AntDesign
-              name="sharealt"
-              size={30}
-              color={
-                selectedElement.length !== 0
-                  ? isDarkMode
-                    ? palette.primary.light
-                    : palette.primary.dark
-                  : palette.primary.light
-              }
-            />
+            <Text style={[styles.continueButtonText, { color: palette.neutral.white }]}>
+              Continue
+            </Text>
           </TouchableOpacity>
-        )}
-      </View>
+        </View>
+      ) : (
+        <View style={styles.shareContainer}>
+          {shareMode && (
+            <TouchableOpacity
+              style={[
+                styles.shareButton,
+                {
+                  backgroundColor: isDarkMode
+                    ? palette.secondary.main
+                    : palette.secondary.lighter,
+                  opacity: isDarkMode && selectedElement.length === 0 ? 0.5 : 1,
+                },
+              ]}
+              onPress={handleShare}
+            >
+              <AntDesign
+                name="sharealt"
+                size={30}
+                color={
+                  selectedElement.length !== 0
+                    ? isDarkMode
+                      ? palette.primary.light
+                      : palette.primary.dark
+                    : palette.primary.light
+                }
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
     </View>
   );
 }
@@ -252,14 +271,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
-    paddingVertical: 25,
-    textAlign: "center",
-  },
-  title: {
-    flex: 1,
-    fontSize: 24,
-    fontWeight: 500,
-    textAlign: "center",
   },
   tilesContainer: {
     padding: 16,
@@ -267,46 +278,33 @@ const styles = StyleSheet.create({
   shareContainer: {
     position: "absolute",
     bottom: 45,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    backgroundColor: "transparent",
+    right: 45,
   },
   shareButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    width: 70,
-    height: 70,
-    borderRadius: 50,
-    position: "absolute",
-    left: "50%",
   },
-  sheetContent: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "transparent",
-  },
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-    justifyContent: "center",
-  },
-  infoTitle: {
-    fontSize: 18,
-    marginLeft: 10,
-  },
-  infoDescription: { fontWeight: 700 },
   switchContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    marginTop: 20,
     alignItems: "center",
-    marginRight: 10,
+  },
+  continueContainer: {
+    position: 'absolute',
+    bottom: 45,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  continueButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+  },
+  continueButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
