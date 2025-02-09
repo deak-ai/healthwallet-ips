@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Text, View, StyleSheet, Button, TouchableOpacity, Dimensions } from "react-native";
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import type { BarcodeScanningResult } from 'expo-camera';
@@ -8,7 +8,8 @@ type BarcodeOverlayProps = {
     origin: { x: number; y: number };
     size: { width: number; height: number };
   };
-  onPress: () => void;
+  onPress?: () => void;
+  isOpenId4Vp: boolean;
 };
 
 const CORNER_SIZE = 32;
@@ -16,9 +17,11 @@ const CORNER_BORDER_WIDTH = 3;
 const CORNER_RADIUS = 20;
 const YELLOW = '#FFD700';
 
-const BarcodeOverlay: React.FC<BarcodeOverlayProps> = ({ bounds, onPress }) => {
+const BarcodeOverlay: React.FC<BarcodeOverlayProps> = ({ bounds, onPress, isOpenId4Vp }) => {
+  const Wrapper = isOpenId4Vp ? TouchableOpacity : View;
+
   return (
-    <TouchableOpacity
+    <Wrapper
       style={[
         styles.barcodeOverlay,
         {
@@ -33,28 +36,34 @@ const BarcodeOverlay: React.FC<BarcodeOverlayProps> = ({ bounds, onPress }) => {
     >
       {/* Top Left Corner */}
       <View style={[styles.corner, styles.cornerTopLeft]}>
-        <View style={[styles.cornerBorder, styles.cornerBorderTop]} />
-        <View style={[styles.cornerBorder, styles.cornerBorderLeft]} />
+        <View style={[styles.cornerBorder, styles.cornerBorderTop, { borderColor: YELLOW }]} />
+        <View style={[styles.cornerBorder, styles.cornerBorderLeft, { borderColor: YELLOW }]} />
       </View>
       
       {/* Top Right Corner */}
       <View style={[styles.corner, styles.cornerTopRight]}>
-        <View style={[styles.cornerBorder, styles.cornerBorderTop]} />
-        <View style={[styles.cornerBorder, styles.cornerBorderRight]} />
+        <View style={[styles.cornerBorder, styles.cornerBorderTop, { borderColor: YELLOW }]} />
+        <View style={[styles.cornerBorder, styles.cornerBorderRight, { borderColor: YELLOW }]} />
       </View>
       
       {/* Bottom Left Corner */}
       <View style={[styles.corner, styles.cornerBottomLeft]}>
-        <View style={[styles.cornerBorder, styles.cornerBorderBottom]} />
-        <View style={[styles.cornerBorder, styles.cornerBorderLeft]} />
+        <View style={[styles.cornerBorder, styles.cornerBorderBottom, { borderColor: YELLOW }]} />
+        <View style={[styles.cornerBorder, styles.cornerBorderLeft, { borderColor: YELLOW }]} />
       </View>
       
       {/* Bottom Right Corner */}
       <View style={[styles.corner, styles.cornerBottomRight]}>
-        <View style={[styles.cornerBorder, styles.cornerBorderBottom]} />
-        <View style={[styles.cornerBorder, styles.cornerBorderRight]} />
+        <View style={[styles.cornerBorder, styles.cornerBorderBottom, { borderColor: YELLOW }]} />
+        <View style={[styles.cornerBorder, styles.cornerBorderRight, { borderColor: YELLOW }]} />
       </View>
-    </TouchableOpacity>
+
+      {isOpenId4Vp && (
+        <View style={styles.selectButton}>
+          <Text style={styles.selectButtonText}>Select</Text>
+        </View>
+      )}
+    </Wrapper>
   );
 };
 
@@ -62,6 +71,32 @@ export default function Scanner() {
   const [isProcessingBarcode, setIsProcessingBarcode] = useState(false);
   const [lastScannedBarcode, setLastScannedBarcode] = useState<BarcodeScanningResult | null>(null);
   const [permission, requestPermission] = useCameraPermissions();
+
+  const isValidOpenId4VpUrl = (url: string): boolean => {
+    try {
+      const parsedUrl = new URL(url);
+      return parsedUrl.protocol === 'openid4vp:';
+    } catch {
+      return false;
+    }
+  };
+
+  const handleBarcodeScanned = useCallback((result: BarcodeScanningResult) => {
+    if (result?.type === 'qr') {
+      setLastScannedBarcode(result);
+    } else {
+      setLastScannedBarcode(null);
+    }
+  }, []);
+
+  const handleBarcodePress = useCallback(() => {
+    if (lastScannedBarcode && isValidOpenId4VpUrl(lastScannedBarcode.data)) {
+      setIsProcessingBarcode(true);
+      console.log(`Processing OpenID4VP URL: ${lastScannedBarcode.data}`);
+      alert(`Valid OpenID4VP URL detected: ${lastScannedBarcode.data}`);
+      setIsProcessingBarcode(false);
+    }
+  }, [lastScannedBarcode]);
 
   if (!permission) {
     return (
@@ -80,17 +115,6 @@ export default function Scanner() {
     );
   }
 
-  const handleBarcodeScanned = (result: BarcodeScanningResult) => {
-    setLastScannedBarcode(result);
-  };
-
-  const handleBarcodePress = () => {
-    if (lastScannedBarcode) {
-      setIsProcessingBarcode(true);
-      alert(`Barcode content: ${lastScannedBarcode.data}`);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <CameraView
@@ -98,25 +122,15 @@ export default function Scanner() {
         facing="back"
         onBarcodeScanned={isProcessingBarcode ? undefined : handleBarcodeScanned}
         barcodeScannerSettings={{
-          barcodeTypes: ["qr", "pdf417"],
+          barcodeTypes: ["qr"],
         }}
       />
       {lastScannedBarcode?.bounds && !isProcessingBarcode && (
-        <BarcodeOverlay
-          bounds={lastScannedBarcode.bounds}
+        <BarcodeOverlay 
+          bounds={lastScannedBarcode.bounds} 
           onPress={handleBarcodePress}
+          isOpenId4Vp={isValidOpenId4VpUrl(lastScannedBarcode.data)}
         />
-      )}
-      {isProcessingBarcode && (
-        <View style={styles.buttonContainer}>
-          <Button
-            title="Scan Again"
-            onPress={() => {
-              setIsProcessingBarcode(false);
-              setLastScannedBarcode(null);
-            }}
-          />
-        </View>
       )}
     </View>
   );
@@ -126,13 +140,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 40,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
   },
   barcodeOverlay: {
     position: 'absolute',
@@ -187,5 +194,21 @@ const styles = StyleSheet.create({
   cornerBottomRight: {
     bottom: -CORNER_SIZE / 2,
     right: -CORNER_SIZE / 2,
+  },
+  selectButton: {
+    position: 'absolute',
+    bottom: -40,
+    left: 0,
+    right: 0,
+    backgroundColor: YELLOW,
+    padding: 8,
+    borderRadius: 8,
+    marginHorizontal: 20,
+    alignItems: 'center',
+  },
+  selectButtonText: {
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
