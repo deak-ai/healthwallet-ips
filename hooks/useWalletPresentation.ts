@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { IpsData } from '@/components/fhirIpsModels';
 import { useWalletConfiguration } from '@/components/WalletConfigurationContext';
+import { useIpsData } from '@/components/IpsDataContext';
 import { Alert } from 'react-native';
 
 interface SelectedElement {
@@ -12,6 +13,7 @@ interface SelectedElement {
 export const useWalletPresentation = () => {
   const [loading, setLoading] = useState(false);
   const { walletApi } = useWalletConfiguration();
+  const { ipsData } = useIpsData();
 
   const presentFromWallet = async (selectedElements: SelectedElement[]) => {
     try {
@@ -19,6 +21,14 @@ export const useWalletPresentation = () => {
         Alert.alert(
           'Error',
           'Please configure wallet credentials first'
+        );
+        return false;
+      }
+
+      if (!ipsData) {
+        Alert.alert(
+          'Error',
+          'No IPS data available'
         );
         return false;
       }
@@ -33,7 +43,7 @@ export const useWalletPresentation = () => {
 
       // TODO: Implement actual OpenID4VP presentation logic here
       // 1. Get wallet ID
-      // 2. Process selected resources
+      // 2. Process selected resources using ipsData
       // 3. Create presentation
       // 4. Send to verifier
 

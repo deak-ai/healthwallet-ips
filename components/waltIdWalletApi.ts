@@ -77,6 +77,14 @@ export interface Category {
   name: string;
 }
 
+export interface UsePresentationRequest {
+  did?: string;
+  disclosures?: Record<string, string[]>;
+  note?: string;
+  presentationRequest: string;
+  selectedCredentials: string[];
+}
+
 import { streamingFetch } from './fetchHelper';
 
 export class WaltIdWalletApi {
@@ -291,14 +299,17 @@ export class WaltIdWalletApi {
       `${this.baseUrl}/wallet-api/wallet/${walletId}/exchange/resolvePresentationRequest`,
       {
         method: 'POST',
-        body: JSON.stringify({ presentationRequest }),
+        headers: {
+          'Content-Type': 'text/plain'
+        },
+        body: presentationRequest,
       }
     );
   }
 
   async matchCredentials(
     walletId: string,
-    presentationFilter: string | Record<string, any>
+    presentationFilter: string // json string
   ): Promise<VerifiableCredential[]> {
     const filterData =
       typeof presentationFilter === 'string'
@@ -309,7 +320,10 @@ export class WaltIdWalletApi {
       `${this.baseUrl}/wallet-api/wallet/${walletId}/exchange/matchCredentials`,
       {
         method: 'POST',
-        body: JSON.stringify({ presentationFilter: filterData }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: presentationFilter, // assuming valid json
       }
     );
   }
@@ -360,6 +374,22 @@ export class WaltIdWalletApi {
       `${this.baseUrl}/wallet-api/wallet/${walletId}/categories/${category}`,
       {
         method: 'DELETE',
+      }
+    );
+  }
+
+  async usePresentationRequest(
+    walletId: string,
+    request: UsePresentationRequest
+  ): Promise<void> {
+    await this.fetchWithError(
+      `${this.baseUrl}/wallet-api/wallet/${walletId}/exchange/usePresentationRequest`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
       }
     );
   }
