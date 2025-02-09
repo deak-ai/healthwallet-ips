@@ -15,7 +15,7 @@ import {
   filterResourceWrappers,
   getProcessor,
 } from "@/components/ipsResourceProcessor";
-import SectionCard from "@/components/card";
+import SectionCard from "@/components/SectionCard";
 import { getPalette } from "@/constants/Colors";
 import CustomLoader from "@/components/reusable/loader";
 import Toast from "react-native-toast-message";

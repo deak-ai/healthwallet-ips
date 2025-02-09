@@ -1,4 +1,4 @@
-import SectionCard from "@/components/card";
+import SectionCard from "@/components/SectionCard";
 import { useIpsData } from "@/components/IpsDataContext";
 import { getProcessor } from "@/components/ipsResourceProcessor";
 import { Icon } from "@/components/MultiSourceIcon";
