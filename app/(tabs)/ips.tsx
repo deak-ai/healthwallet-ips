@@ -152,22 +152,6 @@ export default function TabIpsScreen() {
     }
   };
 
-  const handleContinue = () => {
-    if (selectedElement.length === 0) {
-      refRBSheet?.current.open();
-      return;
-    }
-
-    if (mode === 'openid4vp' && openId4VpUrl) {
-      router.push({
-        pathname: "/presentationStepper",
-        params: {
-          selectedElement: JSON.stringify(selectedElement),
-          openId4VpUrl
-        },
-      });
-    }
-  };
 
   const handleShareMode = async () => {
     const hasWalletCredentials = await checkWalletCredentials();

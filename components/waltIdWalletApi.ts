@@ -86,6 +86,7 @@ export interface UsePresentationRequest {
 }
 
 import { streamingFetch } from './fetchHelper';
+import { decodeJwtToken } from '@/utils/jwtUtils';
 
 export class WaltIdWalletApi {
   private baseUrl: string;
@@ -100,24 +101,6 @@ export class WaltIdWalletApi {
     this.password = password;
   }
 
-  decodeJwtToken(token: string): { exp?: number } {
-    try {
-      const base64Payload = token.split('.')[1];
-      // Make the base64 string URL safe
-      const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/');
-      // Decode base64 to string
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      // console.error('Error decoding JWT token:', error);
-      return {};
-    }
-  }
 
   private isTokenExpired(): boolean {
     if (!this.tokenExpiry) return true;
@@ -193,7 +176,7 @@ export class WaltIdWalletApi {
     // Store the JWT token and its expiry for subsequent requests
     if (response.token) {
       this.authToken = response.token;
-      const decoded = this.decodeJwtToken(response.token);
+      const decoded = decodeJwtToken(response.token);
       this.tokenExpiry = decoded.exp;
     }
 

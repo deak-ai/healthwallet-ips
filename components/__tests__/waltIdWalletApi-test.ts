@@ -1,4 +1,5 @@
 import { WaltIdWalletApi } from '../waltIdWalletApi';
+import { decodeJwtToken } from '@/utils/jwtUtils';
 
 describe('WaltIdWalletApi Integration Tests', () => {
   const baseUrl = 'https://wallet.healthwallet.li';
@@ -100,7 +101,7 @@ describe('WaltIdWalletApi Integration Tests', () => {
 
       expect(credential.id).toBe('urn:uuid:bc58b985-f414-4565-b412-7ad83bd4a3e6');
       expect(credential.document).toBeDefined();
-      const decoded = api.decodeJwtToken(credential.document) as any;
+      const decoded = decodeJwtToken(credential.document) as any;
       expect(decoded).toBeDefined();
       console.log(decoded);
       

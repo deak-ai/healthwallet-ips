@@ -1,4 +1,6 @@
-import { IpsData, FhirResourceWrapper, IpsSectionCode } from './fhirIpsModels';
+import { IpsData, IpsSectionCode } from './fhirIpsModels';
+import { VerifiableCredential } from './waltIdWalletApi';
+import { decodeJwtToken } from '@/utils/jwtUtils';
 
 export interface SyncProgress {
   current: number;
@@ -14,17 +16,24 @@ export type ShareToWalletFunction = (
   onProgress?: () => void
 ) => Promise<boolean>;
 
+export type QueryCredentialFunction = (
+  category: string,
+) => Promise<VerifiableCredential[] | null>;
+
 export class HealthDataSyncManager {
   private onProgressUpdate: (progress: SyncProgress) => void;
   private abortController: AbortController | null = null;
   private shareToWallet: ShareToWalletFunction | null = null;
+  private queryCredentialsByCategory: QueryCredentialFunction | null = null;
 
   constructor(
     onProgressUpdate: (progress: SyncProgress) => void,
-    shareToWallet?: ShareToWalletFunction
+    shareToWallet?: ShareToWalletFunction,
+    queryCredentialsByCategory?: QueryCredentialFunction
   ) {
     this.onProgressUpdate = onProgressUpdate;
     this.shareToWallet = shareToWallet || null;
+    this.queryCredentialsByCategory = queryCredentialsByCategory || null;
   }
 
   private getTotalResources(ipsData: IpsData): number {
@@ -42,6 +51,14 @@ export class HealthDataSyncManager {
   async startSync(ipsData: IpsData): Promise<void> {
     if (!this.shareToWallet) {
       throw new Error('ShareToWallet function is required for syncing');
+    }
+
+    if (!this.queryCredentialsByCategory) {
+      throw new Error('QueryCredentialFunction function is required for syncing');
+    }
+
+    if (this.abortController) {
+      throw new Error('Sync already in progress');
     }
 
     this.abortController = new AbortController();
@@ -74,24 +91,45 @@ export class HealthDataSyncManager {
       
         // Only proceed if there are resources in this section
         if (flattenedResources.length > 0) {
-          // Get all fullUrls for this section
-          const selectedUris = flattenedResources.map(r => r.uri);
+          // Get all URIs for this section
+          let remainingUris = flattenedResources.map(r => r.uri);
 
-          // Share to wallet with progress tracking
-          await this.shareToWallet(
-            ipsData,
-            section.code,
-            section.label,
-            selectedUris,
-            () => {
-              processedResources++;
-              this.onProgressUpdate({
-                current: processedResources,
-                total: totalResources,
-                progress: processedResources / totalResources
-              });
+          // Check for existing credentials
+          const existingCredentials = await this.queryCredentialsByCategory(section.label);
+          if (existingCredentials) {
+            for (const credential of existingCredentials) {
+              const decodedJwt = decodeJwtToken(credential.document) as any;
+              const resourceUri = decodedJwt.vc.resourceId;
+              
+              // Find and update the matching resource
+              const resource = flattenedResources.find(r => r.uri === resourceUri);
+              if (resource) {
+                resource.credentialId = credential.id;
+                // Remove this URI from the ones we need to process
+                remainingUris = remainingUris.filter(uri => uri !== resourceUri);
+              }
             }
-          );
+          }
+
+          // Only call shareToWallet if we have remaining URIs to process
+          if (remainingUris.length > 0) {
+            await this.shareToWallet(
+              ipsData,
+              section.code,
+              section.label,
+              remainingUris,
+              () => {
+                processedResources++;
+                this.onProgressUpdate({
+                  current: processedResources,
+                  total: totalResources,
+                  progress: processedResources / totalResources
+                });
+              }
+            );
+          } else {
+            console.log(`All resources in section ${section.label} already have credentials`);
+          }
         }
       }
 

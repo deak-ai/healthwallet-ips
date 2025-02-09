@@ -66,7 +66,7 @@ const PresentationStepper = () => {
       try {
         if (!ipsData) return;
 
-        const success = await presentFromWallet(localSelectedElement);
+        const success = await presentFromWallet(localSelectedElement, openId4VpUrl);
         if (success) {
           router.push('/ips');
         }

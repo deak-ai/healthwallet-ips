@@ -48,7 +48,8 @@ export interface FhirResource {
 export interface FlattenedResource {
     uri: string;
     name: string;
-    [key: string]: string | number | boolean | null; // Key-value pairs for easy table rendering
+    credentialId?: string | null;
+    [key: string]: string | number | boolean | null | undefined; // Key-value pairs for easy table rendering
 }
 
 export const IpsSectionCode = {
