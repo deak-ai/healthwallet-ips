@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { getProcessor } from '@/components/ipsResourceProcessor';
 import { IpsData } from '@/components/fhirIpsModels';
 
 export const useResourceSelection = (ipsData: IpsData | null, code: string) => {
@@ -23,7 +22,7 @@ export const useResourceSelection = (ipsData: IpsData | null, code: string) => {
 
     // Update selectAll state
     if (ipsData) {
-      const resources = getProcessor(code).process(ipsData);
+      const resources = ipsData.flattenedResources[code] || [];
       const newSelectedIds = selectedIds.includes(uri)
         ? selectedIds.filter(id => id !== uri)
         : [...selectedIds, uri];
@@ -38,7 +37,7 @@ export const useResourceSelection = (ipsData: IpsData | null, code: string) => {
     setSelectAllState(newSelectAll);
 
     if (newSelectAll) {
-      const resources = getProcessor(code).process(ipsData);
+      const resources = ipsData.flattenedResources[code] || [];
       setSelectedIds(resources.map(resource => resource.uri));
     } else {
       setSelectedIds([]);

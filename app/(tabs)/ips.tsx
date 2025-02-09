@@ -10,7 +10,6 @@ import { IPS_TILES, IpsSectionTile, Tile } from "@/components/IpsSectionTile";
 import { useIpsData } from "@/components/IpsDataContext";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import fhirpath from "fhirpath";
-import { getProcessor } from "@/components/ipsResourceProcessor";
 import { AntDesign } from "@expo/vector-icons";
 import { getPalette } from "@/constants/Colors";
 import { useEffect, useRef, useState } from "react";

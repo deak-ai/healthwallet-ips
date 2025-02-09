@@ -1,6 +1,5 @@
 import SectionCard from "@/components/SectionCard";
 import { useIpsData } from "@/components/IpsDataContext";
-import { getProcessor } from "@/components/ipsResourceProcessor";
 import { Icon } from "@/components/MultiSourceIcon";
 import { getPalette } from "@/constants/Colors";
 import { useNavigation } from "@react-navigation/native";
@@ -123,8 +122,7 @@ const PresentationStepper = () => {
           <ScrollView contentContainerStyle={styles.scrollViewContainer}>
             <View style={styles.sectionContainer}>
               {ipsData &&
-                getProcessor(currentCode)
-                  .process(ipsData)
+                (ipsData.flattenedResources[currentCode] || [])
                   .map((item: any, index: number) => (
                     <SectionCard
                       key={index}

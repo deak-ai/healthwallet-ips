@@ -2,15 +2,26 @@ export interface IpsData {
     sectionResource: FhirResource;
     sections: any[];
     resources: FhirResourceWrapper[];
+    flattenedResources: Record<string, FlattenedResource[]>;
     getPatientResource(): FhirResourceWrapper;
 }
 
 export class IpsDataImpl implements IpsData {
+    public sectionResource: FhirResource;
+    public sections: any[];
+    public resources: FhirResourceWrapper[];
+    public flattenedResources: Record<string, FlattenedResource[]>;
+
     constructor(
-        public sectionResource: FhirResource,
-        public sections: any[],
-        public resources: FhirResourceWrapper[]
-    ) {}
+        sectionResource: FhirResource,
+        sections: any[],
+        resources: FhirResourceWrapper[]
+    ) {
+        this.sectionResource = sectionResource;
+        this.sections = sections;
+        this.resources = resources;
+        this.flattenedResources = {};
+    }
 
     getPatientResource(): FhirResourceWrapper {
         const patientResource = this.resources.find(
@@ -25,7 +36,6 @@ export class IpsDataImpl implements IpsData {
 
 export interface FhirResourceWrapper {
     fullUrl: string;
-    vcId?: string; // a link to the id of a verifiable credential
     resource: FhirResource; // The actual FHIR resource, which will be processed specifically
 }
 

@@ -381,8 +381,8 @@ export class WaltIdWalletApi {
   async usePresentationRequest(
     walletId: string,
     request: UsePresentationRequest
-  ): Promise<void> {
-    await this.fetchWithError(
+  ): Promise<string> {
+   return await this.fetchWithError(
       `${this.baseUrl}/wallet-api/wallet/${walletId}/exchange/usePresentationRequest`,
       {
         method: 'POST',

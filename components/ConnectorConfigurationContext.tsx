@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { useIpsData } from '@/components/IpsDataContext';
 import { FhirUrlStreamProcessor } from '@/components/fhirStreamProcessorUrl';
+import { getProcessor } from "@/components/ipsResourceProcessor";
+import { IpsSectionCode } from "@/components/fhirIpsModels";
 import Toast from 'react-native-toast-message';
 
 export interface ConnectorConfigurationContextType {
@@ -27,17 +29,39 @@ export const ConnectorConfigurationProvider: React.FC<{ children: React.ReactNod
     ipsData.sections.length > 0
   );
 
+  const processIpsData = (ipsData: any) => {
+    // Pre-process and store flattened resources for each section
+    Object.values(IpsSectionCode).forEach(({ code, label }) => {
+      try {
+        const processor = getProcessor(code);
+        ipsData.flattenedResources[code] = processor.process(ipsData);
+      } catch (error) {
+        console.log(`Failed to process "${label}" section:`, error);
+        ipsData.flattenedResources[code] = [];
+      }
+    });
+    return ipsData;
+  };
+
   const loadFhirData = async (id: string | null) => {
     if (!id) return null;
     console.log('loadFhirData:', id);
     
     try {
       setIsLoading(true);
+      const downloadStartTime = performance.now();
       const url = `https://fhir-static.healthwallet.li/fhir-examples/ips-fhir/${id}-ips.json`;
       const ipsData = await new FhirUrlStreamProcessor().streamData(url);
+      const downloadEndTime = performance.now();
+      console.log(`FHIR data download took ${(downloadEndTime - downloadStartTime).toFixed(2)}ms`);
 
       if (ipsData && ipsData.sections.length !== 0 && ipsData.resources.length !== 0) {
-        setIpsData(ipsData);
+        const processStartTime = performance.now();
+        const processedIpsData = processIpsData(ipsData);
+        const processEndTime = performance.now();
+        console.log(`IPS data processing took ${(processEndTime - processStartTime).toFixed(2)}ms`);
+        
+        setIpsData(processedIpsData);
         Toast.show({
           type: "success",
           text1: "Success",
@@ -45,7 +69,7 @@ export const ConnectorConfigurationProvider: React.FC<{ children: React.ReactNod
           position: "bottom",
           visibilityTime: 1000,
         });
-        return ipsData;
+        return processedIpsData;
       } else {
         setIpsData(null);
         Toast.show({

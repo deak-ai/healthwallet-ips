@@ -1,20 +1,14 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
 import {
-  Platform,
   StyleSheet,
   ScrollView,
   View,
-  Text,
   useColorScheme,
   TouchableOpacity,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { useIpsData } from "@/components/IpsDataContext";
-import {
-  filterResourceWrappers,
-  getProcessor,
-} from "@/components/ipsResourceProcessor";
 import SectionCard from "@/components/SectionCard";
 import { getPalette } from "@/constants/Colors";
 import CustomLoader from "@/components/reusable/loader";
@@ -52,7 +46,7 @@ export default function SectionScreen() {
     await shareToWallet(ipsData, code, label, selectedIds);
   };
 
-  const flattenedResources = ipsData ? getProcessor(code).process(ipsData) : [];
+  const flattenedResources = ipsData ? ipsData.flattenedResources[code] || [] : [];
 
   const styles = StyleSheet.create({
     safeArea: {
@@ -113,12 +107,12 @@ export default function SectionScreen() {
         <Header title={title} />
         <ScrollView contentContainerStyle={styles.scrollViewContainer}>
           <View style={styles.sectionContainer}>
-            {flattenedResources.map((item: any, index) => (
+            {flattenedResources.map((resource) => (
               <SectionCard
-                key={index}
-                flattenedResource={item}
-                selected={selectedIds.includes(item.uri)}
-                onSelect={() => handleSelect(item.uri)}
+                key={resource.uri}
+                flattenedResource={resource}
+                selected={selectedIds.includes(resource.uri)}
+                onSelect={() => handleSelect(resource.uri)}
                 label={label}
               />
             ))}

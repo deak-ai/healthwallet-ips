@@ -1,6 +1,4 @@
 import { IpsData, FhirResourceWrapper, IpsSectionCode } from './fhirIpsModels';
-import { getProcessor } from './ipsResourceProcessor';
-import Toast from 'react-native-toast-message';
 
 export interface SyncProgress {
   current: number;
@@ -72,9 +70,8 @@ export class HealthDataSyncManager {
         }
 
         // Get all resources for this section
-        const processor = getProcessor(section.code);
-        const flattenedResources = processor.process(ipsData);
-        
+        const flattenedResources = ipsData.flattenedResources[section.code] || [];
+      
         // Only proceed if there are resources in this section
         if (flattenedResources.length > 0) {
           // Get all fullUrls for this section
@@ -108,6 +105,4 @@ export class HealthDataSyncManager {
       this.abortController = null;
     }
   }
-
-
 }

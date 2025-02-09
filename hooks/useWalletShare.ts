@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { IpsData } from '@/components/fhirIpsModels';
 import { filterResourceWrappers } from '@/components/ipsResourceProcessor';
 import { useWalletConfiguration } from '@/components/WalletConfigurationContext';
-import { getProcessor } from '@/components/ipsResourceProcessor';
 import Toast from 'react-native-toast-message';
 
 export const useWalletShare = () => {
@@ -39,7 +38,7 @@ export const useWalletShare = () => {
         .filter(wrapper => selectedUris.includes(wrapper.fullUrl))
         .map(wrapper => ({
           wrapper,
-          name: getProcessor(code).flatten(wrapper).name
+          name: ipsData.flattenedResources[code].find(r => r.uri === wrapper.fullUrl)?.name || ''
         }));
 
       // get the wallet id
