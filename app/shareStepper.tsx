@@ -1,14 +1,8 @@
 import SectionCard from "@/components/card";
 import { useIpsData } from "@/components/IpsDataContext";
-import {
-  filterResourceWrappers,
-  getProcessor,
-} from "@/components/ipsResourceProcessor";
+import { getProcessor } from "@/components/ipsResourceProcessor";
 import { Icon } from "@/components/MultiSourceIcon";
 import CustomLoader from "@/components/reusable/loader";
-import { WaltIdIssuerApi } from "@/components/waltIdIssuerApi";
-import { WaltIdSmartHealthCardIssuer } from "@/components/waltIdSmartHealthCardIssuer";
-import { WaltIdWalletApi } from "@/components/waltIdWalletApi";
 import { getPalette } from "@/constants/Colors";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useRouter } from "expo-router";
@@ -22,8 +16,6 @@ import {
   ScrollView,
 } from "react-native";
 import Toast from "react-native-toast-message";
-import * as SecureStore from "expo-secure-store";
-import { IpsData } from "@/components/fhirIpsModels";
 import { useResourceSelection } from "@/hooks/useResourceSelection";
 import { useWalletShare } from "@/hooks/useWalletShare";
 import { SafeAreaView } from "react-native-safe-area-context";

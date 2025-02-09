@@ -2,8 +2,8 @@ import { WaltIdWalletApi } from '../waltIdWalletApi';
 
 describe('WaltIdWalletApi Integration Tests', () => {
   const baseUrl = 'https://wallet.healthwallet.li';
-  const email = 'user@email.com';
-  const password = 'password';
+  const email = 'user1@email.com';
+  const password = 'password1';  
   let api: WaltIdWalletApi;
 
   beforeAll(() => {
@@ -63,6 +63,7 @@ describe('WaltIdWalletApi Integration Tests', () => {
       expect(Array.isArray(credentials)).toBe(true);
     });
   });
+
 
   describe('Wallet Synchronization', () => {
     let walletId: string;

@@ -13,6 +13,7 @@ import { useIpsData } from "@/components/IpsDataContext";
 import ProgressBar from "@/components/reusable/ProgressBar";
 import { HealthDataSyncManager, SyncProgress } from "@/components/HealthDataSync";
 import { AntDesign } from '@expo/vector-icons';
+import { useWalletShare } from "@/hooks/useWalletShare";
 
 interface Credentials {
   username: string;
@@ -37,6 +38,7 @@ export default function SettingsWallet() {
     isLoading,
   } = useWalletConfiguration();
   const { ipsData } = useIpsData();
+  const { shareToWallet } = useWalletShare();
 
   const disabledSaveCredentials = !usernameValue || !passwordValue;
 
@@ -101,9 +103,12 @@ export default function SettingsWallet() {
     setIsSyncing(true);
     setSyncProgress(null);
     
-    const newSyncManager = new HealthDataSyncManager((progress) => {
-      setSyncProgress(progress);
-    });
+    const newSyncManager = new HealthDataSyncManager(
+      (progress) => {
+        setSyncProgress(progress);
+      },
+      shareToWallet
+    );
     setSyncManager(newSyncManager);
 
     try {

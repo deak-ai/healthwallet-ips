@@ -1,4 +1,6 @@
-import { IpsData, FhirResourceWrapper } from './fhirIpsModels';
+import { IpsData, FhirResourceWrapper, IpsSectionCode } from './fhirIpsModels';
+import { getProcessor } from './ipsResourceProcessor';
+import Toast from 'react-native-toast-message';
 
 export interface SyncProgress {
   current: number;
@@ -6,12 +8,25 @@ export interface SyncProgress {
   progress: number;
 }
 
+export type ShareToWalletFunction = (
+  ipsData: IpsData,
+  code: string,
+  label: string,
+  selectedUris: string[],
+  onProgress?: () => void
+) => Promise<boolean>;
+
 export class HealthDataSyncManager {
   private onProgressUpdate: (progress: SyncProgress) => void;
   private abortController: AbortController | null = null;
+  private shareToWallet: ShareToWalletFunction | null = null;
 
-  constructor(onProgressUpdate: (progress: SyncProgress) => void) {
+  constructor(
+    onProgressUpdate: (progress: SyncProgress) => void,
+    shareToWallet?: ShareToWalletFunction
+  ) {
     this.onProgressUpdate = onProgressUpdate;
+    this.shareToWallet = shareToWallet || null;
   }
 
   private getTotalResources(ipsData: IpsData): number {
@@ -27,49 +42,72 @@ export class HealthDataSyncManager {
   }
 
   async startSync(ipsData: IpsData): Promise<void> {
+    if (!this.shareToWallet) {
+      throw new Error('ShareToWallet function is required for syncing');
+    }
+
     this.abortController = new AbortController();
     const totalResources = this.getTotalResources(ipsData);
     let processedResources = 0;
 
-    const updateProgress = () => {
-      processedResources++;
-      this.onProgressUpdate({
-        current: processedResources,
-        total: totalResources,
-        progress: processedResources / totalResources
-      });
-    };
-
     try {
-      // Process each resource
-      for (const resource of ipsData.resources) {
+      // Keep the original loop commented for reference
+      // for (const section of Object.values(IpsSectionCode)) {
+
+      // Explicitly list all section codes for easier testing
+      // Comment out sections as needed for testing
+      const sections = [
+        IpsSectionCode.Allergies,
+        IpsSectionCode.Medications,
+        IpsSectionCode.Problems,
+        IpsSectionCode.Immunizations,
+        // IpsSectionCode.Procedures,
+        // IpsSectionCode.Results,
+        // IpsSectionCode.Devices
+      ];
+
+      for (const section of sections) {
         if (this.abortController.signal.aborted) {
           throw new Error('Sync aborted');
         }
-        await this.processResource(resource);
-        updateProgress();
+
+        // Get all resources for this section
+        const processor = getProcessor(section.code);
+        const flattenedResources = processor.process(ipsData);
+        
+        // Only proceed if there are resources in this section
+        if (flattenedResources.length > 0) {
+          // Get all fullUrls for this section
+          const selectedUris = flattenedResources.map(r => r.uri);
+
+          // Share to wallet with progress tracking
+          await this.shareToWallet(
+            ipsData,
+            section.code,
+            section.label,
+            selectedUris,
+            () => {
+              processedResources++;
+              this.onProgressUpdate({
+                current: processedResources,
+                total: totalResources,
+                progress: processedResources / totalResources
+              });
+            }
+          );
+        }
       }
+
+      // Ensure we show 100% progress at the end
+      this.onProgressUpdate({
+        current: totalResources,
+        total: totalResources,
+        progress: 1
+      });
     } finally {
       this.abortController = null;
     }
   }
 
-  private async processResource(resource: FhirResourceWrapper): Promise<void> {
-    // Simulate processing time (remove this in production)
-    await new Promise((resolve, reject) => {
-      const timeout = setTimeout(resolve, 100);
-      if (this.abortController) {
-        this.abortController.signal.addEventListener('abort', () => {
-          clearTimeout(timeout);
-          reject(new Error('Sync aborted'));
-        });
-      }
-    });
-    
-    // Here you can implement the actual sync logic for each resource
-    // For example:
-    // - Send to a server
-    // - Store in local database
-    // - Process for specific use cases
-  }
+
 }

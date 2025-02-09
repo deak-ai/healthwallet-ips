@@ -9,20 +9,26 @@ export const useWalletShare = () => {
   const [loading, setLoading] = useState(false);
   const { smartHealthCardIssuer, walletApi } = useWalletConfiguration();
 
+  // Keep track of total processed resources across all sections
+  let totalProcessed = 0;
+
   const shareToWallet = async (
     ipsData: IpsData,
     code: string,
     label: string,
-    selectedUris: string[]
+    selectedUris: string[],
+    onProgress?: () => void
   ) => {
     try {
       if (!smartHealthCardIssuer || !walletApi) {
-        Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: 'Please configure wallet credentials first',
-          position: 'bottom',
-        });
+        if (!onProgress) {
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: 'Please configure wallet credentials first',
+            position: 'bottom',
+          });
+        }
         return false;
       }
 
@@ -36,52 +42,55 @@ export const useWalletShare = () => {
           name: getProcessor(code).flatten(wrapper).name
         }));
 
-
-       // get the wallet id
-       const wallets = await walletApi.getWallets();
-       const walletId = wallets.wallets[0].id;
+      // get the wallet id
+      const wallets = await walletApi.getWallets();
+      const walletId = wallets.wallets[0].id;
 
       // iterate over resourceWrappers and issue individually to wallet
-      for (const { wrapper, name } of selectedResources) {
+      for (let i = 0; i < selectedResources.length; i++) {
+        const { wrapper, name } = selectedResources[i];
+        
         console.log('Issuing credential for resource:', wrapper.resource.resourceType);
         const credentials = await smartHealthCardIssuer.issueAndAddToWallet(
           `${label}: ${name}`,
           [wrapper]
         );
-        // make sure to tag the new credential, slightly abusing categories in waltId to 
-        // also tag with resource fullUrl
+
+        // make sure to tag the new credential
         try {
-          await walletApi.addCategory(walletId, wrapper.fullUrl)
-          await walletApi.attachCategories(walletId, credentials[0].id,[wrapper.fullUrl,'SmartHealthCard',label])
+          // await walletApi.addCategory(walletId, wrapper.fullUrl)
+          // await walletApi.attachCategories(walletId, credentials[0].id,[wrapper.fullUrl,'SmartHealthCard',label])
+          //await walletApi.attachCategories(walletId, credentials[0].id,['SmartHealthCard',label])
         } catch (error) {
           console.log("Failed to attach category to credential:", error);
         }
-    
+
+        // Update progress if callback is provided
+        if (onProgress) {
+          onProgress();
+        }
       }
 
-      // the below issues a single credential with all resources of a single type
-      // const credential = await smartHealthCardIssuer.issueAndAddToWallet(
-      //   label,
-      //   selectedResourceWrappers
-      // );
-
-      //console.log('Credential issued:', credential);
-      Toast.show({
-        type: 'success',
-        text1: 'Success',
-        text2: 'Credential issued successfully',
-        position: 'bottom',
-      });
+      if (!onProgress) {
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'Credential issued successfully',
+          position: 'bottom',
+        });
+      }
 
       return true;
     } catch (error) {
       console.error('Error sharing to wallet:', error);
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Failed to issue credential',
-        position: 'bottom',
-      });
+      if (!onProgress) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Failed to issue credential',
+          position: 'bottom',
+        });
+      }
       return false;
     } finally {
       setLoading(false);
