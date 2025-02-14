@@ -3360,7 +3360,7 @@ better-opn@~3.0.2:
   dependencies:
     open "^8.0.4"
 
-big-integer@1.6.x, big-integer@^1.6.51:
+big-integer@1.6.x:
   version "1.6.52"
   resolved "https://registry.npmjs.org/big-integer/-/big-integer-1.6.52.tgz"
   integrity sha512-QxD8cf2eVqJOOz63z6JIN9BzvVs/dlySa5HGSBH5xtR8dPteIRQnBxxKqkNTiT6jbDTF6jAfrd4oMcND9RGbQg==
@@ -4791,11 +4791,6 @@ findup-sync@^5.0.0:
     is-glob "^4.0.3"
     micromatch "^4.0.4"
     resolve-dir "^1.0.1"
-
-flatbuffers@2.0.6:
-  version "2.0.6"
-  resolved "https://registry.npmjs.org/flatbuffers/-/flatbuffers-2.0.6.tgz"
-  integrity sha512-QTTZTXTbVfuOVQu2X6eLOw4vefUxnFJZxAKeN3rEPhjEzBtIbehimJLfVGHPM8iX0Na+9i76SBEg0skf0c0sCA==
 
 flow-enums-runtime@^0.0.6:
   version "0.0.6"
@@ -7374,14 +7369,6 @@ react-is@^16.13.1, react-is@^16.7.0:
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-native-fast-encoder@^0.1.12:
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/react-native-fast-encoder/-/react-native-fast-encoder-0.1.12.tgz#d7ac967b612b3188890480ceea19ca7a56450d56"
-  integrity sha512-y7rWdNkysf6VJtP/DPToQy5q14btm58hINlehL1IN4kH3cUaWcjnN8EYYd7rVXYlE811KpyP88XW2wi7xSH/0A==
-  dependencies:
-    big-integer "^1.6.51"
-    flatbuffers "2.0.6"
-
 react-native-fetch-api@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/react-native-fetch-api/-/react-native-fetch-api-3.0.0.tgz"
@@ -8222,18 +8209,6 @@ stream-buffers@2.2.x, stream-buffers@~2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/stream-buffers/-/stream-buffers-2.2.0.tgz"
   integrity sha512-uyQK/mx5QjHun80FLJTfaWE7JtwfRMKBLkMne6udYOmvH0CawotVa7TfgYHzAnpphn4+TweIx1QKMnRIbipmUg==
-
-stream-chain@^2.2.5:
-  version "2.2.5"
-  resolved "https://registry.npmjs.org/stream-chain/-/stream-chain-2.2.5.tgz"
-  integrity sha512-1TJmBx6aSWqZ4tx7aTpBDXK0/e2hhcNSTV8+CbFJtDjbb+I1mZ8lHit0Grw9GRT+6JbIrrDd8esncgBi8aBXGA==
-
-stream-json@^1.8.0:
-  version "1.9.1"
-  resolved "https://registry.npmjs.org/stream-json/-/stream-json-1.9.1.tgz"
-  integrity sha512-uWkjJ+2Nt/LO9Z/JyKZbMusL8Dkh97uUBTv3AJQ74y07lVahLY4eEFsPsE97pxYBwr8nnjMAIch5eqI0gPShyw==
-  dependencies:
-    stream-chain "^2.2.5"
 
 stream-slice@^0.1.2:
   version "0.1.2"
