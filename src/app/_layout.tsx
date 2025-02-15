@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useColorScheme } from "@/components/useColorScheme";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import { IpsDataProvider } from "@/contexts/IpsDataContext";
 import { ConnectorConfigurationProvider, useConnectorConfiguration } from "@/contexts/ConnectorConfigurationContext";
 import { WalletConfigurationProvider, useWalletConfiguration } from "@/contexts/WalletConfigurationContext";
@@ -49,8 +49,8 @@ function AppContent() {
     if (!isLoading) {
       // Handle both initial navigation and configuration changes
       if (!isConnectorConfigured) {
-        console.log("Connector not configured, navigating to /connectors");
-        router.push("/connectors");
+        console.log("Connector not configured, navigating to /settingsConnectors");
+        router.push("/settingsConnectors");
       } else if (!isWalletConfigured) {
         console.log("Wallet not configured, navigating to /settingsWallet");
         router.push("/settingsWallet");
@@ -77,7 +77,7 @@ function AppContent() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="connectors" />
+          <Stack.Screen name="settingsConnectors" />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           <Stack.Screen name="section" />
           <Stack.Screen name="shareStepper" />

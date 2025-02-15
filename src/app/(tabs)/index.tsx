@@ -24,7 +24,7 @@ const TabSettingsScreen = () => {
           icon: (
             <AntDesign name="user" size={24} color={palette.text} />
           ),
-          route: "connectors",
+          route: "settingsConnectors",
         },
         {
           title: "Wallet",

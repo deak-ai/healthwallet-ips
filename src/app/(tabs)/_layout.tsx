@@ -3,7 +3,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useColorScheme } from "@/components/useColorScheme";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import * as SecureStore from "expo-secure-store";
 import { useClickedTab } from "@/components/clickedTabContext";
 import { useIpsData } from "@/contexts/IpsDataContext";

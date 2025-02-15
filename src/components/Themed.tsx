@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import  { getPalette } from "@/constants/Colors";
-import { useColorScheme } from "./useColorScheme";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 type ThemeProps = {
   lightColor?: string;
