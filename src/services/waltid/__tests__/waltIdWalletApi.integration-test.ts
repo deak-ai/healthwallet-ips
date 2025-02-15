@@ -3,8 +3,8 @@ import { decodeJwtToken } from '@/utils/jwtUtils';
 
 describe('WaltIdWalletApi Integration Tests', () => {
   const baseUrl = 'https://wallet.healthwallet.li';
-  const email = 'user1@email.com';
-  const password = 'password1';  
+  const email = 'user@email.com';
+  const password = 'password';  
   let api: WaltIdWalletApi;
 
   beforeAll(() => {

@@ -4,8 +4,8 @@ import {
     FlattenedResource,
     IpsData,
     IpsSectionCode,
-    IpsSectionCodeKey, IpsSectionCodeType
-} from "@/components/fhirIpsModels";
+    IpsSectionCodeType
+} from "./fhirIpsModels";
 
 
 // Strategy Pattern Interface
@@ -46,7 +46,7 @@ export class AllergyIntoleranceSectionProcessor implements IpsSectionProcessor {
             verificationStatus: resource.verificationStatus?.coding?.[0]?.code || null,
             recordedDate: resource.recordedDate || null,
             type:resource?.type,
-            category:resource?.category,
+            category:resource?.category?.[0]
         };
         return flattenedResource;
         // Filter out keys with null values

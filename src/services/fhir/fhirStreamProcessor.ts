@@ -1,5 +1,5 @@
 import { JSONParser } from '@streamparser/json';
-import {IpsData, FhirResource, FhirResourceWrapper, IpsDataImpl} from "@/components/fhirIpsModels";
+import {IpsData, FhirResource, FhirResourceWrapper, IpsDataImpl} from "./fhirIpsModels";
 
 export interface StreamProcessor {
     streamData(source: string): Promise<IpsData>;

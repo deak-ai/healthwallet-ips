@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { IpsData, FlattenedResource } from '@/components/fhirIpsModels';
+import { IpsData, FlattenedResource } from '@/services/fhir/fhirIpsModels';
 import { useWalletConfiguration } from '@/components/WalletConfigurationContext';
 import { useIpsData } from '@/components/IpsDataContext';
 import { Alert } from 'react-native';
-import { UsePresentationRequest } from '@/components/waltIdWalletApi';
+import { UsePresentationRequest } from '@/services/waltid/waltIdWalletApi';
 
 interface SelectedElement {
   code: string;

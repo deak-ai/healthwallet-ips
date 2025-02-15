@@ -1,9 +1,8 @@
-import { filterResourceWrappers}
-    from '../ipsResourceProcessor';
+import { filterResourceWrappers} from '@/services/fhir/ipsResourceProcessor';
 import {FhirUrlStreamProcessor} from "@/services/fhir/fhirStreamProcessorUrl";
-import {IpsData, IpsSectionCode} from "@/components/fhirIpsModels";
-import {WaltIdIssuerApi} from "@/components/waltIdIssuerApi";
-import {WaltIdWalletApi} from "@/components/waltIdWalletApi";
+import {IpsData, IpsSectionCode} from "@/services/fhir/fhirIpsModels";
+import {WaltIdIssuerApi} from "../waltIdIssuerApi";
+import {WaltIdWalletApi} from "../waltIdWalletApi";
 import yaml from 'js-yaml';
 import { WaltIdSmartHealthCardIssuer } from '../waltIdSmartHealthCardIssuer';
 
@@ -23,7 +22,7 @@ function getPatientResource(ipsData: IpsData) {
 
 test('Should correctly issue SmartHealthCard credential', async () => {
         const ipsData = await loadPatient('801941');
-        const ipsSection = IpsSectionCode.Medications;
+        const ipsSection = IpsSectionCode.Allergies;
         const resourceWrappers = filterResourceWrappers(ipsData, ipsSection.code);
         // const patientResourceWrapper = getPatientResource(ipsData);
         // expect(patientResourceWrapper.resource.resourceType).toBe('Patient');

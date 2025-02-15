@@ -102,7 +102,7 @@ export interface OfferRequest {
   credentialOffer: string;
 }
 
-import { streamingFetch } from './fetchHelper';
+import { streamingFetch } from '../../utils/fetchHelper';
 
 export class WaltIdIssuerApi {
   private baseUrl: string;

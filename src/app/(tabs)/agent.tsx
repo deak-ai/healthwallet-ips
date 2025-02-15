@@ -3,8 +3,8 @@ import { StyleSheet } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { View, Text } from '@/components/Themed';
 import { useIpsData } from '@/components/IpsDataContext';
-import { getFlattenedIpsSections } from '@/components/ipsResourceProcessor';
-import { IpsSectionCode } from '@/components/fhirIpsModels';
+import { getFlattenedIpsSections } from '@/services/fhir/ipsResourceProcessor';
+import { IpsSectionCode } from '@/services/fhir/fhirIpsModels';
 import fhirpath from "fhirpath";
 import { useFocusEffect } from '@react-navigation/native';
 

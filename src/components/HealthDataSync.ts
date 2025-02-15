@@ -1,5 +1,5 @@
-import { IpsData, IpsSectionCode } from './fhirIpsModels';
-import { VerifiableCredential } from './waltIdWalletApi';
+import { IpsData, IpsSectionCode } from '@/services/fhir/fhirIpsModels';
+import { VerifiableCredential } from '@/services/waltid/waltIdWalletApi';
 import { decodeJwtToken } from '@/utils/jwtUtils';
 
 export interface SyncProgress {

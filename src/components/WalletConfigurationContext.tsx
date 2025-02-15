@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import Toast from 'react-native-toast-message';
-import { WaltIdWalletApi } from '@/components/waltIdWalletApi';
-import { WaltIdIssuerApi } from '@/components/waltIdIssuerApi';
-import { WaltIdSmartHealthCardIssuer } from '@/components/waltIdSmartHealthCardIssuer';
-import { IpsSectionCode } from './fhirIpsModels';
+import { WaltIdWalletApi } from '@/services/waltid/waltIdWalletApi';
+import { WaltIdIssuerApi } from '@/services/waltid/waltIdIssuerApi';
+import { WaltIdSmartHealthCardIssuer } from '@/services/waltid/waltIdSmartHealthCardIssuer';
+import { IpsSectionCode } from '@/services/fhir/fhirIpsModels';
 
 export interface WalletConfigurationContextType {
   isWalletConfigured: boolean;

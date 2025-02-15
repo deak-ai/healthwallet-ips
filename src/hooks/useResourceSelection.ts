@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { IpsData } from '@/components/fhirIpsModels';
+import { IpsData } from '@/services/fhir/fhirIpsModels';
 
 export const useResourceSelection = (ipsData: IpsData | null, code: string) => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);

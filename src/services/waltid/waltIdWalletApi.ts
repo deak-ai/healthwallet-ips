@@ -85,7 +85,7 @@ export interface UsePresentationRequest {
   selectedCredentials: string[];
 }
 
-import { streamingFetch } from './fetchHelper';
+import { streamingFetch } from '../../utils/fetchHelper';
 import { decodeJwtToken } from '@/utils/jwtUtils';
 
 export class WaltIdWalletApi {

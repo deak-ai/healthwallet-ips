@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Text } from "@/components/Themed";
 import { IconType } from "@/components/MultiSourceIcon";
-import { IpsSectionCode, IpsSectionCodeKey } from "@/components/fhirIpsModels";
+import { IpsSectionCode, IpsSectionCodeKey } from "@/services/fhir/fhirIpsModels";
 import { getPalette } from "@/constants/Colors";
 
 export type Tile = {

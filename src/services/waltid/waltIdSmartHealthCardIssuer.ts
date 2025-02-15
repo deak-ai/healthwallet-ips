@@ -1,6 +1,6 @@
 import { WaltIdIssuerApi, IssuanceRequest, OnboardingResponse, OnboardingRequest, IssuanceResponse } from './waltIdIssuerApi';
 import { WaltIdWalletApi, VerifiableCredential, UseOfferRequestParams, OfferRequest, CredentialRequest } from './waltIdWalletApi';
-import { FhirResource, FhirResourceWrapper } from './fhirIpsModels';
+import { FhirResource, FhirResourceWrapper } from '@/services/fhir/fhirIpsModels';
 
 /**
  * Issues SmartHealthCards to the WaltId SSI Wallet

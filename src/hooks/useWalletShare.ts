@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { FhirResourceWrapper, IpsData } from '@/components/fhirIpsModels';
-import { filterResourceWrappers } from '@/components/ipsResourceProcessor';
+import { FhirResourceWrapper, IpsData } from '@/services/fhir/fhirIpsModels';
+import { filterResourceWrappers } from '@/services/fhir/ipsResourceProcessor';
 import { useWalletConfiguration } from '@/components/WalletConfigurationContext';
 import Toast from 'react-native-toast-message';
-import { VerifiableCredential } from '@/components/waltIdWalletApi';
+import { VerifiableCredential } from '@/services/waltid/waltIdWalletApi';
 
 export const useWalletShare = () => {
   const [loading, setLoading] = useState(false);

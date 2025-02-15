@@ -1,10 +1,8 @@
 import {AllergyIntoleranceSectionProcessor, getProcessor, getFlattenedIpsSections}
     from '../ipsResourceProcessor';
 import {FhirUrlStreamProcessor} from "@/services/fhir/fhirStreamProcessorUrl";
-import {IpsData, IpsSectionCode} from "@/components/fhirIpsModels";
+import {IpsData, IpsSectionCode, FlattenedResource} from "@/services/fhir/fhirIpsModels";
 import yaml from 'js-yaml';
-import {FlattenedResource} from "@/components/fhirIpsModels";
-
 
 async function loadPatient(patientId: string): Promise<IpsData> {
     const ipsUrl = `https://fhir-static.healthwallet.li/fhir-examples/ips-fhir/${patientId}-ips.json`;
@@ -24,7 +22,9 @@ test('Should correctly list of AllergyIntolerance resource with all fields popul
 
     // Expect the first element to have all fields populated
     let expectedFlattenedResource: FlattenedResource = {
+        category: 'food',
         uri: 'urn:uuid:89080431-a2ad-43ce-af79-a97e7081829f',
+        type: 'allergy',
         name: 'Allergy to grass pollen',
         code: '418689008',
         codeSystem: 'http://snomed.info/sct',
@@ -43,7 +43,9 @@ test('Should correctly list of AllergyIntolerance resource with all fields popul
         criticality: 'low',
         clinicalStatus: 'active',
         verificationStatus: 'confirmed',
-        recordedDate: '1953-03-04T10:53:57+01:00'
+        recordedDate: '1953-03-04T10:53:57+01:00',
+        type: 'allergy',
+        category: 'food'
     };
     expect(result[1]).toEqual(expectedFlattenedResource);
 
