@@ -1,6 +1,6 @@
 import { filterResourceWrappers}
     from '../ipsResourceProcessor';
-import {FhirUrlStreamProcessor} from "@/components/fhirStreamProcessorUrl";
+import {FhirUrlStreamProcessor} from "@/services/fhir/fhirStreamProcessorUrl";
 import {IpsData, IpsSectionCode} from "@/components/fhirIpsModels";
 import {WaltIdIssuerApi} from "@/components/waltIdIssuerApi";
 import {WaltIdWalletApi} from "@/components/waltIdWalletApi";
@@ -35,10 +35,11 @@ test('Should correctly issue SmartHealthCard credential', async () => {
 
         const issuerApi = new WaltIdIssuerApi('https://issuer.healthwallet.li');
         const walletApi = new WaltIdWalletApi('https://wallet.healthwallet.li', 'user@email.com', 'password');
-
+        const wallets = await walletApi.getWallets();
+        const walletId = wallets.wallets[0].id;
         const smartHealthCardIssuer = new WaltIdSmartHealthCardIssuer(issuerApi, walletApi);
 
-        const vc = await smartHealthCardIssuer.issueAndAddToWallet('Self-issued '+ipsSection.label, [resourceWrappers[1]]);
+        const vc = await smartHealthCardIssuer.issueAndAddToWallet(walletId,'Self-issued '+ipsSection.label, [resourceWrappers[1]]);
 
        expect(vc[0].id).toBeDefined(); 
        

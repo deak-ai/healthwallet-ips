@@ -1,6 +1,6 @@
 import {AllergyIntoleranceSectionProcessor, getProcessor, getFlattenedIpsSections}
     from '../ipsResourceProcessor';
-import {FhirUrlStreamProcessor} from "@/components/fhirStreamProcessorUrl";
+import {FhirUrlStreamProcessor} from "@/services/fhir/fhirStreamProcessorUrl";
 import {IpsData, IpsSectionCode} from "@/components/fhirIpsModels";
 import yaml from 'js-yaml';
 import {FlattenedResource} from "@/components/fhirIpsModels";

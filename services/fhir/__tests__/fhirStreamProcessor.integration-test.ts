@@ -1,5 +1,5 @@
-import {FhirFileStreamProcessor} from '../fhirStreamProcessorFile';
-import {FhirUrlStreamProcessor} from '../fhirStreamProcessorUrl';
+import {FhirFileStreamProcessor} from '@/services/fhir/fhirStreamProcessorFile';
+import {FhirUrlStreamProcessor} from '@/services/fhir/fhirStreamProcessorUrl';
 
 import fhirpath from 'fhirpath';
 
@@ -38,7 +38,7 @@ async function measureMemoryConsumption<T>(func: () => Promise<T>): Promise<[T, 
 
 test('FhirFileStreamProcessor.streamData should succeed parsing valid FHIR IPS file', async () => {
     // use a local ips file
-    const ipsFile = path.join(__dirname+"/../../resources", '801941-ips.json');
+    const ipsFile = path.join(__dirname+"/../../../resources", '801941-ips.json');
 
     const sectionProcessor = new FhirFileStreamProcessor()
 
@@ -159,4 +159,3 @@ function findKeysAtAnyDepth(obj: any, targetKey: string): any[] {
 
     return results;
 }
-

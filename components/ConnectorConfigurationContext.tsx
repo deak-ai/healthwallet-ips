@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { useIpsData } from '@/components/IpsDataContext';
-import { FhirUrlStreamProcessor } from '@/components/fhirStreamProcessorUrl';
+import { FhirUrlStreamProcessor } from '@/services/fhir/fhirStreamProcessorUrl';
 import { getProcessor } from "@/components/ipsResourceProcessor";
 import { IpsSectionCode } from "@/components/fhirIpsModels";
 import Toast from 'react-native-toast-message';
