@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Text, View, StyleSheet, Button, TouchableOpacity, Dimensions } from "react-native";
+import { Text, View, StyleSheet, Button, TouchableOpacity, Dimensions, Platform } from "react-native";
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import type { BarcodeScanningResult } from 'expo-camera';
 import { useRouter } from 'expo-router';
@@ -20,16 +20,30 @@ const YELLOW = '#FFD700';
 
 const BarcodeOverlay: React.FC<BarcodeOverlayProps> = ({ bounds, onPress, isOpenId4Vp }) => {
   const Wrapper = isOpenId4Vp ? TouchableOpacity : View;
+  const window = Dimensions.get('window');
+
+  // Handle Android's coordinate system differences
+  const adjustedBounds = Platform.OS === 'android' ? {
+    origin: {
+      x: window.width - bounds.origin.y - bounds.size.width,
+      y: bounds.origin.x
+    },
+    size: {
+      width: bounds.size.width,
+      height: bounds.size.width
+    }
+  } : bounds;
 
   return (
     <Wrapper
       style={[
         styles.barcodeOverlay,
         {
-          left: bounds.origin.x,
-          top: bounds.origin.y,
-          width: bounds.size.width,
-          height: bounds.size.height,
+          position: 'absolute',
+          left: adjustedBounds.origin.x,
+          top: adjustedBounds.origin.y,
+          width: adjustedBounds.size.width,
+          height: adjustedBounds.size.height,
         },
       ]}
       onPress={onPress}
