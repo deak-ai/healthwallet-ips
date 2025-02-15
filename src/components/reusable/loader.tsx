@@ -47,7 +47,7 @@ const CustomLoader = ({ variant = 'overlay' }: CustomLoaderProps) => {
       <View style={styles.container}>
         <View style={[styles.circle, { backgroundColor: palette.secondary.light }]}>
           <Animated.Image
-            source={require("../../assets/images/loader.png")}
+            source={require("../../../assets/images/loader.png")}
             style={[styles.image, { transform: [{ rotate }] }]}
           />
         </View>
