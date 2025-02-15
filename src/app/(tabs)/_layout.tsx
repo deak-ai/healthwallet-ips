@@ -6,10 +6,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "@/components/useColorScheme";
 import * as SecureStore from "expo-secure-store";
 import { useClickedTab } from "@/components/clickedTabContext";
-import { useIpsData } from "@/components/IpsDataContext";
+import { useIpsData } from "@/contexts/IpsDataContext";
 import { getPalette } from "@/constants/Colors";
-import { useConnectorConfiguration } from "@/components/ConnectorConfigurationContext";
-import { useWalletConfiguration } from "@/components/WalletConfigurationContext";
+import { useConnectorConfiguration } from "@/contexts/ConnectorConfigurationContext";
+import { useWalletConfiguration } from "@/contexts/WalletConfigurationContext";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {

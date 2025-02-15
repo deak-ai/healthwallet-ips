@@ -13,7 +13,7 @@ import Header from "@/components/reusable/header";
 import { Icon } from "@/components/MultiSourceIcon";
 import CustomLoader from "@/components/reusable/loader";
 import BottomSheet from "@/components/reusable/bottomSheet";
-import { useConnectorConfiguration } from "@/components/ConnectorConfigurationContext";
+import { useConnectorConfiguration } from "@/contexts/ConnectorConfigurationContext";
 import { useNavigation } from "@react-navigation/native";
 
 export default function ConnectorsScreen() {

@@ -3,13 +3,13 @@ import { StyleSheet, useColorScheme, TouchableOpacity, ActivityIndicator } from 
 import { Text, View, TextInput } from "@/components/Themed";
 import { useNavigation } from "expo-router";
 import CustomLoader from "@/components/reusable/loader";
-import { useWalletConfiguration } from "@/components/WalletConfigurationContext";
+import { useWalletConfiguration } from "@/contexts/WalletConfigurationContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getPalette } from "@/constants/Colors";
 import Header from "@/components/reusable/header";
 import BottomSheet from "@/components/reusable/bottomSheet";
 import Toast from "react-native-toast-message";
-import { useIpsData } from "@/components/IpsDataContext";
+import { useIpsData } from "@/contexts/IpsDataContext";
 import ProgressBar from "@/components/reusable/ProgressBar";
 import { HealthDataSyncManager, SyncProgress } from "@/components/HealthDataSync";
 import { AntDesign } from '@expo/vector-icons';

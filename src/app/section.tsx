@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import { useIpsData } from "@/components/IpsDataContext";
+import { useIpsData } from "@/contexts/IpsDataContext";
 import SectionCard from "@/components/SectionCard";
 import { getPalette } from "@/constants/Colors";
 import CustomLoader from "@/components/reusable/loader";

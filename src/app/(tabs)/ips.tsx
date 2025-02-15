@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { View } from "@/components/Themed";
 import { IPS_TILES, IpsSectionTile, Tile } from "@/components/IpsSectionTile";
-import { useIpsData } from "@/components/IpsDataContext";
+import { useIpsData } from "@/contexts/IpsDataContext";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import fhirpath from "fhirpath";
 import { AntDesign } from "@expo/vector-icons";

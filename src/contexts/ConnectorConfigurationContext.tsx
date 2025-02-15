@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
-import { useIpsData } from '@/components/IpsDataContext';
+import { useIpsData } from './IpsDataContext';
 import { FhirUrlStreamProcessor } from '@/services/fhir/fhirStreamProcessorUrl';
 import { IpsSectionCode } from "@/services/fhir/fhirIpsModels";
 import { getProcessor } from "@/services/fhir/ipsResourceProcessor";

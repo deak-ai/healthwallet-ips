@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useColorScheme } from "@/components/useColorScheme";
-import { IpsDataProvider } from "@/components/IpsDataContext";
-import { ConnectorConfigurationProvider, useConnectorConfiguration } from "@/components/ConnectorConfigurationContext";
-import { WalletConfigurationProvider, useWalletConfiguration } from "@/components/WalletConfigurationContext";
+import { IpsDataProvider } from "@/contexts/IpsDataContext";
+import { ConnectorConfigurationProvider, useConnectorConfiguration } from "@/contexts/ConnectorConfigurationContext";
+import { WalletConfigurationProvider, useWalletConfiguration } from "@/contexts/WalletConfigurationContext";
 import CustomToast from "@/components/reusable/customToast";
 import { ClickedTabProvider } from "@/components/clickedTabContext";
 import CustomLoader from "@/components/reusable/loader";

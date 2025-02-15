@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FhirResourceWrapper, IpsData } from '@/services/fhir/fhirIpsModels';
 import { filterResourceWrappers } from '@/services/fhir/ipsResourceProcessor';
-import { useWalletConfiguration } from '@/components/WalletConfigurationContext';
+import { useWalletConfiguration } from '@/contexts/WalletConfigurationContext';
 import Toast from 'react-native-toast-message';
 import { VerifiableCredential } from '@/services/waltid/waltIdWalletApi';
 

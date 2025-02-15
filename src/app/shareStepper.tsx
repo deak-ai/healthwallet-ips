@@ -1,5 +1,5 @@
 import SectionCard from "@/components/SectionCard";
-import { useIpsData } from "@/components/IpsDataContext";
+import { useIpsData } from "@/contexts/IpsDataContext";
 import { Icon } from "@/components/MultiSourceIcon";
 import CustomLoader from "@/components/reusable/loader";
 import { getPalette } from "@/constants/Colors";

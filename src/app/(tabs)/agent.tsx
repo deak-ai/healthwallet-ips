@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { View, Text } from '@/components/Themed';
-import { useIpsData } from '@/components/IpsDataContext';
+import { useIpsData } from '@/contexts/IpsDataContext';
 import { getFlattenedIpsSections } from '@/services/fhir/ipsResourceProcessor';
 import { IpsSectionCode } from '@/services/fhir/fhirIpsModels';
 import fhirpath from "fhirpath";
