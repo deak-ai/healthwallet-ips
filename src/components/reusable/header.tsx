@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
     <View style={styles.header}>
       <TouchableOpacity onPress={handleBack} style={styles.backButton}>
         <Icon
-          type="ionicon"
+          type="ionicons"
           name="chevron-back-circle-outline"
           size={32}
           color={theme === "dark" ? palette.neutral.white : palette.neutral.black}

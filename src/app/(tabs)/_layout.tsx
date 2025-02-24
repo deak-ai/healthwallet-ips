@@ -1,6 +1,8 @@
 import React from "react";
 import { Tabs, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from 'expo-status-bar';
+import { Platform } from 'react-native';
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useClickedTab } from "@/contexts/ClickedTabContext";
@@ -53,7 +55,15 @@ export default function TabLayout() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: isDarkMode ? palette.primary.dark : palette.neutral.white }}
+      edges={["bottom"]}
+    >
+      <StatusBar 
+        style={isDarkMode ? "light" : "dark"}
+        backgroundColor="transparent"
+        translucent={true}
+      />
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: isDarkMode?palette.primary.light :palette.primary.dark,

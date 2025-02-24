@@ -197,7 +197,12 @@ export default function TabIpsScreen() {
         }
       />
 
-      {!mode && (
+{/* 
+  - commented out original share/browse modes as sharing is triggered from QR code scanner
+  - leaving here for the moment in case other sharing modes become relevant
+  - if not, it can be safely removed
+ */}
+{/*       {!mode && (
         <View style={styles.switchContainer}>
           <CustomSwitch
             selectionMode={shareMode ? 1 : 2}
@@ -207,17 +212,24 @@ export default function TabIpsScreen() {
             selectionColor={palette.primary.main}
           />
         </View>
-      )}
+      )} */}
 
-      <ScrollView contentContainerStyle={styles.tilesContainer}>
-        {filteredTiles.map((tile) => (
-          <IpsSectionTile
-            key={tile.id}
-            tile={tile}
-            onPress={() => handleTilePress(tile)}
-            selected={selectedElement.some((element) => element.code === tile.code)}
-          />
-        ))}
+      <ScrollView 
+        contentContainerStyle={[
+          styles.tilesContainer,
+          { minHeight: '100%' }
+        ]}
+      >
+        <View style={styles.tilesWrapper}>
+          {filteredTiles.map((tile) => (
+            <IpsSectionTile
+              key={tile.id}
+              tile={tile}
+              onPress={() => handleTilePress(tile)}
+              selected={selectedElement.some((element) => element.code === tile.code)}
+            />
+          ))}
+        </View>
       </ScrollView>
 
       {(shareMode || mode === 'openid4vp') && (
@@ -254,7 +266,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   tilesContainer: {
+    flexGrow: 1,
     padding: 16,
+  },
+  tilesWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: 16
   },
   shareButton: {
     position: "absolute",

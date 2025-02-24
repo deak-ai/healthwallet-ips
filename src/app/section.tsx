@@ -13,7 +13,6 @@ import SectionCard from "@/components/SectionCard";
 import { getPalette } from "@/constants/Colors";
 import CustomLoader from "@/components/reusable/loader";
 import Toast from "react-native-toast-message";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import Header from "@/components/reusable/header";
 import { useResourceSelection } from "@/hooks/useResourceSelection";
 import { useWalletShare } from "@/hooks/useWalletShare";
@@ -52,7 +51,6 @@ export default function SectionScreen() {
     safeArea: {
       flex: 1,
       backgroundColor: "transparent",
-      //backgroundColor: theme === 'dark' ? palette.primary.dark : palette.neutral.white,
     },
     container: {
       flex: 1,
@@ -82,23 +80,6 @@ export default function SectionScreen() {
       alignItems: "flex-start",
       paddingHorizontal: 10,
     },
-    fixedButtonContainer: {
-      position: "absolute",
-      bottom: 20,
-      left: "50%",
-      transform: [{ translateX: -100 }],
-      width: 200,
-      alignItems: "center",
-    },
-    shareButton: {
-      paddingVertical: 12,
-      paddingHorizontal: 20,
-      justifyContent: "center",
-      alignItems: "center",
-      width: 80,
-      height: 80,
-      borderRadius: 50,
-    },
   });
 
   return (
@@ -119,21 +100,7 @@ export default function SectionScreen() {
           </View>
         </ScrollView>
 
-        {loading ? (
-          <CustomLoader />
-        ) : (
-          <View style={styles.fixedButtonContainer}>
-            <TouchableOpacity
-              style={[
-                styles.shareButton,
-                { backgroundColor: palette.secondary.light },
-              ]}
-              onPress={handleShare}
-            >
-              <AntDesign name="sharealt" size={30} color={palette.primary.dark} />
-            </TouchableOpacity>
-          </View>
-        )}
+        {loading && <CustomLoader />}
         <StatusBar style={theme === "dark" ? "light" : "auto"} />
       </View>
     </SafeAreaView>
