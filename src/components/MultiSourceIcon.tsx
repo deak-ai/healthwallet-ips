@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleProp, TextStyle } from 'react-native';
-import {Ionicons, FontAwesome, FontAwesome5, FontAwesome6, MaterialIcons} from '@expo/vector-icons';
+import {Ionicons, FontAwesome, FontAwesome5, FontAwesome6, MaterialIcons, MaterialCommunityIcons, EvilIcons} from '@expo/vector-icons';
 
 // Define available icon types
-export type IconType = 'fontawesome' | 'fontawesome5'| 'fontawesome6' | 'ionicon' | 'materialicons';
+export type IconType = 'fontawesome' | 'fontawesome5'| 'fontawesome6' | 'ionicons' | 'materialicons' | 'materialcommunityicons' | 'evilicons';
 
 interface IconProps {
     type: IconType;
@@ -24,10 +24,14 @@ const Icon = ({type, name, size = DEFAULT_SIZE, color = DEFAULT_COLOR, style}: I
             return <FontAwesome5 name={name as keyof typeof FontAwesome5.glyphMap} size={size} color={color} style={style}/>;
         case 'fontawesome6':
             return <FontAwesome6 name={name as keyof typeof FontAwesome6.glyphMap} size={size} color={color} style={style}/>;
-        case 'ionicon':
+        case 'ionicons':
             return <Ionicons name={name as keyof typeof Ionicons.glyphMap} size={size} color={color} style={style}/>;
         case 'materialicons':
             return <MaterialIcons name={name as keyof typeof MaterialIcons.glyphMap} size={size} color={color} style={style}/>;
+        case 'materialcommunityicons':
+            return <MaterialCommunityIcons name={name as keyof typeof MaterialCommunityIcons.glyphMap} size={size} color={color} style={style}/>;
+        case 'evilicons':
+            return <EvilIcons name={name as keyof typeof EvilIcons.glyphMap} size={size} color={color} style={style}/>;
         default:
             return null;
     }

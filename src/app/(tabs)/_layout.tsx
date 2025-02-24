@@ -79,7 +79,7 @@ export default function TabLayout() {
         name="ips"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => <Icon type="fontawesome" name="medkit" color={color} size={28} />,
+          tabBarIcon: ({ color }) => <Icon type="fontawesome5" name="clinic-medical" color={color} size={28} />,
         }}
         listeners={{
           tabPress: (e) => handleTabPress(e, "ips"),
@@ -100,7 +100,7 @@ export default function TabLayout() {
         options={{
           title: "Wallet",
           tabBarIcon: ({ color }) => (
-            <Icon type="fontawesome" name="shopping-bag" color={color} size={28} />
+            <Icon type="ionicons" name="wallet-outline" color={color} size={28} />
           ),
         }}
         listeners={{
@@ -111,7 +111,7 @@ export default function TabLayout() {
         name="agent"
         options={{
           title: "Agent",
-          tabBarIcon: ({ color }) => <Icon type="fontawesome" name="music" color={color} size={28} />,
+          tabBarIcon: ({ color }) => <Icon type="materialcommunityicons" name="brain" color={color} size={28} />,
         }}
         listeners={{
           tabPress: (e) => handleTabPress(e, "agent"),
@@ -121,7 +121,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color }) => <Icon type="fontawesome" name="gear" color={color} size={28} />,
+          tabBarIcon: ({ color }) => <Icon type="ionicons" name="settings-outline" color={color} size={28} />,
         }}
         listeners={{
           tabPress: (e) => handleTabPress(e, "index"),
