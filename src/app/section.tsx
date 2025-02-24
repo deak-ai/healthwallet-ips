@@ -17,13 +17,16 @@ import Header from "@/components/reusable/header";
 import { useResourceSelection } from "@/hooks/useResourceSelection";
 import { useWalletShare } from "@/hooks/useWalletShare";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 export default function SectionScreen() {
   const route = useRoute();
-  const { title, code, label } = route.params as {
+  const router = useRouter();
+  const { title, code, label, mode } = route.params as {
     title: string;
     code: string;
     label: string;
+    mode?: string;
   };
   const { ipsData } = useIpsData();
   const theme = useColorScheme();
@@ -43,6 +46,25 @@ export default function SectionScreen() {
       return;
     }
     await shareToWallet(ipsData, code, label, selectedIds);
+  };
+
+  const handleResourcePress = (resource: any) => {
+    if (mode === 'openId4vp') {
+      handleSelect(resource.uri);
+    } else {
+      const fhirResource = ipsData?.getFhirResourceByUrl(resource.uri);
+      if (!fhirResource) {
+        console.warn('FHIR resource not found for URI:', resource.uri);
+        return;
+      }
+      router.push({
+        pathname: "/modal",
+        params: { 
+          title: resource.name || label,
+          fhirData: JSON.stringify(fhirResource, null, 2)
+        }
+      });
+    }
   };
 
   const flattenedResources = ipsData ? ipsData.flattenedResources[code] || [] : [];
@@ -92,8 +114,8 @@ export default function SectionScreen() {
               <SectionCard
                 key={resource.uri}
                 flattenedResource={resource}
-                selected={selectedIds.includes(resource.uri)}
-                onSelect={() => handleSelect(resource.uri)}
+                selected={mode === 'openId4vp' ? selectedIds.includes(resource.uri) : false}
+                onSelect={() => handleResourcePress(resource)}
                 label={label}
               />
             ))}

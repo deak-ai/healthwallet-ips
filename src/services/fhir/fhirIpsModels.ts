@@ -5,6 +5,7 @@ export interface IpsData {
     flattenedResources: Record<string, FlattenedResource[]>;
     patientCredential?: string | null;
     getPatientResource(): FhirResourceWrapper;
+    getFhirResourceByUrl(fullUrl: string): FhirResource | undefined;
 }
 
 export class IpsDataImpl implements IpsData {
@@ -35,6 +36,11 @@ export class IpsDataImpl implements IpsData {
             throw new Error('Patient resource not found in IPS data');
         }
         return patientResource;
+    }
+
+    getFhirResourceByUrl(fullUrl: string): FhirResource | undefined {
+        const wrapper = this.resources.find(w => w.fullUrl === fullUrl);
+        return wrapper?.resource;
     }
 }
 

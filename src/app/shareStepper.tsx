@@ -113,7 +113,7 @@ const Stepper = () => {
             onPress={() => navigation.goBack()}
           >
             <Icon
-              type="ionicon"
+              type="ionicons"
               name="chevron-back-circle-outline"
               size={32}
               color={theme === "dark" ? palette.neutral.white : palette.neutral.black}
