@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
   tilesContainer: {
     flexGrow: 1,
     padding: 16,
+    paddingTop: 66,
   },
   tilesWrapper: {
     flex: 1,
