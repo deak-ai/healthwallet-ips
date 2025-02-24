@@ -1,5 +1,3 @@
-// components/IpsSectionTile.tsx
-
 import React from "react";
 import {
   StyleSheet,

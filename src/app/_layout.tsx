@@ -4,13 +4,12 @@ import { IpsDataProvider } from "@/contexts/IpsDataContext";
 import { ConnectorConfigurationProvider, useConnectorConfiguration } from "@/contexts/ConnectorConfigurationContext";
 import { WalletConfigurationProvider, useWalletConfiguration } from "@/contexts/WalletConfigurationContext";
 import CustomToast from "@/components/reusable/customToast";
-import { ClickedTabProvider } from "@/components/clickedTabContext";
+import { ClickedTabProvider } from "@/contexts/ClickedTabContext";
 import CustomLoader from "@/components/reusable/loader";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useRouter, Stack } from "expo-router";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { View, ActivityIndicator } from 'react-native';
 
 export default function RootLayout() {
   return (
@@ -64,12 +63,6 @@ function AppContent() {
   }, [isLoading, isConnectorConfigured, isWalletConfigured]);
 
   if (isLoading && !didInitialNavigate.current) {
-    // return (
-    //   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colorScheme === "dark" ? "#000" : "#fff" }}>
-    //     <ActivityIndicator size="large" color={colorScheme === "dark" ? "#fff" : "#000"} />
-    //   </View>
-    // );
-
     return (<CustomLoader variant="overlay" />)
   }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FhirResourceWrapper, IpsData } from '@/services/fhir/fhirIpsModels';
+import { IpsData } from '@/services/fhir/fhirIpsModels';
 import { filterResourceWrappers } from '@/services/fhir/ipsResourceProcessor';
 import { useWalletConfiguration } from '@/contexts/WalletConfigurationContext';
 import Toast from 'react-native-toast-message';

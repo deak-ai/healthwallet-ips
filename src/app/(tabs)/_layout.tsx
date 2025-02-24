@@ -1,23 +1,13 @@
 import React from "react";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import * as SecureStore from "expo-secure-store";
-import { useClickedTab } from "@/components/clickedTabContext";
-import { useIpsData } from "@/contexts/IpsDataContext";
+import { useClickedTab } from "@/contexts/ClickedTabContext";
 import { getPalette } from "@/constants/Colors";
 import { useConnectorConfiguration } from "@/contexts/ConnectorConfigurationContext";
 import { useWalletConfiguration } from "@/contexts/WalletConfigurationContext";
-
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+import { Icon } from "@/components/MultiSourceIcon";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -63,14 +53,14 @@ export default function TabLayout() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} edges={['top']}>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: isDarkMode?palette.primary.light :palette.primary.dark,
           headerShown: false,
           headerPressColor: palette.primary.main,
           tabBarInactiveTintColor: palette.primary.main,
-          tabBarIconStyle: { color:  palette.primary.main},
+          tabBarIconStyle: { color: palette.primary.main },
           tabBarInactiveBackgroundColor:
           isDarkMode?palette.primary.dark: palette.neutral.white,
           tabBarActiveBackgroundColor: isDarkMode?palette.primary.dark: palette.neutral.white,
@@ -78,6 +68,10 @@ export default function TabLayout() {
             borderTopWidth: 0,
             elevation: 0,
             shadowOpacity: 0,
+            height: 60,
+            paddingBottom: 10,
+            marginBottom: 8,
+            backgroundColor: isDarkMode ? palette.primary.dark : palette.neutral.white
           }
         }}
       >
@@ -85,7 +79,7 @@ export default function TabLayout() {
         name="ips"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => <TabBarIcon name="medkit" color={color} />,
+          tabBarIcon: ({ color }) => <Icon type="fontawesome" name="medkit" color={color} size={28} />,
         }}
         listeners={{
           tabPress: (e) => handleTabPress(e, "ips"),
@@ -95,7 +89,7 @@ export default function TabLayout() {
         name="scanner"
         options={{
           title: "Scanner",
-          tabBarIcon: ({ color }) => <TabBarIcon name="qrcode" color={color} />,
+          tabBarIcon: ({ color }) => <Icon type="fontawesome" name="qrcode" color={color} size={28} />,
         }}
         listeners={{
           tabPress: (e) => handleTabPress(e, "scanner"),
@@ -106,7 +100,7 @@ export default function TabLayout() {
         options={{
           title: "Wallet",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="shopping-bag" color={color} />
+            <Icon type="fontawesome" name="shopping-bag" color={color} size={28} />
           ),
         }}
         listeners={{
@@ -117,7 +111,7 @@ export default function TabLayout() {
         name="agent"
         options={{
           title: "Agent",
-          tabBarIcon: ({ color }) => <TabBarIcon name="music" color={color} />,
+          tabBarIcon: ({ color }) => <Icon type="fontawesome" name="music" color={color} size={28} />,
         }}
         listeners={{
           tabPress: (e) => handleTabPress(e, "agent"),
@@ -127,7 +121,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color }) => <TabBarIcon name="gear" color={color} />,
+          tabBarIcon: ({ color }) => <Icon type="fontawesome" name="gear" color={color} size={28} />,
         }}
         listeners={{
           tabPress: (e) => handleTabPress(e, "index"),

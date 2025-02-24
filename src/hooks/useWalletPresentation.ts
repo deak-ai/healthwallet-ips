@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { IpsData, FlattenedResource } from '@/services/fhir/fhirIpsModels';
 import { useWalletConfiguration } from '@/contexts/WalletConfigurationContext';
 import { useIpsData } from '@/contexts/IpsDataContext';
 import { Alert } from 'react-native';
