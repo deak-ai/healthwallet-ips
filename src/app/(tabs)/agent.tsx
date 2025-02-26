@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, useColorScheme } from 'react-native';
 import { WebView, WebViewMessageEvent } from 'react-native-webview';
 import { View, Text } from '@/components/Themed';
 import { useIpsData } from '@/contexts/IpsDataContext';
@@ -18,6 +18,7 @@ export default function AgentScreen() {
     const webViewRef = useRef<WebView>(null);
     const { ipsData } = useIpsData();
     const [shouldLoad, setShouldLoad] = useState(true);
+    const isDarkMode = useColorScheme() === 'dark';
 
     // Handle focus/blur of the screen
     useFocusEffect(
@@ -89,6 +90,11 @@ export default function AgentScreen() {
             window.healthAgentData = ${JSON.stringify(healthAgentData)};
             true;
         `;
+        const cssJavaScript = `
+            document.body.style.backgroundColor = '${isDarkMode ? 'black' : 'white'}';
+            true;
+        `;
+        webViewRef.current?.injectJavaScript(cssJavaScript);
         webViewRef.current?.injectJavaScript(injectedJavaScript);
     };
 
@@ -108,7 +114,7 @@ export default function AgentScreen() {
                 <WebView
                     ref={webViewRef}
                     source={{ uri: AGENT_URL }}
-                    style={styles.webview}
+                    style={[styles.webview, { backgroundColor: isDarkMode ? 'black' : 'white' }]}
                     onLoadEnd={onLoadEnd}
                     onMessage={onMessage}
                     // Common settings for both platforms
