@@ -19,7 +19,10 @@ Webinar at the DIDAS Health Working Group on February 14th 2025:
 * Youtube recording: [https://www.youtube.com/watch?v=hOM_EMtdAl8](https://www.youtube.com/watch?v=hOM_EMtdAl8)
 * Presentation: [DIDAS_Health_SSI_App_Prototype_20250214.pdf](doc/DIDAS_Health_SSI_App_Prototype_20250214.pdf)
 
-Related Project: [https://github.com/Abdagon/health-ssi-2](https://github.com/Abdagon/health-ssi-2)
+## Related Project: 
+- [Health SSI V2](https://github.com/Abdagon/health-ssi-2): Umbrella project linking to several Digital Health with Self-Sovereign Identity (SSI) initiatives
+- [Health SSI Medpractice](https://github.com/deak-ai/healthssi-medpractice): Proof of Concept AI-powered reception system for medical practices
+- [HealthWallet Datasets](https://github.com/deak-ai/healthwallet-datasets/): Synthetic patient data for use in the HealthWallet IPS application
 
 
 
