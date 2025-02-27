@@ -22,6 +22,7 @@ Webinar at the DIDAS Health Working Group on February 14th 2025:
 ## Related Project: 
 - [Health SSI V2](https://github.com/Abdagon/health-ssi-2): Umbrella project linking to several Digital Health with Self-Sovereign Identity (SSI) initiatives
 - [Health SSI Medpractice](https://github.com/deak-ai/healthssi-medpractice): Proof of Concept AI-powered reception system for medical practices
+- [Health SSI PIS Server](https://github.com/deak-ai/healthwallet/tree/main/server): Practice Information System (PIS) backend server with API's for SSI and patient/medication mgmt
 - [HealthWallet Datasets](https://github.com/deak-ai/healthwallet-datasets/): Synthetic patient data for use in the HealthWallet IPS application
 
 
