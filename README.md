@@ -12,7 +12,15 @@ A React Native mobile application built with Expo that serves as a smart health 
 I supports mapping FHIR resources to W3C Verifiable Credentials in close alignment with the Smart Health Card (SHC) specification allowing for this information
 to be presented for instance when registering as a new patient at a medical practice.
 
-See also the presentation [DIDAS_Health_SSI_App_Prototype_20240214.pdf](doc/DIDAS_Health_SSI_App_Prototype_20240214.pdf) for more information.
+
+## Further Information
+
+Webinar at the DIDAS Health Working Group on February 14th 2025:
+* Youtube recording: [https://www.youtube.com/watch?v=hOM_EMtdAl8](https://www.youtube.com/watch?v=hOM_EMtdAl8)
+* Presentation: [DIDAS_Health_SSI_App_Prototype_20250214.pdf](doc/DIDAS_Health_SSI_App_Prototype_20250214.pdf)
+
+Related Project: [https://github.com/Abdagon/health-ssi-2](https://github.com/Abdagon/health-ssi-2)
+
 
 
 ## Features
