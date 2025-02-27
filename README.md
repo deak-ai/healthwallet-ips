@@ -12,6 +12,8 @@ A React Native mobile application built with Expo that serves as a smart health 
 I supports mapping FHIR resources to W3C Verifiable Credentials in close alignment with the Smart Health Card (SHC) specification allowing for this information
 to be presented for instance when registering as a new patient at a medical practice.
 
+See also the presentation [DIDAS_Health_SSI_App_Prototype_20240214.pdf](doc/DIDAS_Health_SSI_App_Prototype_20240214.pdf) for more information.
+
 
 ## Features
 
@@ -29,7 +31,7 @@ to be presented for instance when registering as a new patient at a medical prac
 
 - **Web Wallet Integration**: Direct access to the web-based wallet functionality of the walt.id infrastructure from within the app.
 
-- **AI Agent**: Demo AI agent powered by Elevenlabs conversational agent to support Q&A on the patients health record, such as asking about which allergies, medications or problems a patient has. 
+- **AI Agent**: Demo AI agent powered by Elevenlabs conversational agents to support Q&A on the patients health record, such as asking about which allergies, medications or problems a patient has. The server side implementation is in the [web](web) directory and requires an elvenlabs API key to run.
 
 ## Technology Stack
 
