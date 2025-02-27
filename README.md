@@ -96,7 +96,7 @@ https://github.com/deak-ai/healthwallet-datasets/tree/main/fhir-examples/ips-fhi
 
 
 **Attention:** 
-* Once a wallet and patient has been configured, it is important to run the "Health Data Sync" command from the Wallet Settings page. The first time this is run it will create Verifiable Credentials for all health data present. For performance reasons, the Results section is currently not enabled. 
+* Once a wallet and patient has been configured, it is important to run the "Health Data Sync" command from the Wallet Settings page. The first time this is run it will create Verifiable Credentials for all health data present. For performance reasons, the Results and Devices sections are currently not enabled (see [HealthDataSync.ts](src/components/HealthDataSync.ts#L99))
 * Also, before using the QR code scanner to scan a presentation, the Health Data Sync command needs to be run manually. This should be improved in the future.
 
 
