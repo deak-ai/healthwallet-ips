@@ -57,7 +57,7 @@ export default function TabLayout() {
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: isDarkMode ? palette.neutral.black : palette.neutral.white }}
-      edges={["bottom"]}
+      edges={["top", "bottom"]}
     >
       <StatusBar 
         style={isDarkMode ? "light" : "dark"}
