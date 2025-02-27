@@ -43,7 +43,7 @@ Webinar at the DIDAS Health Working Group on February 14th 2025:
 
 - **Web Wallet Integration**: Direct access to the web-based wallet functionality of the walt.id infrastructure from within the app.
 
-- **AI Agent**: Demo AI agent powered by Elevenlabs conversational agents to support Q&A on the patients health record, such as asking about which allergies, medications or problems a patient has. The server side implementation is in the [web](web) directory and requires an elvenlabs API key to run.
+- **AI Agent**: Demo AI agent powered by Elevenlabs conversational agents to support Q&A on the patients health record, such as asking about which allergies, medications or problems a patient has. The server side implementation is in the [web](web) directory and requires an [Elevenlabs](https://www.elevenlabs.io/) API key to run.
 
 ## Technology Stack
 
@@ -121,5 +121,5 @@ MIT License
 
 ## Contributors
 
-Oliver Deak (cto@deak.ai)
-Nawress Brigui (Wind Consulting, Tunisia)
+- Oliver Deak (cto@deak.ai)
+- Nawress Brigui (Wind Consulting, Tunisia)
